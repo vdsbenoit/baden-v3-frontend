@@ -12,6 +12,10 @@ import {
 import { magnetar } from "./magnetar";
 import { Timestamp } from '@firebase/firestore';
 
+// THIS LEGACY FILE IS DEPRECATED
+// It is kept for reference only and will soon be deleted. 
+// Use composables instead.
+
 const USER_PROFILES_COLLECTION_NAME = "users";
 
 ///////////////////////

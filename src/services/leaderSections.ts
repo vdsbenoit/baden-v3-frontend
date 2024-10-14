@@ -1,5 +1,9 @@
 import { magnetar } from "./magnetar";
 
+// THIS LEGACY FILE IS DEPRECATED
+// It is kept for reference only and will soon be deleted. 
+// Use composables instead.
+
 const LEADER_SECTIONS_COLLECTION_NAME = "leaderSections";
 const STAFF_SECTION_NAME = "Team BB";
 
