@@ -1,6 +1,10 @@
 import { incrementDocField } from './firebase';
 import { magnetar } from "./magnetar";
 
+// THIS LEGACY FILE IS DEPRECATED
+// It is kept for reference only and will soon be deleted. 
+// Use composables instead.
+
 const TEAMS_COLLECTION_NAME = "teams";
 
 /////////////////////

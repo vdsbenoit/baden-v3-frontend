@@ -4,6 +4,10 @@ import { magnetar } from "./magnetar";
 import { getMaxGameLeaders, canSetScoreAnywhere, isScoresFrozen } from "./settings";
 import { addToDocArray, removeFromDocArray } from "./firebase";
 
+// THIS LEGACY FILE IS DEPRECATED
+// It is kept for reference only and will soon be deleted. 
+// Use composables instead.
+
 const GAMES_COLLECTION_NAME = "games";
 const user = useAuthStore();
 

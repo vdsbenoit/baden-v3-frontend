@@ -2,6 +2,10 @@ import { computed } from "vue";
 import { magnetar } from "./magnetar";
 import { toastPopup } from "./popup";
 
+// THIS LEGACY FILE IS DEPRECATED
+// It is kept for reference only and will soon be deleted. 
+// Use composables instead.
+
 const APP_COLLECTION_NAME = "app";
 const SETTINGS_DOCUMENT_KEY = "settings";
 const CONFIGURATION_DOCUMENT_KEY = "configuration";
