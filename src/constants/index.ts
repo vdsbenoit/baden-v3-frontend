@@ -51,7 +51,7 @@ export const DEFAULT_TIME_VALUE = -1
 export const MATCHES_COLLECTION_NAME = "matches"
 export const MATCHES_COLLECTION_REF = collection(db, MATCHES_COLLECTION_NAME)
 
-// app settings @ configuration
+// app settings & configuration
 
 export const APP_COLLECTION_NAME = "app"
 export const APP_COLLECTION_REF = collection(db, APP_COLLECTION_NAME)
