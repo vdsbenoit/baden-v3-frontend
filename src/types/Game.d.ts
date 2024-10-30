@@ -1,6 +1,5 @@
 import { Ref } from "vue"
 import { VueFirestoreDocumentData } from "vuefire"
-import { DocumentReference } from "firebase/firestore"
 import { VueFireUserProfile } from "./UserProfile"
 
 export type Game = {
