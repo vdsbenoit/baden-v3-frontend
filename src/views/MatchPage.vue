@@ -25,7 +25,7 @@
             <ion-grid class="score-grid">
               <ion-row class="ion-align-items-center ion-text-center">
                 <ion-col size="5" v-if="isLoading" class="ion-no-padding"><ion-spinner></ion-spinner></ion-col>
-                <ion-col size="5" v-else @click="router.push(`/team/${firstPlayer?.id}`)" class="ion-no-padding">
+                <ion-col size="5" v-else @click="router.push(`/team/${firstPlayer?.id}`)" class="ion-no-padding ion-pointer">
                   <ion-text color="primary">
                     <h1>{{ firstPlayer?.id }}</h1>
                   </ion-text>
@@ -40,7 +40,7 @@
                   <ion-text> vs </ion-text>
                 </ion-col>
                 <ion-col size="5" v-if="isLoading" class="ion-no-padding"><ion-spinner></ion-spinner></ion-col>
-                <ion-col size="5" v-else @click="router.push(`/team/${secondPlayer?.id}`)" class="ion-no-padding">
+                <ion-col size="5" v-else @click="router.push(`/team/${secondPlayer?.id}`)" class="ion-no-padding ion-pointer">
                   <ion-text color="primary">
                     <h1>{{ secondPlayer?.id }}</h1>
                   </ion-text>
