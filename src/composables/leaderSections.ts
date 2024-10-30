@@ -1,8 +1,9 @@
-import { DEFAULT_LEADER_SECTION_ID, LEADER_SECTIONS_COLLECTION_REF } from "@/constants"
+import { DEFAULT_LEADER_SECTION_ID, LEADER_SECTIONS_COLLECTION_REF, ROLES } from "@/constants"
 import { LeaderSection } from "@/types"
-import { doc, orderBy, query, where } from "firebase/firestore"
+import { doc, documentId, orderBy, query, where } from "firebase/firestore"
 import { MaybeRefOrGetter, computed, toValue } from "vue"
 import { useCollection, useDocument } from "vuefire"
+import { useCurrentUserProfile } from "./userProfile"
 
 export function useLeaderSection(rLeaderSectionId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
@@ -14,15 +15,27 @@ export function useLeaderSection(rLeaderSectionId: MaybeRefOrGetter<string>) {
   return useDocument<LeaderSection>(dbRef)
 }
 
-export function useLeaderSections(rIncludeStaff: MaybeRefOrGetter<boolean>) {
+export function useLeaderSections(
+  rExcludeStaff: MaybeRefOrGetter<boolean>,
+  rShouldLoad: MaybeRefOrGetter<boolean> = true
+) {
+  console.debug(`Fetching leader sections`)
+  const currentUser = useCurrentUserProfile()
   const dbRef = computed(() => {
-    if (toValue(rIncludeStaff)) {
-      console.debug(`Fetching all leader sections`)
-      return query(LEADER_SECTIONS_COLLECTION_REF, orderBy("name"))
-    } else {
-      console.debug(`Fetching leader sections without the staff group`)
-      return query(LEADER_SECTIONS_COLLECTION_REF, where("isStaff", "!=", true), orderBy("name"))
+    const queryParams = []
+    if (!rShouldLoad) return null
+    if (!currentUser.value) return null
+    // Chefs can only see their own sections attendants
+    if (currentUser.value.role <= ROLES.Chef) {
+      console.debug(`Filtering to section ${currentUser.value.sectionId}`)
+      queryParams.push(where(documentId(), "==", currentUser.value.sectionId))
     }
+    if (toValue(rExcludeStaff)) {
+      console.debug(`Excluding staff group in the query`)
+      queryParams.push(where("isStaff", "!=", true))
+    }
+    queryParams.push(orderBy("name"))
+    return query(LEADER_SECTIONS_COLLECTION_REF, ...queryParams)
   })
   return useCollection<LeaderSection>(dbRef)
 }

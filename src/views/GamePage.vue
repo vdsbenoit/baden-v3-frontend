@@ -139,13 +139,14 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import MyActionSheetButton from "@/components/MyActionSheetButton.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useGame } from "@/composables/games";
+import { useLeaderSections } from "@/composables/leaderSections";
 import { useGameMatches } from "@/composables/matches";
 import { useCanEditGames, useCanRegister } from "@/composables/rights";
 import { useAppConfig, useAppSettings } from "@/composables/settings";
 import { useCurrentUserProfile, useUsersFromSection } from "@/composables/userProfile";
-import { DEFAULT_GAME_ID, DEFAULT_LEADER_SECTION_ID, LEADER_SECTIONS_COLLECTION_REF, ROLES } from "@/constants";
+import { DEFAULT_GAME_ID, DEFAULT_LEADER_SECTION_ID, ROLES } from "@/constants";
 import { confirmPopup, toastPopup } from "@/services/popup";
-import { LeaderSection, Timing, VueFireUserProfile } from "@/types";
+import { Timing, VueFireUserProfile } from "@/types";
 import { addAttendant, removeAttendant, setGameNoScores } from "@/utils/game";
 import { setMatchNoScores } from "@/utils/match";
 import { canBeRegistered } from "@/utils/rights";
@@ -170,12 +171,10 @@ import {
   IonText,
   useIonRouter
 } from "@ionic/vue";
-import { computed, reactive, ref } from "@vue/reactivity";
+import { computed, reactive, ref, toRef } from "@vue/reactivity";
 import { useRouteParams } from "@vueuse/router";
-import { documentId, orderBy, query, where } from "firebase/firestore";
 import { closeOutline, closeSharp } from "ionicons/icons";
 import { onMounted, toValue } from "vue";
-import { useCollection } from "vuefire";
 
 // reactive data
 
@@ -197,21 +196,9 @@ const { data: game, pending: isLoadingGame, error: errorLoadingGame } = useGame(
 const { data: matches, pending: isLoadingMatches, error: errorLoadingMatches } = useGameMatches(gameId)
 const canRegister = useCanRegister()
 const canEditGameSettings = useCanEditGames()
-const { data: attendantSections, pending: isLoadingAttendantSections } = useCollection<LeaderSection>(computed(() => {
-  console.debug(`Fetching leader sections`)
-  const queryParams = []
-  // don't load sections if not in edit mode
-  if (!edit.isOn || !currentUser.value) return null
-  // filter to current user section only
-  if (currentUser.value.role === ROLES.Chef ) {
-    console.debug(`Filtering to section ${currentUser.value.sectionId}`)
-    queryParams.push(where(documentId(), "==", currentUser.value.sectionId))
-  }
-  console.debug(`Excluding the staff group`)
-  queryParams.push(where("isStaff", "!=", true))
-  queryParams.push(orderBy("name"))
-  return query(LEADER_SECTIONS_COLLECTION_REF, ...queryParams)
-}))
+
+
+const { data: attendantSections, pending: isLoadingAttendantSections } = useLeaderSections(true, toRef(edit, 'isOn'))
 const { data: sectionAttendants, pending: isLoadingAttendants } = useUsersFromSection(edit.selectedSectionId)
 
 // lifecycle hooks
