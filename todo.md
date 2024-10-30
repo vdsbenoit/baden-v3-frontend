@@ -10,7 +10,7 @@
   - [ ] Essayer de centraliser tout ce qui est lié aux rôles (`App.vue` vs `router/index.ts`, plein de `showRanking` dans différents components)
 - [ ] Remove totem from UserProfile type
 - [ ] use useRouteParams from vueUse
-- [ ] Refactor morningGame & afternonGame into something generic : leaderTimings (similar to playerTimings)
+- [ ] Refactor morningGame & afternonGame into something generic : attendantTimings (similar to playerTimings)
 - [ ] Remove id from documents and custom types : use the built-in id from vuefire
 
 
