@@ -8,6 +8,7 @@
 </template>
 
 <script setup lang="ts">
+import { toastPopup } from "@/services/popup";
 import { actionSheetController } from "@ionic/vue"
 import { computed, defineProps, ref } from "vue"
 
@@ -52,8 +53,9 @@ const presentActionSheet = async () => {
       .then(() => {
         isProcessing.value = false
       })
-      .catch(e => {
+      .catch((e: Error) => {
         console.error("Cannot process action sheet callback function", e)
+        toastPopup(e.message)
       })
   } else console.debug(`ActionSheet ${props.actionSheetHeader} cancelled`)
 }
