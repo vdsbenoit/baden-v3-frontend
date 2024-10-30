@@ -109,8 +109,12 @@
           </ion-card-header>
           <ion-card-content>
             <div v-if="isLoadingMatches" class="ion-text-center">
-                <ion-spinner></ion-spinner>
-              </div>
+              <ion-spinner></ion-spinner>
+            </div>
+            <div v-else-if="errorLoadingMatches" class="ion-text-center">
+              <strong class="capitalize">Houston, nous avons une erreur</strong>
+              <ion-text color="error">{{ errorLoadingMatches.message }}</ion-text>
+            </div>
             <ion-list v-else-if="matches && matches.length > 0">
               <ion-item v-for="[i, match] in matches.entries()" :key="match.id" :routerLink="`/match/${match.id}`" class="item-no-padding">
                 <ion-label>
@@ -334,6 +338,12 @@ const unregister = async (result: any, payload: any) => {
     toastPopup(`Désinscription à l'épreuve ${_game.id} effectuée`)
   })
 }
+
+const getWinner = (match: any) => {
+  if (match.winner) return match.winner;
+  if (match.draw === true) return "Égalité";
+  return "";
+};
 
 const toggleEditMode = () => {
   edit.isOn = !edit.isOn
