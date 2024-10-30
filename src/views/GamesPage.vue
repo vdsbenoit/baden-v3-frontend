@@ -110,12 +110,12 @@ const gamesNotFound = computed(() => {
   return selectedCircuit.value && !isLoadingGames.value && (!games.value || games.value.length === 0);
 })
 const showGameAvailabilities = computed(() => {
-  return appSettings.value?.showGameAvailabilities
+  if (!appSettings.value) return false
+  return appSettings.value.showGameAvailabilities
 })
 const attendantTimings = computed(() => {
   if (!appConfig.value) return []
   return appConfig.value.attendantTimings.filter(timing => timing.isGame)
-
 })
 
 // Methods
@@ -124,7 +124,7 @@ const getAvailabilities = (game: VueFireGame) => {
   const maxGameLeaders = appSettings.value?.maxGameLeaders ?? 2
   const availabilities = []
   for (const timing of attendantTimings.value){
-    const nbAttendants = game.attendants.filter(attendant => attendant.timingId === timing.id).length
+    const nbAttendants = game.attendants[timing.id].length
     const text = timing.name + ' ' + nbAttendants
     let color = "success"
     if (nbAttendants === 0) color = "danger"
