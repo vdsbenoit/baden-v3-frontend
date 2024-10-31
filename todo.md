@@ -12,6 +12,10 @@
 - [ ] use useRouteParams from vueUse
 - [ ] Refactor morningGame & afternonGame into something generic : attendantTimings (similar to playerTimings)
 - [ ] Remove id from documents and custom types : use the built-in id from vuefire
+- [ ] Edit the game template (on Windows)
+  - [ ] Add attendantTime1
+  - [ ] Add attendantTime2
+  - [ ] Add playerTime1 to 17
 
 
 ## User feedback
