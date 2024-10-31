@@ -34,22 +34,22 @@
             <ion-card-title>Responsables</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <ion-list v-for="timing in timings" :key="timing.id" lines="none" class="ion-no-margin ion-no-padding">
-              <ion-text color="primary"><h2>{{ timing.name }}</h2></ion-text>
-              <span v-if="game.attendants[timing.id].length < 1" class="ion-padding-start">Pas encore de responsable inscrit</span>
-              <ion-item v-else v-for="attendant in game.attendants[timing.id]" :key="attendant.id">
+            <ion-list v-for="timeSlot in attendantSchedule" :key="timeSlot.id" lines="none" class="ion-no-margin ion-no-padding">
+              <ion-text color="primary"><h2>{{ timeSlot.name }}</h2></ion-text>
+              <span v-if="game.attendants[timeSlot.id].length < 1" class="ion-padding-start">Pas encore de responsable inscrit</span>
+              <ion-item v-else v-for="attendant in game.attendants[timeSlot.id]" :key="attendant.id">
                 <ion-label class="ion-text-wrap" @click="goToProfile(attendant.id)">
                   <ion-text style="font-weight: bold">{{ attendant.name }}</ion-text>
                   <ion-text color="medium">&nbsp;({{ attendant.sectionName ?? "" }})</ion-text>
                 </ion-label>
-                <ion-icon v-if="edit.isOn" :ios="closeOutline" :md="closeSharp" @click="removeAttendant(gameId, attendant.id, timing)"></ion-icon>
+                <ion-icon v-if="edit.isOn" :ios="closeOutline" :md="closeSharp" @click="removeAttendant(gameId, attendant.id, timeSlot)"></ion-icon>
               </ion-item>
             </ion-list>
             <ion-grid class="ion-margin-top">
               <ion-row>
                 <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister">
                   <MyActionSheetButton expand="block" color="primary" action-sheet-header="M'inscrire" 
-                  :buttons="timings.map(timing => ({ text: timing.name, data: timing}))" :callback="register" :payload="{ targetUser: currentUser}">
+                  :buttons="attendantSchedule.map(timeSlot => ({ text: timeSlot.name, data: timeSlot}))" :callback="register" :payload="{ targetUser: currentUser}">
                     M'inscrire
                   </MyActionSheetButton>
                 </ion-col>
@@ -95,7 +95,7 @@
               <ion-row>
                 <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="edit.selectedAttendant">
                   <MyActionSheetButton expand="block" color="primary" action-sheet-header="Inscrire" 
-                  :buttons="timings.map(timing => ({ text: timing.name, data: timing}))" :callback="register" :payload="{ targetUser: edit.selectedAttendant }">
+                  :buttons="attendantSchedule.map(timeSlot => ({ text: timeSlot.name, data: timeSlot}))" :callback="register" :payload="{ targetUser: edit.selectedAttendant }">
                     Inscrire {{ getUserName(edit.selectedAttendant) }}
                   </MyActionSheetButton>
                 </ion-col>
@@ -118,7 +118,7 @@
             <ion-list v-else-if="matches && matches.length > 0">
               <ion-item v-for="[i, match] in matches.entries()" :key="match.id" :routerLink="`/match/${match.id}`" class="item-no-padding">
                 <ion-label>
-                  <ion-text>⌚ {{ timings[i].start }} - {{ timings[i].stop }} : </ion-text>
+                  <ion-text>⌚ {{ playerSchedule[i].start }} - {{ playerSchedule[i].stop }} : </ion-text>
                   <ion-text color="primary" style="font-weight: bold">{{ match.player_ids[0] }}</ion-text>
                   <ion-text> vs </ion-text>
                   <ion-text color="primary" style="font-weight: bold">{{ match.player_ids[1] }}</ion-text>
@@ -146,7 +146,7 @@ import { useAppConfig, useAppSettings } from "@/composables/settings";
 import { useCurrentUserProfile, useUsersFromSection } from "@/composables/userProfile";
 import { DEFAULT_GAME_ID, DEFAULT_LEADER_SECTION_ID, ROLES } from "@/constants";
 import { confirmPopup, toastPopup } from "@/services/popup";
-import { Timing, VueFireUserProfile } from "@/types";
+import { AttendantTimeSlot, VueFireUserProfile } from "@/types";
 import { addAttendant, removeAttendant, setGameNoScores } from "@/utils/game";
 import { setMatchNoScores } from "@/utils/match";
 import { canBeRegistered } from "@/utils/rights";
@@ -212,8 +212,11 @@ if (gameId.value === DEFAULT_GAME_ID) {
 });
 
 // Computed
-
-const timings = computed(() => (appConfig.value?.playerTimings ?? []))
+const playerSchedule = computed(() => {
+  if (!game.value || !appConfig.value) return []
+  return appConfig.value.sectionTypes[game.value.sectionType].schedule
+})
+const attendantSchedule = computed(() => (appConfig.value?.attendantSchedule ?? []))
 const isUserRegisteredHere = computed(() => {
   if (!currentUser.value) return false
   if (!currentUser.value.games) return false
@@ -233,7 +236,7 @@ const pageTitle = computed(() => {
  * @param payload Payload passed to the action sheet 
  */
 const register = async (result: any, payload: any) => {
-  const _timing = result.data as Timing
+  const _timeSlot = result.data as AttendantTimeSlot
   const _targetUser = toValue(payload.targetUser) as VueFireUserProfile
   const _currentUser = toValue(currentUser)
   const _game = toValue(game)
@@ -247,7 +250,7 @@ const register = async (result: any, payload: any) => {
 
   const maxGameLeaders = appSettings.value.maxGameLeaders
   const isCurrentUser = _targetUser.id === _currentUser.id
-  const currentAttendants = _game.attendants[_timing.id].map(attendant => attendant.id)
+  const currentAttendants = _game.attendants[_timeSlot.id].map(attendant => attendant.id)
 
   try {
     // applicability checks
@@ -271,33 +274,33 @@ const register = async (result: any, payload: any) => {
     `)
     if (currentAttendants.includes(_targetUser.id)) throw Error(
       isCurrentUser
-        ? `Tu es déjà inscrit.e à l'épreuve ${_game.id} au timing ${_timing.name}`
-        : `${getUserName(_targetUser)} est déjà inscrit.e au timing ${_timing.name} de l'épreuve ${_game.id}`
+        ? `Tu es déjà inscrit.e à l'épreuve ${_game.id} au timing ${_timeSlot.name}`
+        : `${getUserName(_targetUser)} est déjà inscrit.e au timing ${_timeSlot.name} de l'épreuve ${_game.id}`
     )
     if (currentAttendants.length >= maxGameLeaders) throw new Error(`
-      Le nombre maximum d'animateurs a été atteint au timing ${_timing.name} de l'épreuve ${_game.id}
+      Le nombre maximum d'animateurs a été atteint au timing ${_timeSlot.name} de l'épreuve ${_game.id}
     `)
     // if target user is busy at target timing
-    if (_targetUser.games && _timing.id in _targetUser.games && _targetUser.games[_timing.id].id != DEFAULT_GAME_ID) {
-      const currentGameId = _targetUser.games[_timing.id].id
+    if (_targetUser.games && _timeSlot.id in _targetUser.games && _targetUser.games[_timeSlot.id].id != DEFAULT_GAME_ID) {
+      const currentGameId = _targetUser.games[_timeSlot.id].id
       const message =
         isCurrentUser
-          ? `Tu es déjà inscrit.e à l'épreuve ${currentGameId} au timing ${_timing.name}. Veux-tu te désincrire ?`
-          : `${getUserName(_targetUser)} est déjà inscrit.e à l'épreuve ${currentGameId} au timing ${_timing.name}. Le/la désincrire ?`
+          ? `Tu es déjà inscrit.e à l'épreuve ${currentGameId} au timing ${_timeSlot.name}. Veux-tu te désincrire ?`
+          : `${getUserName(_targetUser)} est déjà inscrit.e à l'épreuve ${currentGameId} au timing ${_timeSlot.name}. Le/la désincrire ?`
       confirmPopup(
         message,
         async () => {
-          await removeAttendant(currentGameId, _targetUser.id, _timing).then(() => {
+          await removeAttendant(currentGameId, _targetUser.id, _timeSlot).then(() => {
             toastPopup(`Désinscription à l'épreuve ${currentGameId} effectuée`)
           })
-          await addAttendant(_game.id, _targetUser.id, _timing).then(() => {
+          await addAttendant(_game.id, _targetUser.id, _timeSlot).then(() => {
             toastPopup("Responsables mis à jour")
           })
         },
         () => toastPopup("Enregistrement annulé")
       )
     } else {
-      await addAttendant(_game.id, _targetUser.id, _timing).then(() => {
+      await addAttendant(_game.id, _targetUser.id, _timeSlot).then(() => {
         toastPopup("Responsables mis à jour")
       })
     }
@@ -313,7 +316,7 @@ const register = async (result: any, payload: any) => {
  * @param payload Payload passed to the action sheet 
  */
 const unregister = async (result: any, payload: any) => {
-  const _timing = result.data as Timing
+  const _timing = result.data as AttendantTimeSlot
   const _targetUser = toValue(payload.targetUser) as VueFireUserProfile
   const _game = toValue(game)
 
