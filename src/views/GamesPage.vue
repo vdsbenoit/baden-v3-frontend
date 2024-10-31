@@ -98,7 +98,7 @@ const canEditGames = useCanEditGames()
 
 // Computed
 const circuits = computed(() => {
-  if (!appConfig.value) return []
+  if (!appConfig.value) return undefined
   return appConfig.value.circuits
 });
 const pageTitle = computed(() => {
@@ -113,19 +113,16 @@ const showGameAvailabilities = computed(() => {
   if (!appSettings.value) return false
   return appSettings.value.showGameAvailabilities
 })
-const attendantTimings = computed(() => {
-  if (!appConfig.value) return []
-  return appConfig.value.attendantTimings.filter(timing => timing.isGame)
-})
+const attendantSchedule = computed(() => (appConfig.value?.attendantSchedule ?? []))
 
 // Methods
 
 const getAvailabilities = (game: VueFireGame) => {
   const maxGameLeaders = appSettings.value?.maxGameLeaders ?? 2
   const availabilities = []
-  for (const timing of attendantTimings.value){
-    const nbAttendants = game.attendants[timing.id].length
-    const text = timing.name + ' ' + nbAttendants
+  for (const timeSlot of attendantSchedule.value){
+    const nbAttendants = game.attendants[timeSlot.id].length
+    const text = timeSlot.name + ' ' + nbAttendants
     let color = "success"
     if (nbAttendants === 0) color = "danger"
     if (nbAttendants < maxGameLeaders) color = "warning"

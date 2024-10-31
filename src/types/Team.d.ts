@@ -5,7 +5,7 @@ export type Team = {
   hash: string
   number: number
   sectionType: string
-  sectionId: number
+  sectionId: string
   sectionName: string
   city: string
   scores: number[]
