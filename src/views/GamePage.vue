@@ -85,7 +85,7 @@
                     <ion-select-option v-for="section in attendantSections" :value="section.id" :key="section.id"> {{ section.name }} ({{ section.city }}) </ion-select-option>
                   </ion-select>
                 </ion-col>
-                <ion-col size="12" size-sm="6" v-if="edit.selectedSectionId != DEFAULT_LEADER_SECTION_ID">
+                <ion-col size="12" size-sm="6" v-if="edit.selectedSectionId != DEFAULT_ATTENDANT_SECTION_ID">
                     <ion-spinner v-if="isLoadingAttendants"></ion-spinner>
                     <ion-select v-else v-model="edit.selectedAttendant" placeholder="Choisir animateur" interface="alert">
                       <ion-select-option color="dark" v-for="attendant in sectionAttendants" :value="attendant" :key="attendant.id"> {{ getUserName(attendant) }} </ion-select-option>
@@ -138,13 +138,13 @@
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import MyActionSheetButton from "@/components/MyActionSheetButton.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
-import { useGame } from "@/composables/games";
-import { useLeaderSections } from "@/composables/leaderSections";
-import { useGameMatches } from "@/composables/matches";
+import { useGame } from "@/composables/game";
+import { useLeaderSections } from "@/composables/attendantSection";
+import { useGameMatches } from "@/composables/match";
 import { useCanEditGames, useCanRegister } from "@/composables/rights";
-import { useAppConfig, useAppSettings } from "@/composables/settings";
+import { useAppConfig, useAppSettings } from "@/composables/app";
 import { useCurrentUserProfile, useUsersFromSection } from "@/composables/userProfile";
-import { DEFAULT_GAME_ID, DEFAULT_LEADER_SECTION_ID, ROLES } from "@/constants";
+import { DEFAULT_GAME_ID, DEFAULT_ATTENDANT_SECTION_ID, ROLES } from "@/constants";
 import { confirmPopup, toastPopup } from "@/services/popup";
 import { AttendantTimeSlot, VueFireUserProfile } from "@/types";
 import { addAttendant, removeAttendant, setGameNoScores } from "@/utils/game";
@@ -181,7 +181,7 @@ import { onMounted, toValue } from "vue";
 const isTogglingNoScores = ref(false);
 const edit = reactive({
   isOn: false,
-  selectedSectionId: DEFAULT_LEADER_SECTION_ID,
+  selectedSectionId: DEFAULT_ATTENDANT_SECTION_ID,
   selectedAttendant: undefined
 })
 

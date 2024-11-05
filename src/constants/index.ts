@@ -28,14 +28,14 @@ export const TEAMS_COLLECTION_REF = collection(db, TEAMS_COLLECTION_NAME)
 // sections
 
 export const DEFAULT_SECTION_ID = ""
-export const SECTIONS_COLLECTION_NAME = "sections"
-export const SECTIONS_COLLECTION_REF = collection(db, SECTIONS_COLLECTION_NAME)
+export const PLAYER_SECTIONS_COLLECTION_NAME = "sections"
+export const PLAYER_SECTIONS_COLLECTION_REF = collection(db, PLAYER_SECTIONS_COLLECTION_NAME)
 
-// leaderSections
+// attendant sections
 
-export const DEFAULT_LEADER_SECTION_ID = DEFAULT_SECTION_ID
-export const LEADER_SECTIONS_COLLECTION_NAME = "leadersections"
-export const LEADER_SECTIONS_COLLECTION_REF = collection(db, LEADER_SECTIONS_COLLECTION_NAME)
+export const DEFAULT_ATTENDANT_SECTION_ID = DEFAULT_SECTION_ID
+export const ATTENDANT_SECTIONS_COLLECTION_NAME = "leaderSections"
+export const ATTENDANT_SECTIONS_COLLECTION_REF = collection(db, ATTENDANT_SECTIONS_COLLECTION_NAME)
 
 // games
 
@@ -62,5 +62,5 @@ export const APP_SETTINGS_DOC_REF = doc(APP_COLLECTION_REF, APP_SETTINGS_DOC_NAM
 export const APP_CONFIG_DOC_NAME = "configuration"
 export const APP_CONFIG_DOC_REF = doc(APP_COLLECTION_REF, APP_CONFIG_DOC_NAME)
 
-export const PLAYER_TIMINGS_KEY = "playerTimings"
-export const ATTENDANT_TIMINGS_KEY = "attendantTimings"
+export const PLAYER_TIMINGS_KEY = "playerTimings" // fixme: use sectionType schedules
+export const ATTENDANT_SCHEDULE_KEY = "attendantSchedule"

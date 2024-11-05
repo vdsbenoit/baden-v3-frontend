@@ -70,9 +70,9 @@
 <script setup lang="ts">
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
-import { useCircuitGames } from "@/composables/games";
+import { useCircuitGames } from "@/composables/game";
 import { useCanEditGames } from "@/composables/rights";
-import { useAppConfig, useAppSettings } from "@/composables/settings";
+import { useAppConfig, useAppSettings } from "@/composables/app";
 import { DEFAULT_CIRCUIT_VALUE, DEFAULT_GAME_ID } from "@/constants";
 import { toastPopup } from "@/services/popup";
 import { VueFireGame } from "@/types";

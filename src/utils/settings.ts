@@ -1,5 +1,5 @@
 // prettier-ignore
-import { APP_COLLECTION_NAME, APP_CONFIG_DOC_NAME, APP_CONFIG_DOC_REF, APP_SETTINGS_DOC_REF, ATTENDANT_TIMINGS_KEY, GAMES_COLLECTION_NAME, PLAYER_TIMINGS_KEY, USER_PROFILES_COLLECTION_NAME, USER_PROFILES_GAMES_KEY } from "@/constants";
+import { APP_COLLECTION_NAME, APP_CONFIG_DOC_NAME, APP_CONFIG_DOC_REF, APP_SETTINGS_DOC_REF, ATTENDANT_SCHEDULE_KEY, GAMES_COLLECTION_NAME, PLAYER_TIMINGS_KEY, USER_PROFILES_COLLECTION_NAME, USER_PROFILES_GAMES_KEY } from "@/constants";
 import { addToDocArray, generateRandomId, removeFromDocArray, updateFieldInCollection } from "@/services/firebase";
 import { Timing } from "@/types";
 import { getDoc, updateDoc } from "firebase/firestore";
@@ -38,7 +38,7 @@ export const resetPlayerTimings = async (playerTimings: Timing[]) => {
 
 export const addAttendantTiming = async (attendantTiming: Timing) => {
   attendantTiming.id = generateRandomId()
-  return addToDocArray(APP_COLLECTION_NAME, APP_CONFIG_DOC_NAME, ATTENDANT_TIMINGS_KEY, attendantTiming)
+  return addToDocArray(APP_COLLECTION_NAME, APP_CONFIG_DOC_NAME, ATTENDANT_SCHEDULE_KEY, attendantTiming)
 }
 
 /**
@@ -61,7 +61,7 @@ export const resetAttendantTimings = async (attendantTimings: Timing[]) => {
     attendantTimings[i].id = generateRandomId()
   }
   // remove all attendant registrations in games and users collections
-  const gamesCleaningPromise = updateFieldInCollection(GAMES_COLLECTION_NAME, ATTENDANT_TIMINGS_KEY, {})
+  const gamesCleaningPromise = updateFieldInCollection(GAMES_COLLECTION_NAME, ATTENDANT_SCHEDULE_KEY, {})
   const usersCleaningPromise = updateFieldInCollection(USER_PROFILES_COLLECTION_NAME, USER_PROFILES_GAMES_KEY, {})
   await Promise.all([gamesCleaningPromise, usersCleaningPromise])
   // apply new attendant timings

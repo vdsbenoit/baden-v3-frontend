@@ -1,8 +1,8 @@
-import { useCurrentUserProfile } from "@/composables/userProfile";
-import { ROLES } from '@/constants';
-import { RefGame } from "@/types";
-import { computed, reactive, watchEffect } from "vue";
-import { useAppSettings } from "./settings";
+import { useCurrentUserProfile } from "@/composables/userProfile"
+import { RefGame } from "@/types"
+import { computed, reactive, watchEffect } from "vue"
+import { useAppSettings } from "./app"
+import { ROLES } from "@/constants"
 
 export function useCanEditScores(rGame: RefGame) {
   const currentUserProfile = useCurrentUserProfile()
@@ -29,9 +29,12 @@ export function useCanEditScores(rGame: RefGame) {
       console.debug(`Cannot edit score, timing with id ${timingId} not found in game ${rGame.value.id} attendants`)
       return false
     }
-    if (rGame.value.attendants[timingId].map(attendant => attendant.id).includes(currentUserProfile.value.id)) return true
+    if (rGame.value.attendants[timingId].map(attendant => attendant.id).includes(currentUserProfile.value.id))
+      return true
     else {
-      console.debug(`Cannot edit score, user ${currentUserProfile.value.id} is not registered to set scores at game ${rGame.value.id}`)
+      console.debug(
+        `Cannot edit score, user ${currentUserProfile.value.id} is not registered to set scores at game ${rGame.value.id}`
+      )
       return false
     }
   }
@@ -70,16 +73,15 @@ export function useCanEditScores(rGame: RefGame) {
       return false
     }
     // Check if leader is assigned to the game
-    const gameAttendantsIds = Object.values(rGame.value.attendants).flat().map(attendant => attendant.id)
+    const gameAttendantsIds = Object.values(rGame.value.attendants)
+      .flat()
+      .map(attendant => attendant.id)
     const userGamesIds = Object.values(currentUserProfile.value.games).map(g => g.id)
-    if (
-      gameAttendantsIds.includes(currentUserProfile.value.id) &&
-      userGamesIds.includes(rGame.value.id)
-    ) {
+    if (gameAttendantsIds.includes(currentUserProfile.value.id) && userGamesIds.includes(rGame.value.id)) {
       return true
     }
     console.debug(`Cannot set score, user ${currentUserProfile.value.id} is not registered at ${rGame.value.id}`)
-    return false 
+    return false
   })
 
   return { canEditScores, canEditTiming }
@@ -128,10 +130,29 @@ export function useCanRegister() {
   return canRegister
 }
 
-export function useCanEditGames(){
+export function useCanEditGames() {
   const currentUserProfile = useCurrentUserProfile()
   return computed(() => {
-    if(!currentUserProfile.value) return false
+    if (!currentUserProfile.value) return false
     return currentUserProfile.value.role >= ROLES.Organisateur
   })
+}
+
+export function useCanAcceptApplicants() {
+  const currentUserProfile = useCurrentUserProfile()
+  const canAcceptApplicants = computed(() => {
+    if (!currentUserProfile.value) return false
+    if (currentUserProfile.value.role === undefined) return false
+    return currentUserProfile.value.role >= ROLES.Chef
+  })
+  const maxApplicantRole = computed(() => {
+    if (!currentUserProfile.value) return ROLES.Anonyme
+    return currentUserProfile.value.role
+  })
+  const applicantSectionIdFilter = computed(() => {
+    if (!currentUserProfile.value) return null // if this is true, canAcceptApplicants will be false
+    if (currentUserProfile.value.role > ROLES.Chef) return null
+    return currentUserProfile.value.sectionId
+  })
+  return { canAcceptApplicants, maxApplicantRole, applicantSectionIdFilter }
 }
