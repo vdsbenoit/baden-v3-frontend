@@ -63,7 +63,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     name: 'teams',
-    path: '/team/:teamId?',
+    path: '/team/:teamId',
     component: () => import ('../views/TeamPage.vue'),
     meta: { minimumRole: ROLES.Participant }
   },
@@ -98,15 +98,15 @@ const routes: Array<RouteRecordRaw> = [
     meta: { minimumRole: ROLES.Participant }
   },
   {
-    name: 'leaders',
-    path: '/leaders',
-    component: () => import ('../views/LeadersPage.vue'),
+    name: 'attendants',
+    path: '/attendants',
+    component: () => import ('../views/AttendantsPage.vue'),
     meta: { minimumRole: ROLES.Animateur }
   },
   {
-    name: 'leader',
-    path: '/leader/:sectionId',
-    component: () => import ('../views/LeadersPage.vue'),
+    name: 'attendant',
+    path: '/attendant/:sectionId',
+    component: () => import ('../views/AttendantsPage.vue'),
     meta: { minimumRole: ROLES.Animateur }
   },
   {
