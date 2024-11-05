@@ -1,12 +1,24 @@
 <template>
   <ion-page>
     <header-template :pageTitle="pageTitle">
-      <ion-button v-if="isMyTeam" @click="unRegisterPlayer"><ion-icon slot="icon-only" :icon="star"></ion-icon></ion-button>
+      <ion-button v-if="isCurrentUserTeam" @click="unRegisterPlayer"><ion-icon slot="icon-only" :icon="star"></ion-icon></ion-button>
       <ion-button v-if="showRegisterButton" @click="registerPlayer"><ion-icon slot="icon-only" :icon="starOutline"></ion-icon></ion-button>
     </header-template>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
-      <div v-if="isTeam || isLoading">
+      <div v-if="isLoadingTeam" class="ion-text-center">
+        <ion-spinner></ion-spinner>
+      </div>
+      <div v-else-if="errorLoadingTeam" class="not-found">
+        <strong class="capitalize">Houston, nous avons une erreur</strong>
+        <ion-text color="error">{{ errorLoadingTeam.message }}</ion-text>
+        <p>Retour à <a @click="router.back()">la page précédente</a></p>
+      </div>
+      <div v-else-if="!team" class="not-found">
+        <strong class="capitalize">Nous n'avons pas trouvé cette équipe...</strong>
+        <p>Retour à <a @click="router.back()">la page précédente</a></p>
+      </div>
+      <div v-else>
         <ion-grid class="ion-padding-horizontal ion-padding-top">
           <ion-row class="ion-align-items-center">
             <ion-col class="ion-padding-start" :router-link="`/section/${section?.id}`">
@@ -15,10 +27,9 @@
               <ion-spinner v-else></ion-spinner>
             </ion-col>
             <ion-col class="numberCircle ion-padding-end">
-              <span v-if="teamId">
+              <span>
                 {{ teamId }}
               </span>
-              <ion-spinner v-else></ion-spinner>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -28,19 +39,26 @@
             <ion-card-title>Score</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <div v-if="isLoading" class="ion-text-center">
-              <ion-spinner></ion-spinner>
-            </div>
-            <ion-list v-else class="no-pointer">
+            <ion-list class="no-pointer">
               <ion-item class="ion-no-padding">
                 <ion-label>Score de l'équipe</ion-label><ion-note slot="end">{{ team?.score }}</ion-note></ion-item
               >
               <ion-item class="ion-no-padding">
-                <ion-label>Score de la section</ion-label><ion-note slot="end">{{ section?.score }}</ion-note></ion-item
-              >
+                <ion-label>Score de la section</ion-label>
+                <ion-badge v-if="errorLoadingSection" slot="end" class="ion-no-margin" color="danger">error</ion-badge>
+                <ion-note v-else slot="end">
+                  <ion-spinner v-if="isLoadingSection"></ion-spinner>
+                  <span v-else>{{ section?.score }}</span>
+                </ion-note>
+              </ion-item>
               <ion-item class="ion-no-padding">
-                <ion-label>Moyenne de la section</ion-label><ion-note slot="end">{{ sectionMean }}</ion-note></ion-item
-              >
+                <ion-label>Moyenne de la section</ion-label>
+                <ion-badge v-if="errorLoadingSection" slot="end" class="ion-no-margin" color="danger">error</ion-badge>
+                <ion-note v-else slot="end">
+                  <ion-spinner v-if="isLoadingSection"></ion-spinner>
+                  <span v-else>{{ sectionMean }}</span>
+                </ion-note>
+              </ion-item>
             </ion-list>
             <ion-button expand="block" color="medium" :router-link="`/section/${section?.id}`" router-direction="back">
               Voir section
@@ -56,25 +74,29 @@
             <ion-card-title>Programme</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <ion-list v-if="matches && matches.size > 0">
-              <ion-item v-for="match in matches.values()" :key="match.id" :routerLink="`/match/${match.id}`" class="ion-no-padding">
+            <div v-if="isLoadingMatches" class="ion-text-center">
+              <ion-spinner></ion-spinner>
+            </div>
+            <ion-list-header v-else-if="errorLoadingMatches">
+              <strong class="capitalize">Houston, nous avons une erreur</strong>
+              <ion-text color="error">{{ errorLoadingMatches.message }}</ion-text>
+            </ion-list-header>
+            <ion-list v-else-if="matches && matches.length > 0">
+              <ion-item v-for="[i, match] in matches.entries()" :key="match.id" :routerLink="`/match/${match.id}`" class="ion-no-padding">
                 <ion-label>
                   <span>{{ match.game_name }}</span>
-                  <p>⌚ {{ getSchedule(match.time - 1).start }} - {{ getSchedule(match.time - 1).stop }} | 📍 Jeu n° {{ match.game_id }}</p>
+                  <p>
+                    <ion-icon :ios="locationOutline" :md="locationSharp"></ion-icon><span>{{ playerSchedule[i].start }} - {{ playerSchedule[i].stop }}</span>
+                    <span> | </span>
+                    <ion-icon :ios="timeOutline" :md="timeSharp"></ion-icon><span>Jeu n° {{ match.game_id }}</span>
+                  </p>
                 </ion-label>
                 <ion-icon :ios="statusIcon(match).ios" :md="statusIcon(match).md" :color="statusIcon(match).color" slot="end"></ion-icon>
               </ion-item>
             </ion-list>
-            <div v-else-if="isLoading" class="ion-text-center">
-              <ion-spinner></ion-spinner>
-            </div>
             <ion-list-header v-else><h2>Aucun jeu trouvé</h2></ion-list-header>
           </ion-card-content>
         </ion-card>
-      </div>
-      <div v-else class="not-found">
-        <strong class="capitalize">Nous n'avons pas trouvé cette équipe...</strong>
-        <p>Retour à <a @click="router.back()">la page précédente</a></p>
       </div>
     </ion-content>
   </ion-page>
@@ -83,12 +105,14 @@
 <script setup lang="ts">
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
-import { DEFAULT_TEAM_ID, useTeam } from "@/composables/teams";
-import { streamTeamMatches } from "@/services/matches";
+import { useTeamMatches } from "@/composables/matches";
+import { useSection } from "@/composables/sections";
+import { useAppConfig, useAppSettings } from "@/composables/settings";
+import { useTeam } from "@/composables/teams";
+import { useCurrentUserProfile } from "@/composables/userProfile";
+import { DEFAULT_SECTION_ID, DEFAULT_TEAM_ID, ROLES } from "@/constants";
 import { errorPopup, toastPopup } from "@/services/popup";
-import { Section, streamSection } from "@/services/sections";
-import { getSchedule, isRankingPublic } from "@/services/settings";
-import { ROLES, useAuthStore } from "@/services/users";
+import { updateUserProfile } from "@/utils/userProfile";
 import {
   IonButton,
   IonCard, IonCardContent, IonCardHeader,
@@ -109,9 +133,8 @@ import {
 } from "@ionic/vue";
 import { computed, ref } from "@vue/reactivity";
 import { useRouteParams } from "@vueuse/router";
-import { closeOutline, closeSharp, reorderTwoOutline, reorderTwoSharp, star, starOutline, trophyOutline, trophySharp } from "ionicons/icons";
-import { onMounted, watchEffect } from "vue";
-import { useRoute } from "vue-router";
+import { closeOutline, closeSharp, locationOutline, locationSharp, reorderTwoOutline, reorderTwoSharp, star, starOutline, timeOutline, timeSharp, trophyOutline, trophySharp } from "ionicons/icons";
+import { onMounted } from "vue";
 
 // reactive data
 
@@ -119,11 +142,14 @@ const isRegistering = ref(false);
 
 // composables
 
-const user = useAuthStore();
-const route = useRoute();
-const router = useIonRouter();
+const router = useIonRouter()
+const user = useCurrentUserProfile()
+const appConfig = useAppConfig()
+const settings = useAppSettings()
 const teamId = useRouteParams('teamId', DEFAULT_TEAM_ID)
-const { data: team, pending: isLoading, error: errorLoading } = useTeam(teamId);
+const { data: team, pending: isLoadingTeam, error: errorLoadingTeam } = useTeam(teamId)
+const { data: section, pending: isLoadingSection, error: errorLoadingSection } = useSection(team.value?.sectionId ?? DEFAULT_SECTION_ID)
+const { data: matches, pending: isLoadingMatches, error: errorLoadingMatches } = useTeamMatches(teamId)
 
 // lifecycle hooks
 
@@ -137,41 +163,35 @@ if (teamId.value === DEFAULT_TEAM_ID) {
 
 // Computed
 
-const section = computed((): Section | undefined => {
-  return team.value?.sectionId ? streamSection(team.value.sectionId) : undefined;
-});
-const isTeam = computed(() => !errorLoading && team.value && team.value.id)
 const pageTitle = computed(() => {
-  if (isTeam.value) return `Equipe ${team.value?.id}`;
-  if (isLoading.value) return "Chargement";
+  if (team.value) return `Equipe ${team.value.id}`;
+  if (isLoadingTeam.value) return "Chargement";
   return "Équipe inconnue";
 });
-const matches = computed(() => {
-  return team.value?.id ? streamTeamMatches(team.value?.id) : new Map();
-});
-const showRanking = computed(() => {
-  if(isRankingPublic()) return true;
-  return user.profile.role >= ROLES.Organisateur;
-});
-const showRegisterButton = computed(() => {
-  if (isMyTeam.value) return false;
-  return user.profile.role == ROLES.Participant;
-});
-const isMyTeam = computed(() => {
-  if (!user.profile.team) return false;
-  return user.profile.team === teamId.value;
+const playerSchedule = computed(() => {
+  if (!team.value || !appConfig.value) return []
+  return appConfig.value.sectionTypes[team.value.sectionTypeId].schedule
 })
-
-// Watchers
-
-const sectionMean = ref("0");
-// async update sectionScore
-watchEffect(async () => {
-  if (!isTeam.value) return; // do not run this watcher if team is not initialized
-  const nbTeams = section.value?.nbTeams;
-  if (!nbTeams) return;
-  sectionMean.value = (section.value.score / nbTeams || 0).toFixed(2);
+const showRanking = computed(() => {
+  if (settings.value?.isRankingPublic) return true
+  if (!user.value) return false
+  return (user.value.role >= ROLES.Organisateur)
 });
+const isCurrentUserTeam = computed(() => {
+  if (!user.value?.team) return false;
+  return (user.value.team === teamId.value)
+})
+const showRegisterButton = computed(() => {
+  if (!user.value) return false
+  if (isCurrentUserTeam.value) return false;
+  return (user.value.role == ROLES.Participant)
+});
+const sectionMean = computed(() => {
+  if (!section.value) return 0
+  const nbTeams = section.value.nbTeams;
+  if (nbTeams == undefined || nbTeams === 0) return 0;
+  return (section.value.score / nbTeams).toFixed(2); 
+})
 
 // Methods
 
@@ -181,28 +201,48 @@ const statusIcon = (match: any) => {
   if (match.loser === teamId.value) return { ios: closeOutline, md: closeSharp, color: "danger" };
   return { md: undefined, ios: undefined, color: ""};
 };
-const registerPlayer = () => {
-  if (team.value) user.updateProfile(
-    user.uid, {
-      team: team.value.id,
-      sectionId: team.value?.sectionId,
-      sectionName: team.value?.sectionName,
-      sectionType: team.value?.sectionType,
-      }
-    ).then(() => {
-    toastPopup(`L'équipe ${team.value?.id} a été enregistrée comme ton équipe`);
-  }).catch((e) => {
-    errorPopup(`Une erreur s'est produite lors de la modification de ton profil`); 
-    console.error(e);
-  });
+const registerPlayer = async () => {
+  if (!team.value) {
+    const message = "Impossible de s'inscrire. Aucune équipe n'est chargée"
+    toastPopup(message)
+    console.error(message)
+    return
+  }
+  if (!user.value) {
+    const message = "Impossible de s'inscrire. Aucun utilisateur n'est connecté"
+    toastPopup(message)
+    console.error(message)
+    return
+  }
+
+  try {
+    await updateUserProfile(user.value.id, { team: team.value.id })
+    toastPopup(`L'équipe ${team.value.id} a été enregistrée comme ton équipe`)
+  } catch(e) {
+    errorPopup(`Une erreur s'est produite lors de la modification de ton profil`)
+    console.error(e)
+  }
 }
-const unRegisterPlayer = () => {
-  if (team.value) user.updateProfile(user.uid, {team: ""}).then(() => {
-    toastPopup(`Nous t'avons désincrit.e de cette équipe`);
-  }).catch((e) => {
+const unRegisterPlayer = async () => {
+  if (!team.value) {
+    const message = "Impossible de s'inscrire. Aucune équipe n'est chargée"
+    toastPopup(message)
+    console.error(message)
+    return
+  }
+  if (!user.value) {
+    const message = "Impossible de s'inscrire. Aucun utilisateur n'est connecté"
+    toastPopup(message)
+    console.error(message)
+    return
+  }
+  try {
+    updateUserProfile(user.value.id, {team: DEFAULT_TEAM_ID})
+    toastPopup(`Tu es désincrit.e de cette équipe`);
+  } catch(e) {
     errorPopup(`Une erreur s'est produite lors de la modification de ton profil`); 
     console.error(e);
-  });
+  }
 }
 </script>
 <style scoped></style>

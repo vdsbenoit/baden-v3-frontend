@@ -4,7 +4,7 @@ import { VueFirestoreDocumentData} from "vuefire"
 export type Team = {
   hash: string
   number: number
-  sectionType: string
+  sectionTypeId: string
   sectionId: string
   sectionName: string
   city: string
