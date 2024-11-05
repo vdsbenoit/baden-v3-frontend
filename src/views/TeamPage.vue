@@ -105,10 +105,10 @@
 <script setup lang="ts">
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
-import { useTeamMatches } from "@/composables/matches";
-import { useSection } from "@/composables/sections";
-import { useAppConfig, useAppSettings } from "@/composables/settings";
-import { useTeam } from "@/composables/teams";
+import { useTeamMatches } from "@/composables/match";
+import { useSection } from "@/composables/playerSection";
+import { useAppConfig, useAppSettings } from "@/composables/app";
+import { useTeam } from "@/composables/team";
 import { useCurrentUserProfile } from "@/composables/userProfile";
 import { DEFAULT_SECTION_ID, DEFAULT_TEAM_ID, ROLES } from "@/constants";
 import { errorPopup, toastPopup } from "@/services/popup";

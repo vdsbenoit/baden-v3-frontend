@@ -4,6 +4,7 @@ import { getRoleByValue } from "@/utils/userProfile"
 import { doc, limit as fbLimit, orderBy, query, where } from "firebase/firestore"
 import { MaybeRefOrGetter, computed, toValue } from "vue"
 import { useCollection, useCurrentUser, useDocument } from "vuefire"
+import { useCanAcceptApplicants } from "./rights"
 
 export function useUserProfile(rUid: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
@@ -48,36 +49,20 @@ export function useUsersFromSection(rSectionId: MaybeRefOrGetter<string>) {
   return useCollection<UserProfile>(dbRef)
 }
 
-export function useApplicantsToSection(rSectionId: MaybeRefOrGetter<string>, rLimit: MaybeRefOrGetter<number>) {
+export function useApplicants(rLimit: MaybeRefOrGetter<number>) {
+  const { canAcceptApplicants, maxApplicantRole, applicantSectionIdFilter } = useCanAcceptApplicants()
   const dbRef = computed(() => {
-    const sectionId = toValue(rSectionId)
+    if (!canAcceptApplicants.value) return null
     const limit = toValue(rLimit)
-    if (sectionId === DEFAULT_SECTION_ID) return null
-    console.debug(`Fetching users who requested to be member of section ${sectionId}`)
-    // prettier-ignore
-    return query(
-      USER_PROFILES_COLLECTION_REF, 
-      where("requestedSectionId", "==", sectionId),
-      fbLimit(limit)
-    )
-  })
-  return useCollection<UserProfile>(dbRef)
-}
-
-export function useAllApplicants(rLimit: MaybeRefOrGetter<number>) {
-  const dbRef = computed(() => {
-    const currentUserProfile = useCurrentUserProfile()
-    if (!currentUserProfile.value) return null
-    const maxRole = currentUserProfile.value.role
-    const limit = toValue(rLimit)
-    console.debug(`Fetching all pending applicants for a ${getRoleByValue(maxRole)}`)
-    // prettier-ignore
-    return query(
-      USER_PROFILES_COLLECTION_REF, 
-      where("requestedRole", "<=", maxRole),
-      orderBy("requestedRole", "desc"),
-      fbLimit(limit)
-    )
+    console.debug(`Fetching all pending applicants for a ${getRoleByValue(maxApplicantRole.value)}`)
+    const queryParams = []
+    queryParams.push(orderBy("requestedRole", "desc"))
+    queryParams.push(where("requestedRole", "<=", maxApplicantRole.value))
+    if (applicantSectionIdFilter.value) {
+      queryParams.push(where("requestedSectionId", "==", applicantSectionIdFilter.value))
+    }
+    queryParams.push(fbLimit(limit))
+    return query(USER_PROFILES_COLLECTION_REF, ...queryParams)
   })
   return useCollection<UserProfile>(dbRef)
 }

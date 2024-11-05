@@ -1,5 +1,5 @@
-import { DEFAULT_SECTION_ID, SECTIONS_COLLECTION_REF } from "@/constants"
-import { Section } from "@/types"
+import { DEFAULT_SECTION_ID, PLAYER_SECTIONS_COLLECTION_REF } from "@/constants"
+import { AttendantSection } from "@/types"
 import { doc, limit as fbLimit, orderBy, query, where } from "firebase/firestore"
 import { MaybeRefOrGetter, computed, toValue } from "vue"
 import { useCollection, useDocument } from "vuefire"
@@ -9,9 +9,9 @@ export function useSection(rSectionId: MaybeRefOrGetter<string>) {
     const id = toValue(rSectionId)
     console.debug(`Fetching section ${id}`)
     if (id === DEFAULT_SECTION_ID) return null
-    return doc(SECTIONS_COLLECTION_REF, id)
+    return doc(PLAYER_SECTIONS_COLLECTION_REF, id)
   })
-  return useDocument<Section>(dbRef)
+  return useDocument<AttendantSection>(dbRef)
 }
 
 export function useSections(rSectionType: MaybeRefOrGetter<string> = "") {
@@ -19,18 +19,18 @@ export function useSections(rSectionType: MaybeRefOrGetter<string> = "") {
     const sectionType = toValue(rSectionType)
     if (sectionType === "") {
       console.debug(`Fetching all sections`)
-      return query(SECTIONS_COLLECTION_REF, orderBy("id"))
+      return query(PLAYER_SECTIONS_COLLECTION_REF, orderBy("id"))
     } else {
       console.debug(`Fetching sections from ${sectionType}`)
       // prettier-ignore
       return query(
-        SECTIONS_COLLECTION_REF, 
+        PLAYER_SECTIONS_COLLECTION_REF, 
         where("sectionType", "==", sectionType), 
         orderBy("id")
       )
     }
   })
-  return useCollection<Section>(dbRef)
+  return useCollection<AttendantSection>(dbRef)
 }
 
 export function useTopSections(rSectionType: MaybeRefOrGetter<string>, rLimit: MaybeRefOrGetter<number>) {
@@ -41,11 +41,11 @@ export function useTopSections(rSectionType: MaybeRefOrGetter<string>, rLimit: M
     if (!sectionType) return null
     // prettier-ignore
     return query(
-      SECTIONS_COLLECTION_REF, 
+      PLAYER_SECTIONS_COLLECTION_REF, 
       where("sectionType", "==", sectionType),
       orderBy("score", "desc"),
       fbLimit(limit),
     )
   })
-  return useCollection<Section>(dbRef)
+  return useCollection<AttendantSection>(dbRef)
 }

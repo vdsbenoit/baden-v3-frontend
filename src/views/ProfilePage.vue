@@ -183,7 +183,7 @@ import { getMaxGameLeaders, getSectionTypes } from "@/services/settings";
 import { getSectionsBySectionType, streamSection, Section } from "@/services/sections";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { getAllLeaderSections, streamLeaderSection, LeaderSection } from "@/services/leaderSections";
-import { removeAfternoonLeader, removeMorningLeader, setAfternoonLeader, setMorningLeader, useGame, useGames } from "@/composables/games";
+import { removeAfternoonLeader, removeMorningLeader, setAfternoonLeader, setMorningLeader, useGame, useGames } from "@/composables/game";
 
 const userStore = useAuthStore();
 const router = useRouter();
