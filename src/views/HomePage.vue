@@ -7,15 +7,15 @@
         <img src="@/assets/img/logo-bb.png" alt="Logo Baden Battle" />
       </div>
       <info-card-component v-if="showPendingRequestInfo" class="ion-margin-horizontal">
-          Ton inscription est en attente de validation par un {{ requestValidator }}. 
+          Ton inscription est en attente de validation par un•e {{ requestValidator }}. 
           N'hésite pas à les contacter pour accélérer ta demande.
       </info-card-component>
-      <ion-grid class="home-grid">
+      <ion-grid v-if="userProfile" class="home-grid">
         <ion-row>
           <!-- participant -->
-          <tile-col v-if="showSelectTeam" :target="`/section/${user.profile.sectionId}`">Choisis une équipe</tile-col>
-          <tile-col v-if="showSectionButton" :target="`/section/${user.profile.sectionId}`">Ma section</tile-col>
-          <tile-col v-if="user.profile.team" :target="`/team/${user.profile.team}`">Mon équipe</tile-col>
+          <tile-col v-if="showSelectTeam" :target="`/section/${userProfile.sectionId}`">Choisis une équipe</tile-col>
+          <tile-col v-if="showSectionButton" :target="`/section/${userProfile.sectionId}`">Ma section</tile-col>
+          <tile-col v-if="userProfile.team" :target="`/team/${userProfile.team}`">Mon équipe</tile-col>
 
           <!-- >= chef -->
           <tile-col v-if="nbPendingRequests" target="/requests">
@@ -23,17 +23,20 @@
           </tile-col>
 
           <!-- chef -->
-          <tile-col v-if="showRegisterLeaders" :target="`/leader/${user.profile.sectionId}`">Inscris tes animés à des épreuves</tile-col>
+          <tile-col v-if="showRegisterLeaders" :target="`/leader/${userProfile.sectionId}`">Inscris tes animés à des épreuves</tile-col>
 
           <!-- animateur -->
-          <tile-col v-if="showSelectMorningGame" target="/games">Inscris-toi à une épreuve du matin</tile-col>
-          <tile-col v-if="showSelectAfternoonGame" target="/games">Inscris-toi à une épreuve de l'aprèm</tile-col>
-          <tile-col v-if="showLeaderSectionButton" :target="`/leader/${user.profile.sectionId}`">Ma section</tile-col>
-          <tile-col v-if="user.profile.morningGame" :target="`/game/${user.profile.morningGame}`">Mon épreuve du matin</tile-col>
-          <tile-col v-if="user.profile.afternoonGame" :target="`/game/${user.profile.afternoonGame}`">Mon épreuve de l'aprèm</tile-col>
-
+          <div v-if="userProfile.role >= ROLES.Animateur">
+            <tile-col v-if="userProfile.sectionId" :target="`/leader/${userProfile.sectionId}`">Ma section</tile-col>
+            <div v-if="userProfile.role === ROLES.Animateur || userProfile.role === ROLES.Chef">
+              <div v-for="timeSlot in attendantSchedule" :key="timeSlot.id">
+                <tile-col v-if="userProfile.games && userProfile.games[timeSlot.id]" :target="`/game/${userProfile.games[timeSlot.id].id}`">Mon épreuve ({{ timeSlot.name }})</tile-col>
+                <tile-col v-else-if="appSettings && appSettings.isLeaderRegistrationOpen" target="/games">Inscris-toi à une épreuve ({{ timeSlot.name }})</tile-col>
+              </div>
+            </div>
+          </div>
           <!-- organisateur -->
-          <tile-col v-if="user.profile.role >= ROLES.Organisateur" target="/leaders">Animateurs</tile-col>
+          <tile-col v-if="userProfile.role >= ROLES.Organisateur" target="/leaders">Animateurs</tile-col>
         </ion-row>
       </ion-grid>
     </ion-content>
@@ -41,62 +44,56 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonGrid, IonRow } from "@ionic/vue";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { ROLES, useAuthStore } from "@/services/users";
-import TileCol from "@/components/TileCol.vue";
-import { computed } from "vue";
-import { isLeaderRegistrationOpen } from "@/services/settings";
-import InfoCardComponent from "../components/InfoCardComponent.vue";
+import InfoCardComponent from "@/components/InfoCardComponent.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
+import TileCol from "@/components/TileCol.vue";
+import { useAppConfig, useAppSettings } from "@/composables/app";
+import { useApplicants, useCurrentUserProfile } from "@/composables/userProfile";
+import { ROLES } from "@/constants";
+import { IonContent, IonGrid, IonPage, IonRow } from "@ionic/vue";
+import { computed } from "vue";
 
-const user = useAuthStore();
+// Composables
+
+const userProfile = useCurrentUserProfile()
+const appSettings = useAppSettings()
+const appConfig = useAppConfig()
+const applicants = useApplicants(15)
 
 // Computed vars
+const attendantSchedule = computed(() => (appConfig.value?.attendantSchedule ?? []))
 const showPendingRequestInfo = computed(() => {
-  return user.profile.role === ROLES.Newbie && user.profile.hasDoneOnboarding;
+  if (!userProfile.value) return false;
+  return (userProfile.value.role === ROLES.Newbie && userProfile.value.hasDoneOnboarding);
 });
 const showSelectTeam = computed(() => {
-  return user.profile.role === ROLES.Participant && !user.profile.team;
+  if (!userProfile.value) return false;
+  return (userProfile.value.role === ROLES.Participant && !userProfile.value.team);
 });
 const showSectionButton = computed(() => {
-  return user.profile.role === ROLES.Participant && user.profile.sectionId;
-});
-const showLeaderSectionButton = computed(() => {
-  return user.profile.role >= ROLES.Animateur && user.profile.sectionId;
+  if (!userProfile.value) return false;
+  return (userProfile.value.role === ROLES.Participant && userProfile.value.sectionId);
 });
 const showRegisterLeaders = computed(() => {
-  return (user.profile.role === ROLES.Chef) && isLeaderRegistrationOpen();
-});
-const showSelectMorningGame = computed(() => {
-  if (!isLeaderRegistrationOpen()) return false;
-  return ((user.profile.role === ROLES.Animateur || user.profile.role === ROLES.Chef) && !user.profile.morningGame);
-});
-const showSelectAfternoonGame = computed(() => {
-  if (!isLeaderRegistrationOpen()) return false;
-  return ((user.profile.role === ROLES.Animateur || user.profile.role === ROLES.Chef) && !user.profile.afternoonGame);
-});
-const pendingRequests = computed(() => {
-  if (user.profile.role === ROLES.Chef) {
-    return user.getSectionApplicants(15, user.profile.sectionId);
-  }
-  if (user.profile.role > ROLES.Chef) {
-    return user.getApplicants(15);
-  }
-  return new Map();
+  if (!userProfile.value) return false;
+  if (!appSettings.value || !appSettings.value.isLeaderRegistrationOpen) return false;
+  return (userProfile.value.role === ROLES.Chef);
 });
 const nbPendingRequests = computed(() => {
-  return pendingRequests.value.size <= 15 ? pendingRequests.value.size : "15+";
+  if(!applicants.value) return 0
+  return applicants.value.length <= 15 ? applicants.value.length : "15+";
 });
 const requestValidator = computed(() => {
-  switch (user.profile.requestedRole) {
+  if (!userProfile.value) return "";
+  switch (userProfile.value.requestedRole) {
     case ROLES.Animateur:
     case ROLES.Chef:
-      return "chef de ta section";
+      return "chef•fe de ta section";
     case ROLES.Organisateur:
-      return "organisateur de la Baden Battle";
+      return "orga de la Baden Battle";
     case ROLES.Administrateur:
-      return "administrateur de l'app";
+      return "admin de l'app";
     default:
       return "";
   }
