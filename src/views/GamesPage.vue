@@ -47,11 +47,8 @@
                 <ion-label>
                   <ion-text>{{ game.name }}</ion-text>
                 </ion-label>
-                <div v-if="showGameAvailabilities">
-                  <div v-for="availability in getAvailabilities(game)" :key="availability.text">
-                    <ion-badge slot="end" class="ion-no-margin" :color="availability.color">{{ availability.text }}</ion-badge>
-                  </div>
-                </div>
+                <game-availabilities v-if="showGameAvailabilities" :game="game">
+                </game-availabilities>
               </ion-item>
             </div>
           </div>
@@ -70,6 +67,7 @@
 <script setup lang="ts">
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
+import GameAvailabilities from "@/components/GameAvailabilities.vue";
 import { useCircuitGames } from "@/composables/game";
 import { useCanEditGames } from "@/composables/rights";
 import { useAppConfig, useAppSettings } from "@/composables/app";
@@ -113,23 +111,9 @@ const showGameAvailabilities = computed(() => {
   if (!appSettings.value) return false
   return appSettings.value.showGameAvailabilities
 })
-const attendantSchedule = computed(() => (appConfig.value?.attendantSchedule ?? []))
 
 // Methods
 
-const getAvailabilities = (game: VueFireGame) => {
-  const maxGameLeaders = appSettings.value?.maxGameLeaders ?? 2
-  const availabilities = []
-  for (const timeSlot of attendantSchedule.value){
-    const nbAttendants = game.attendants[timeSlot.id].length
-    const text = timeSlot.name + ' ' + nbAttendants
-    let color = "success"
-    if (nbAttendants === 0) color = "danger"
-    if (nbAttendants < maxGameLeaders) color = "warning"
-    availabilities.push({ text, color })
-  }
-  return availabilities
-}
 const toggleEditMode = () => {
   editMode.value = !editMode.value;
 }
