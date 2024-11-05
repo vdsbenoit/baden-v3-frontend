@@ -5,7 +5,7 @@ export type Section = {
   name: string
   city: string
   unit: string
-  sectionType: string
+  sectionTypeId: number
   scores: number[]
   score: number
   teams: string[]

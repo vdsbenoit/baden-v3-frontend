@@ -212,20 +212,20 @@ if (gameId.value === DEFAULT_GAME_ID) {
 });
 
 // Computed
+const pageTitle = computed(() => {
+  if (game.value) return `Épreuve ${gameId.value}`
+  if (isLoadingGame.value) return "Chargement"
+  return "Épreuve inconnue"
+})
 const playerSchedule = computed(() => {
   if (!game.value || !appConfig.value) return []
-  return appConfig.value.sectionTypes[game.value.sectionType].schedule
+  return appConfig.value.sectionTypes[game.value.sectionTypeId].schedule
 })
 const attendantSchedule = computed(() => (appConfig.value?.attendantSchedule ?? []))
 const isUserRegisteredHere = computed(() => {
   if (!currentUser.value) return false
   if (!currentUser.value.games) return false
   return Object.values(currentUser.value.games).map(game => game.id).includes(gameId.value)
-})
-const pageTitle = computed(() => {
-  if (game.value) return `Épreuve ${gameId.value}`
-  if (isLoadingGame.value) return "Chargement"
-  return "Épreuve inconnue"
 })
 
 // Methods

@@ -6,7 +6,7 @@ export type Game = {
   hash: string
   name: string
   circuit: string
-  sectionType: string
+  sectionTypeId: string
   attendants:  { [timingId: string]: VueFireUserProfile[] }
   matches: string[]
   noScores: boolean
