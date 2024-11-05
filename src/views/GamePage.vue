@@ -139,11 +139,11 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import MyActionSheetButton from "@/components/MyActionSheetButton.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useGame } from "@/composables/game";
-import { useLeaderSections } from "@/composables/attendantSection";
+import { useAttendantSections } from "@/composables/attendantSection";
 import { useGameMatches } from "@/composables/match";
 import { useCanEditGames, useCanRegister } from "@/composables/rights";
 import { useAppConfig, useAppSettings } from "@/composables/app";
-import { useCurrentUserProfile, useUsersFromSection } from "@/composables/userProfile";
+import { useCurrentUserProfile, useMembersOfSection } from "@/composables/userProfile";
 import { DEFAULT_GAME_ID, DEFAULT_ATTENDANT_SECTION_ID, ROLES } from "@/constants";
 import { confirmPopup, toastPopup } from "@/services/popup";
 import { AttendantTimeSlot, VueFireUserProfile } from "@/types";
@@ -198,8 +198,8 @@ const canRegister = useCanRegister()
 const canEditGameSettings = useCanEditGames()
 
 
-const { data: attendantSections, pending: isLoadingAttendantSections } = useLeaderSections(true, toRef(edit, 'isOn'))
-const { data: sectionAttendants, pending: isLoadingAttendants } = useUsersFromSection(edit.selectedSectionId)
+const { data: attendantSections, pending: isLoadingAttendantSections } = useAttendantSections(true, toRef(edit, 'isOn'))
+const { data: sectionAttendants, pending: isLoadingAttendants } = useMembersOfSection(edit.selectedSectionId)
 
 // lifecycle hooks
 

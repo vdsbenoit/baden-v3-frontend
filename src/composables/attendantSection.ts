@@ -1,25 +1,25 @@
 import { DEFAULT_ATTENDANT_SECTION_ID, ATTENDANT_SECTIONS_COLLECTION_REF, ROLES } from "@/constants"
-import { LeaderSection } from "@/types"
+import { AttendantSection } from "@/types"
 import { doc, documentId, orderBy, query, where } from "firebase/firestore"
 import { MaybeRefOrGetter, computed, toValue } from "vue"
 import { useCollection, useDocument } from "vuefire"
 import { useCurrentUserProfile } from "./userProfile"
 
-export function useLeaderSection(rLeaderSectionId: MaybeRefOrGetter<string>) {
+export function useAttendantSection(rAttendantSectionId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
-    const id = toValue(rLeaderSectionId)
+    const id = toValue(rAttendantSectionId)
     if (id === DEFAULT_ATTENDANT_SECTION_ID) return null
-    console.debug(`Fetching leader section ${id}`)
+    console.debug(`Fetching attendant section ${id}`)
     return doc(ATTENDANT_SECTIONS_COLLECTION_REF, id)
   })
-  return useDocument<LeaderSection>(dbRef)
+  return useDocument<AttendantSection>(dbRef)
 }
 
-export function useLeaderSections(
+export function useAttendantSections(
   rExcludeStaff: MaybeRefOrGetter<boolean>,
   rShouldLoad: MaybeRefOrGetter<boolean> = true
 ) {
-  console.debug(`Fetching leader sections`)
+  console.debug(`Fetching attendant sections`)
   const currentUser = useCurrentUserProfile()
   const dbRef = computed(() => {
     const queryParams = []
@@ -37,5 +37,5 @@ export function useLeaderSections(
     queryParams.push(orderBy("name"))
     return query(ATTENDANT_SECTIONS_COLLECTION_REF, ...queryParams)
   })
-  return useCollection<LeaderSection>(dbRef)
+  return useCollection<AttendantSection>(dbRef)
 }

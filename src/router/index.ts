@@ -1,5 +1,5 @@
 import { ROLES } from '@/constants';
-import { isRankingPublic } from '@/utils/settings';
+import { isRankingPublic } from '@/utils/app';
 import { getRoleByValue, getUserProfile } from '@/utils/userProfile';
 import OnboardingPage from '@/views/OnboardingPage.vue';
 import { createRouter, createWebHistory } from '@ionic/vue-router';
