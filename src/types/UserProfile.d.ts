@@ -12,7 +12,7 @@ export type UserProfile = {
   requestedSectionId?: number
   requestedSectionName?: string
   rejectionReason?: string
-  sectionId: string
+  sectionId?: string
   sectionName?: string
   team?: string
   games?: { [timingId: string]: VueFireGame }  // if it's an attendant
