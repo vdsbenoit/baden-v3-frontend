@@ -26,7 +26,7 @@ const appConfig = useAppConfig()
 
 // Computed data
 
-const maxGameLeaders = computed(() => {
+const maxGameAttendants = computed(() => {
   if (!appSettings.value) return 2
   return appSettings.value?.maxGameAttendants
 })
@@ -38,7 +38,7 @@ const availabilities = computed(() => {
     const nbAttendants = props.game.attendants[timeSlot.id].length
     let color = "success"
     if (nbAttendants === 0) color = "danger"
-    if (nbAttendants < maxGameLeaders.value) color = "warning"
+    if (nbAttendants < maxGameAttendants.value) color = "warning"
     data.push({ nbAttendants, color })
   }
   return data

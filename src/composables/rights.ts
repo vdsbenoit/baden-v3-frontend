@@ -21,7 +21,7 @@ export function useCanEditScores(rGame: RefGame) {
     if (currentUserProfile.value.role >= ROLES.Organisateur) {
       return true
     }
-    // Check if global setting allow leaders to set any scores
+    // Check if global setting allow attendants to set any scores
     if (appSettings.value?.canSetAnyScores) {
       return true
     }
@@ -54,7 +54,7 @@ export function useCanEditScores(rGame: RefGame) {
       console.debug("Cannot edit score. Score registration is not enabled yet")
       return false
     }
-    // Check if not leader
+    // Check if not attendant
     if (currentUserProfile.value.role < ROLES.Animateur) {
       console.debug(`User ${currentUserProfile.value.id} cannot edit game ${rGame.value.id} score. Insufficient role`)
       return false
@@ -63,16 +63,16 @@ export function useCanEditScores(rGame: RefGame) {
     if (currentUserProfile.value.role >= ROLES.Organisateur) {
       return true
     }
-    // Check if global setting allow leaders to set any scores
+    // Check if global setting allow attendants to set any scores
     if (appSettings.value.canSetAnyScores) {
       return true
     }
-    // Check if leader is assigned to at least a game
+    // Check if attendant is assigned to at least a game
     if (!currentUserProfile.value.games) {
       console.debug(`User ${currentUserProfile.value.id} is not registered to set score in any games`)
       return false
     }
-    // Check if leader is assigned to the game
+    // Check if attendant is assigned to the game
     const gameAttendantsIds = Object.values(rGame.value.attendants)
       .flat()
       .map(attendant => attendant.id)
@@ -110,8 +110,8 @@ export function useCanRegister() {
       canRegister.anyone = true
       return
     }
-    if (!appSettings.value?.isLeaderRegistrationOpen) {
-      console.debug(`Leader registration is currently closed`)
+    if (!appSettings.value?.isAttendantRegistrationOpen) {
+      console.debug(`Attendant registration is currently closed`)
       return
     }
     if (currentUserProfile.value.role < ROLES.Animateur) {

@@ -23,20 +23,20 @@
           </tile-col>
 
           <!-- chef -->
-          <tile-col v-if="showRegisterLeaders" :target="`/leader/${userProfile.sectionId}`">Inscris tes animés à des épreuves</tile-col>
+          <tile-col v-if="showRegisterAttendants" :target="`/attendant/${userProfile.sectionId}`">Inscris tes animés à des épreuves</tile-col>
 
           <!-- animateur -->
           <div v-if="userProfile.role >= ROLES.Animateur">
-            <tile-col v-if="userProfile.sectionId" :target="`/leader/${userProfile.sectionId}`">Ma section</tile-col>
+            <tile-col v-if="userProfile.sectionId" :target="`/attendant/${userProfile.sectionId}`">Ma section</tile-col>
             <div v-if="userProfile.role === ROLES.Animateur || userProfile.role === ROLES.Chef">
               <div v-for="timeSlot in attendantSchedule" :key="timeSlot.id">
                 <tile-col v-if="userProfile.games && userProfile.games[timeSlot.id]" :target="`/game/${userProfile.games[timeSlot.id].id}`">Mon épreuve ({{ timeSlot.name }})</tile-col>
-                <tile-col v-else-if="appSettings && appSettings.isLeaderRegistrationOpen" target="/games">Inscris-toi à une épreuve ({{ timeSlot.name }})</tile-col>
+                <tile-col v-else-if="appSettings && appSettings.isAttendantRegistrationOpen" target="/games">Inscris-toi à une épreuve ({{ timeSlot.name }})</tile-col>
               </div>
             </div>
           </div>
           <!-- organisateur -->
-          <tile-col v-if="userProfile.role >= ROLES.Organisateur" target="/leaders">Animateurs</tile-col>
+          <tile-col v-if="userProfile.role >= ROLES.Organisateur" target="/attendants">Animateurs</tile-col>
         </ion-row>
       </ion-grid>
     </ion-content>
@@ -75,9 +75,9 @@ const showSectionButton = computed(() => {
   if (!userProfile.value) return false;
   return (userProfile.value.role === ROLES.Participant && userProfile.value.sectionId);
 });
-const showRegisterLeaders = computed(() => {
+const showRegisterAttendants = computed(() => {
   if (!userProfile.value) return false;
-  if (!appSettings.value || !appSettings.value.isLeaderRegistrationOpen) return false;
+  if (!appSettings.value || !appSettings.value.isAttendantRegistrationOpen) return false;
   return (userProfile.value.role === ROLES.Chef);
 });
 const nbPendingRequests = computed(() => {

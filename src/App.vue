@@ -99,12 +99,12 @@ const appPages = computed(() => {
     }]
     if (user.profile.sectionId) pages = [...pages, {
       title: "Ma section",
-      url: `/leader/${user.profile.sectionId}`,
+      url: `/attendant/${user.profile.sectionId}`,
       iosIcon: peopleSharp,
       mdIcon: peopleSharp,
     }]
     if (user.profile.role >= ROLES.Chef) pages = [...pages, requestsPage];
-    pages = [...pages, leadersPage];
+    pages = [...pages, attendantsPage];
   }
   if (user.profile.role == ROLES.Participant) pages = [...pages, {
     title: "Ma section",
@@ -186,9 +186,9 @@ const sectionsPage = {
   iosIcon: peopleOutline,
   mdIcon: peopleOutline,
 }
-const leadersPage = {
+const attendantsPage = {
   title: "Animateurs",
-  url: "/leaders",
+  url: "/attendants",
   iosIcon: peopleOutline,
   mdIcon: peopleOutline,
 }
