@@ -35,7 +35,7 @@ export function useCurrentUserProfile() {
   return useUserProfile(uid)
 }
 
-export function useUsersFromSection(rSectionId: MaybeRefOrGetter<string>) {
+export function useMembersOfSection(rSectionId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
     const sectionId = toValue(rSectionId)
     if (sectionId === DEFAULT_SECTION_ID) return null
@@ -49,12 +49,39 @@ export function useUsersFromSection(rSectionId: MaybeRefOrGetter<string>) {
   return useCollection<UserProfile>(dbRef)
 }
 
+/**
+ * List the applicants for a specific section
+ * This function might return applicants that the current user cannot accept
+ * @param rLimit The maximum number of applicants to fetch
+ * @param rSectionId The section id to fetch applicants from. If the default section id is provided, no applicants will be fetched
+ * @returns The list of applicants
+ */
+export function useSectionApplicants(rLimit: MaybeRefOrGetter<number>, rSectionId: MaybeRefOrGetter<string>) {
+  const dbRef = computed(() => {
+    const sectionId = toValue(rSectionId)
+    if (sectionId === DEFAULT_SECTION_ID) return null
+    const limit = toValue(rLimit)
+    console.debug(`Fetching pending applicants for section ${sectionId}`)
+    const queryParams = []
+    queryParams.push(orderBy("requestedRole", "desc"))
+    queryParams.push(where("requestedSectionId", "==", toValue(rSectionId)))
+    queryParams.push(fbLimit(limit))
+    return query(USER_PROFILES_COLLECTION_REF, ...queryParams)
+  })
+  return useCollection<UserProfile>(dbRef)
+}
+
+/**
+ * List the applicants that the current user can accept
+ * @param rLimit The maximum number of applicants to fetch
+ * @returns The list of applicants
+ */
 export function useApplicants(rLimit: MaybeRefOrGetter<number>) {
   const { canAcceptApplicants, maxApplicantRole, applicantSectionIdFilter } = useCanAcceptApplicants()
   const dbRef = computed(() => {
     if (!canAcceptApplicants.value) return null
     const limit = toValue(rLimit)
-    console.debug(`Fetching all pending applicants for a ${getRoleByValue(maxApplicantRole.value)}`)
+    console.debug(`Fetching pending applicants for a ${getRoleByValue(maxApplicantRole.value)}`)
     const queryParams = []
     queryParams.push(orderBy("requestedRole", "desc"))
     queryParams.push(where("requestedRole", "<=", maxApplicantRole.value))

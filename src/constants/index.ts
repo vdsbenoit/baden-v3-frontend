@@ -62,5 +62,4 @@ export const APP_SETTINGS_DOC_REF = doc(APP_COLLECTION_REF, APP_SETTINGS_DOC_NAM
 export const APP_CONFIG_DOC_NAME = "configuration"
 export const APP_CONFIG_DOC_REF = doc(APP_COLLECTION_REF, APP_CONFIG_DOC_NAME)
 
-export const PLAYER_TIMINGS_KEY = "playerTimings" // fixme: use sectionType schedules
 export const ATTENDANT_SCHEDULE_KEY = "attendantSchedule"
