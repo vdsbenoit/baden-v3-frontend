@@ -33,18 +33,19 @@
 <script setup lang="ts">
 import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton, IonSpinner, IonCheckbox, IonNote } from "@ionic/vue";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { ROLES, useAuthStore } from "@/services/users";
 import { errorPopup, infoPopup, toastPopup } from "@/services/popup";
 import { useRouter } from "vue-router";
 import { onMounted, ref } from "vue";
 import { defineProps } from "vue";
 import { computed } from "@vue/reactivity";
 import RefresherComponent from "@/components/RefresherComponent.vue";
+import { processSignInLink, sendSignInEmail } from "@/utils/auth";
+import { ROLES } from "@/constants";
+import { useCurrentUserProfile } from "@/composables/userProfile";
 
 const props = defineProps(["validation", "redirect"]);
-const user = useAuthStore();
-const { sendSignInEmail, processSignInLink } = user;
 const router = useRouter();
+const userProfile = useCurrentUserProfile();
 
 // reactive data
 
@@ -59,9 +60,10 @@ onMounted(async () => {
   if (props.validation) {
     const success = await processSignInLink(window.location.href);
     if (success) {
-      if (user.profile.role === -1) await user.forceFetchCurrentUserProfile();
-      if (user.profile.role === ROLES.Newbie && ! user.profile.hasDoneOnboarding) router.replace("/onboarding");
-      else router.replace("/home");
+      if (!userProfile.value || 
+      (userProfile.value.role === ROLES.Newbie && ! userProfile.value.hasDoneOnboarding)) {
+        router.replace("/onboarding")
+      } else router.replace("/home");
     }
     else errorPopup("Impossible de se connecter");
   }
