@@ -248,7 +248,7 @@ const register = async (result: any, payload: any) => {
   if (!appSettings.value) throw Error("Undefined appSettings")
   if (!appConfig.value) throw Error("Undefined appConfig")
 
-  const maxGameLeaders = appSettings.value.maxGameLeaders
+  const maxGameAttendants = appSettings.value.maxGameAttendants
   const isCurrentUser = _targetUser.id === _currentUser.id
   const currentAttendants = _game.attendants[_timeSlot.id].map(attendant => attendant.id)
 
@@ -277,7 +277,7 @@ const register = async (result: any, payload: any) => {
         ? `Tu es déjà inscrit.e à l'épreuve ${_game.id} au timing ${_timeSlot.name}`
         : `${getUserName(_targetUser)} est déjà inscrit.e au timing ${_timeSlot.name} de l'épreuve ${_game.id}`
     )
-    if (currentAttendants.length >= maxGameLeaders) throw new Error(`
+    if (currentAttendants.length >= maxGameAttendants) throw new Error(`
       Le nombre maximum d'animateurs a été atteint au timing ${_timeSlot.name} de l'épreuve ${_game.id}
     `)
     // if target user is busy at target timing

@@ -63,12 +63,12 @@
                   <ion-text color="error">{{ errorLoadingAttendants.message }}</ion-text>
                 </div>
                 <ion-list v-else-if="sectionMembers && sectionMembers.length > 0">
-                  <ion-item v-for="member in sectionMembers" :key="member.id" :routerLink="`/profile/${member.id}`">
-                    <ion-label>{{ member.name }}</ion-label>
-                    <div v-if="member.role <= ROLES.Chef">
-                      <ion-badge v-if="countGames(member) === 0" slot="end" color="danger">Pas inscrit</ion-badge>
-                      <ion-badge v-else slot="end" :color="countGames(member) < maxGames ? 'warning' : 'success'">
-                        {{ countGames(member) }}
+                  <ion-item v-for="user in sectionMembers" :key="user.id" :routerLink="`/profile/${user.id}`">
+                    <ion-label>{{ user.name }}</ion-label>
+                    <div v-if="user.role <= ROLES.Chef">
+                      <ion-badge v-if="countGames(user) === 0" slot="end" color="danger">Pas inscrit</ion-badge>
+                      <ion-badge v-else slot="end" :color="countGames(user) < maxGames ? 'warning' : 'success'">
+                        {{ countGames(user) }}
                       </ion-badge>
                     </div>
                   </ion-item>
@@ -94,12 +94,12 @@
                   <ion-text color="error">{{ errorLoadingAttendants.message }}</ion-text>
                 </div>
                 <ion-list v-else-if="sectionLeaders && sectionLeaders.length > 0">
-                  <ion-item v-for="leader in sectionLeaders" :key="leader.id" :routerLink="`/profile/${leader.id}`">
-                    <ion-label>{{ leader.name }}</ion-label>
-                    <div v-if="leader.role <= ROLES.Chef">
-                      <ion-badge v-if="countGames(leader) === 0" slot="end" color="danger">Pas inscrit</ion-badge>
-                      <ion-badge v-else slot="end" :color="countGames(leader) < maxGames ? 'warning' : 'success'">
-                        {{ countGames(leader) }}
+                  <ion-item v-for="user in sectionLeaders" :key="user.id" :routerLink="`/profile/${user.id}`">
+                    <ion-label>{{ user.name }}</ion-label>
+                    <div v-if="user.role <= ROLES.Chef">
+                      <ion-badge v-if="countGames(user) === 0" slot="end" color="danger">Pas inscrit</ion-badge>
+                      <ion-badge v-else slot="end" :color="countGames(user) < maxGames ? 'warning' : 'success'">
+                        {{ countGames(user) }}
                       </ion-badge>
                     </div>
                   </ion-item>

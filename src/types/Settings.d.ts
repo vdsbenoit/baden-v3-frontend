@@ -4,10 +4,10 @@ import { VueFirestoreDocumentData} from "vuefire"
 // App settings
 
 export type AppSettings = {
-  maxGameLeaders: number; // max allowed leaders per game
+  maxGameAttendants: number; // max allowed attendants per game
   canSetScores: boolean;
   canSetAnyScores: boolean;
-  isLeaderRegistrationOpen: boolean; // true when the leader can register to games
+  isAttendantRegistrationOpen: boolean; // true when the attendant can register to games
   isRankingPublic: boolean;
   showGameAvailabilities: boolean;
 }
