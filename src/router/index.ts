@@ -117,9 +117,9 @@ const routes: Array<RouteRecordRaw> = [
     meta: { minimumRole: ROLES.Chef }
   },
   {
-    name: 'matches',
-    path: '/matches',
-    component: () => import ('../views/MatchesPage.vue'),
+    name: 'checkScores',
+    path: '/check-scores',
+    component: () => import ('../views/CheckScoresPage.vue'),
     meta: { minimumRole: ROLES.Organisateur }
   },
   {
