@@ -113,7 +113,7 @@ const appPages = computed(() => {
     mdIcon: peopleSharp,
   }];
   if (user.profile.role > ROLES.Newbie) pages = [...pages, sectionsPage, gamesPage];
-  if (user.profile.role >= ROLES.Organisateur) pages = [...pages, matchesPage];
+  if (user.profile.role >= ROLES.Organisateur) pages = [...pages, checkScoresPage];
   if (isRankingPublic() || user.profile.role >= ROLES.Organisateur) pages = [...pages, rankingPage];
   if (user.profile.role >= ROLES.Administrateur) pages = [...pages, settingsPage];
   // bottom pages
@@ -132,9 +132,9 @@ const toggleDarkMode = (value: any) => {
 
 // Data
 
-const matchesPage = {
+const checkScoresPage = {
   title: "Check Scores",
-  url: "/matches",
+  url: "/check-scores",
   iosIcon: checkmarkCircleOutline,
   mdIcon: checkmarkCircleSharp,
 }
