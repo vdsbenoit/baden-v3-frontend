@@ -218,8 +218,8 @@ const pageTitle = computed(() => {
   return "Épreuve inconnue"
 })
 const playerSchedule = computed(() => {
-  if (!game.value || !appConfig.value) return []
-  return appConfig.value.sectionTypes[game.value.sectionTypeId].schedule
+  if (!appConfig.value) return []
+  return appConfig.value.playerSchedule
 })
 const attendantSchedule = computed(() => (appConfig.value?.attendantSchedule ?? []))
 const isUserRegisteredHere = computed(() => {

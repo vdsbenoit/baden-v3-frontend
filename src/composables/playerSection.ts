@@ -1,5 +1,5 @@
 import { DEFAULT_SECTION_ID, PLAYER_SECTIONS_COLLECTION_REF } from "@/constants"
-import { AttendantSection } from "@/types"
+import { PlayerSection } from "@/types"
 import { doc, limit as fbLimit, orderBy, query, where } from "firebase/firestore"
 import { MaybeRefOrGetter, computed, toValue } from "vue"
 import { useCollection, useDocument } from "vuefire"
@@ -11,7 +11,7 @@ export function useSection(rSectionId: MaybeRefOrGetter<string>) {
     if (id === DEFAULT_SECTION_ID) return null
     return doc(PLAYER_SECTIONS_COLLECTION_REF, id)
   })
-  return useDocument<AttendantSection>(dbRef)
+  return useDocument<PlayerSection>(dbRef)
 }
 
 export function useSections(rSectionType: MaybeRefOrGetter<string> = "") {
@@ -30,7 +30,7 @@ export function useSections(rSectionType: MaybeRefOrGetter<string> = "") {
       )
     }
   })
-  return useCollection<AttendantSection>(dbRef)
+  return useCollection<PlayerSection>(dbRef)
 }
 
 export function useTopSections(rSectionType: MaybeRefOrGetter<string>, rLimit: MaybeRefOrGetter<number>) {
@@ -47,5 +47,5 @@ export function useTopSections(rSectionType: MaybeRefOrGetter<string>, rLimit: M
       fbLimit(limit),
     )
   })
-  return useCollection<AttendantSection>(dbRef)
+  return useCollection<PlayerSection>(dbRef)
 }

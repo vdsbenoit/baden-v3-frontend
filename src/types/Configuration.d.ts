@@ -17,14 +17,14 @@ export type SectionType = {
   name: string
   minPlayersPerTeam: number
   maxPlayersPerTeam: number
-  nbGamesPerCircuit: number
-  schedule: TimeSlot[]
-  breaks: { [position: number]: Break[] }
 }
 
 export type AppConfig = {
   sectionTypes: { [id: string]: SectionType } 
   circuits: { [id: string]: string } // for instance { "A": sectionTypeId }
+  nbGamesPerCircuit: number
+  playerSchedule: TimeSlot[]
+  breaks: { [position: number]: Break[] }
   attendantSchedule: AttendantTimeSlot[];
 }
 export type RefAppConfig = Ref<VueFirestoreDocumentData<AppConfig> | undefined>

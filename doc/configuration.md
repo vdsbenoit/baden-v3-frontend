@@ -4,20 +4,23 @@ This document describe the step to reset the app a configure a new game.
 
 ⚠️ WIP ⚠️ This is a draft. I currently use this document as a specification to define how I am going to implement the setup of the app.
 
-## Create sections
+## Wipe previous config
 
-First, the user needs to create a section type. For instance `Lutins`.  Inform the user that the players will only play against people from the same sections type. 
+The user accepts to reset the database, i.e. erasing the data from the year before. 
 
-The user can either <u>create new section type</u> or <u>load the data from an existing section type</u>.
+Provide an option to keep the schedule.
 
-A sections type comes with some dedicated parameters : 
+## Players schedule
 
-| Parameter           | Description                                                  | Example  |
-| ------------------- | ------------------------------------------------------------ | -------- |
-| `name`              | Name of the section type                                     | `Lutins` |
-| `minPlayersPerTeam` | Minimum number of players per team                           | 3        |
-| `maxPlayersPerTeam` | Maximum number of players per team                           | 12       |
-| `nbGamesPerCircuit` | Number of games a player plays during the day (pauses excluded). Must be odd! | 17       |
+The user need to define how many games a player plays during the day. 
+
+Create a UI tool to add/remove games and increment/decrement the value by 2. 
+
+Info box: this settings cannot be modified later on.
+
+| Parameter           | Description                                                | Example |
+| ------------------- | ---------------------------------------------------------- | ------- |
+| `nbGamesPerCircuit` | Number of games a player plays during the day. Must be odd | 17      |
 
 `nbGamesPerCircuit` defines multiple things : 
 
@@ -25,7 +28,29 @@ A sections type comes with some dedicated parameters :
 - The number of games per circuit
 - The number of teams per circuit (2 x `nb_games`)
 
+According to `nbGamesPerCircuit` value, create a list of time slots.
 
+The user can edit the `start` and the `stop` value of each time slot, but cannot change the order of the time slots.
+
+The user can add breaks and move them across the time slots. There cannot be 2 consecutive breaks.
+
+The user can edit the name of the breaks.
+
+## Create sections
+
+The user needs to create a section type. For instance `Lutins`.  
+
+Info box : inform the user that the players only play against people from the same sections type. 
+
+The user can either <u>create new section type</u> or <u>load the settings from an existing section type</u>.
+
+A sections type comes with some dedicated parameters : 
+
+| Parameter           | Description                        | Example  |
+| ------------------- | ---------------------------------- | -------- |
+| `name`              | Name of the section type           | `Lutins` |
+| `minPlayersPerTeam` | Minimum number of players per team | 3        |
+| `maxPlayersPerTeam` | Maximum number of players per team | 12       |
 
 Then, the user can either add sections one by one or load a batch through a a csv file.
 
@@ -48,18 +73,6 @@ If everything went through : ask if the user wants to <u>create/edit another sec
 Button to validate the DB.
 
 If all the section have been created, <u>link to schedule setup</u>
-
-## Players schedule
-
-Select a section type. Then list all the time slots from `sectionType.schedule`. 
-
-The user can edit the `start `and the `stop` value of each time slot, but cannot change the order of the time slots.
-
-The user can add breaks and move them across the time slots. There cannot be 2 consecutive breaks.
-
-The user can edit the name of the breaks.
-
-The user can load the values from another sectionType that has the same amount of time slots.
 
 ## Attendants schedule
 
