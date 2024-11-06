@@ -169,8 +169,8 @@ const pageTitle = computed(() => {
   return "Équipe inconnue";
 });
 const playerSchedule = computed(() => {
-  if (!team.value || !appConfig.value) return []
-  return appConfig.value.sectionTypes[team.value.sectionTypeId].schedule
+  if (!appConfig.value) return []
+  return appConfig.value.playerSchedule
 })
 const showRanking = computed(() => {
   if (settings.value?.isRankingPublic) return true

@@ -1,13 +1,13 @@
 import { PLAYER_SECTIONS_COLLECTION_NAME, PLAYER_SECTIONS_COLLECTION_REF } from "@/constants"
 import { incrementDocField } from "@/services/firebase"
-import { RefSection, AttendantSection } from "@/types"
+import { RefSection, PlayerSection } from "@/types"
 import { doc, updateDoc } from "firebase/firestore"
 import { toValue } from "vue"
 
 // Setters
 
 // fixme: move this to cloud function
-export const updateSectionMeanScore = async (sectionId: string, section: AttendantSection) => {
+export const updateSectionMeanScore = async (sectionId: string, section: PlayerSection) => {
   const meanScore = +(section.score / section.nbTeams || 0).toFixed(2)
   const dbRef = doc(PLAYER_SECTIONS_COLLECTION_REF, sectionId)
   return updateDoc(dbRef, { meanScore }).then(() =>

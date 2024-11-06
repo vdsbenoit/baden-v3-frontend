@@ -2,7 +2,7 @@ import { Ref } from "vue"
 import { VueFirestoreDocumentData } from "vuefire"
 import { Section } from "./Section"
 
-export interface AttendantSection extends Section {
+export interface PlayerSection extends Section {
   sectionTypeId: number
   scores: number[]
   score: number
@@ -14,7 +14,7 @@ export interface AttendantSection extends Section {
   meanScore: number
 }
 
-export interface VueFireSection extends AttendantSection {
+export interface VueFireSection extends PlayerSection {
   readonly id: string
 }
-export type RefSection = Ref<VueFirestoreDocumentData<AttendantSection> | undefined>
+export type RefSection = Ref<VueFirestoreDocumentData<PlayerSection> | undefined>
