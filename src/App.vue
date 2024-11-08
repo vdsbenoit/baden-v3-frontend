@@ -18,7 +18,7 @@
                 <ion-label>
                   Dark Mode
                 </ion-label>
-                <ion-toggle @IonChange="toggleDarkMode" :checked="isDarkModeEnabled"></ion-toggle>
+                <ion-toggle :checked="isDarkModeEnabled"></ion-toggle>
               </ion-item>
           </ion-list>
         </ion-content>
@@ -44,11 +44,12 @@ IonSplitPane, IonText, IonFooter, IonToggle } from "@ionic/vue";
 import { informationCircleOutline, informationCircleSharp, peopleOutline, peopleSharp, personCircleOutline, personCircleSharp, moonOutline,
 homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, footballOutline, footballSharp, optionsOutline, optionsSharp, moonSharp,
 personAddOutline, personAddSharp, trophyOutline, trophySharp, checkmarkCircleOutline, checkmarkCircleSharp,  } from "ionicons/icons";
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useCurrentUserProfile } from "./composables/userProfile";
 import { useAppConfig, useAppSettings } from "./composables/app";
 import { ROLES } from "./constants";
+import { useLocalStorage } from "@vueuse/core";
 
 const router = useRouter();
 const route = useRoute();
@@ -58,12 +59,7 @@ const userProfile = useCurrentUserProfile()
 
 // reactive data
 
-const isDarkModeEnabled = ref(false);
-
-// Lifecycle hooks
-onMounted(() => {
-  isDarkModeEnabled.value = window.localStorage.getItem('darkMode') === "true";
-});
+const isDarkModeEnabled = useLocalStorage("darkMode", false)
 
 // Watchers
 watch(isDarkModeEnabled, (shouldEnable: boolean) => {
@@ -72,7 +68,6 @@ watch(isDarkModeEnabled, (shouldEnable: boolean) => {
 })
 
 // Computed
-
 
 const name = computed(() => {
   if (!userProfile.value) return "undefined";
@@ -125,11 +120,6 @@ const appPages = computed(() => {
 // Methods
 
 const isSelected = (url: string) => url === route.path;
-const toggleDarkMode = (value: any) => {
-  const isEnabled = value.detail.checked;
-  isDarkModeEnabled.value = isEnabled;
-  window.localStorage.setItem('darkMode', isEnabled);
-}
 
 // Data
 
