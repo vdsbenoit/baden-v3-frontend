@@ -24,7 +24,7 @@
         </ion-content>
         <ion-menu-toggle :auto-hide="false">
           <ion-footer collapse="fade" class="ion-padding" @click="router.replace('/profile')">
-            <div v-if="user.isLoggedIn">
+            <div v-if="userProfile">
               <ion-text>Connecté en tant que {{ name }}</ion-text>
             </div>
             <div v-else>
@@ -45,13 +45,16 @@ import { informationCircleOutline, informationCircleSharp, peopleOutline, people
 homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, footballOutline, footballSharp, optionsOutline, optionsSharp, moonSharp,
 personAddOutline, personAddSharp, trophyOutline, trophySharp, checkmarkCircleOutline, checkmarkCircleSharp,  } from "ionicons/icons";
 import { computed, onMounted, ref, watch } from "vue";
-import { ROLES, useAuthStore } from "@/services/users";
 import { useRouter, useRoute } from "vue-router";
-import { isRankingPublic } from "./services/settings";
+import { useCurrentUserProfile } from "./composables/userProfile";
+import { useAppConfig, useAppSettings } from "./composables/app";
+import { ROLES } from "./constants";
 
 const router = useRouter();
 const route = useRoute();
-const user = useAuthStore();
+const appSettings = useAppSettings()
+const appConfig = useAppConfig()
+const userProfile = useCurrentUserProfile()
 
 // reactive data
 
@@ -72,50 +75,48 @@ watch(isDarkModeEnabled, (shouldEnable: boolean) => {
 
 
 const name = computed(() => {
-  if (!user.isLoggedIn) return "undefined";
-  return user.getName(user.uid);
+  if (!userProfile.value) return "undefined";
+  return userProfile.value.name
 });
 const appPages = computed(() => {
-  if (!user.isLoggedIn) return [guestHomePage, loginPage, aboutPage];
+  if (!userProfile.value) return [guestHomePage, loginPage, aboutPage];
   let pages = [homePage];
-  if (user.profile.team) pages = [...pages,  {
+  if (userProfile.value.team) pages = [...pages,  {
       title: "Mon Equipe",
-      url: `/team/${user.profile.team}`,
+      url: `/team/${userProfile.value.team}`,
       iosIcon: peopleCircleOutline,
       mdIcon: peopleCircleSharp,
   }]
-  if (user.profile.role >= ROLES.Animateur) {
-    if (user.profile.morningGame) pages = [...pages, {
-      title: "Mon épreuve du matin",
-      url: `/game/${user.profile.morningGame}`,
-      iosIcon: footballOutline,
-      mdIcon: footballSharp,
-    }]
-    if (user.profile.afternoonGame) pages = [...pages, {
-      title: "Mon épreuve de l'aprèm",
-      url: `/game/${user.profile.afternoonGame}`,
-      iosIcon: footballOutline,
-      mdIcon: footballSharp,
-    }]
-    if (user.profile.sectionId) pages = [...pages, {
+  if (userProfile.value.role >= ROLES.Animateur) {
+    if (userProfile.value.games && appConfig.value) {
+      for (const timeSlot of appConfig.value.attendantSchedule) {
+        pages = [...pages, {
+          title: `Mon épreuve (${timeSlot.name})`,
+          url: `/game/${userProfile.value.games[timeSlot.id]}`,
+          iosIcon: footballOutline,
+          mdIcon: footballSharp,
+        }]
+      }
+    }
+    if (userProfile.value.sectionId) pages = [...pages, {
       title: "Ma section",
-      url: `/attendant/${user.profile.sectionId}`,
+      url: `/attendant/${userProfile.value.sectionId}`,
       iosIcon: peopleSharp,
       mdIcon: peopleSharp,
     }]
-    if (user.profile.role >= ROLES.Chef) pages = [...pages, requestsPage];
+    if (userProfile.value.role >= ROLES.Chef) pages = [...pages, requestsPage];
     pages = [...pages, attendantsPage];
   }
-  if (user.profile.role == ROLES.Participant) pages = [...pages, {
+  if (userProfile.value.role == ROLES.Participant) pages = [...pages, {
     title: "Ma section",
-    url: `/section/${user.profile.sectionId}`,
+    url: `/section/${userProfile.value.sectionId}`,
     iosIcon: peopleSharp,
     mdIcon: peopleSharp,
   }];
-  if (user.profile.role > ROLES.Newbie) pages = [...pages, sectionsPage, gamesPage];
-  if (user.profile.role >= ROLES.Organisateur) pages = [...pages, checkScoresPage];
-  if (isRankingPublic() || user.profile.role >= ROLES.Organisateur) pages = [...pages, rankingPage];
-  if (user.profile.role >= ROLES.Administrateur) pages = [...pages, settingsPage];
+  if (userProfile.value.role > ROLES.Newbie) pages = [...pages, sectionsPage, gamesPage];
+  if (userProfile.value.role >= ROLES.Organisateur) pages = [...pages, checkScoresPage];
+  if (appSettings.value?.isRankingPublic || userProfile.value.role >= ROLES.Organisateur) pages = [...pages, rankingPage];
+  if (userProfile.value.role >= ROLES.Administrateur) pages = [...pages, settingsPage];
   // bottom pages
   pages = [...pages, profilePage,  aboutPage];
   return pages;
