@@ -3,19 +3,27 @@
     <header-template :pageTitle="pageTitle"></header-template>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
-      <div v-if="isMatch || isLoading">
-        <ion-grid class="ion-padding-horizontal ion-padding-top" @click="router.push(`/game/${match.game_id}`)">
+      <div v-if="errorLoadingMatch" class="not-found">
+        <strong class="capitalize">Houston, nous avons une erreur</strong>
+        <ion-text color="error">{{ errorLoadingMatch.message }}</ion-text>
+        <p>Retour à <a @click="router.back()">la page précédente</a></p>
+      </div>
+      <div v-else-if="!match" class="not-found">
+        <strong class="capitalize">Nous n'avons pas trouvé ce duel...</strong>
+        <p>Retour à <a @click="router.back()">la page précédente</a></p>
+      </div>
+      <div v-else>
+        <ion-grid class="ion-padding-horizontal ion-padding-top" @click="router.push(`/game/${match.gameId}`)">
           <ion-row class="ion-align-items-center">
             <ion-col class="ion-padding-start">
               <ion-card-subtitle>{{ schedule.start }} - {{ schedule.stop }}</ion-card-subtitle>
-              <h1 v-if="game?.name" class="ion-no-margin" style="font-weight: bold">{{ game?.name }}</h1>
-              <ion-spinner v-else></ion-spinner>
+              <ion-spinner v-if="isLoadingGame"></ion-spinner>
+              <h1 v-else-if="errorLoadingGame" class="ion-no-margin"><i>Erreur</i></h1>
+              <h1 v-else-if="game" class="ion-no-margin" style="font-weight: bold">{{ game.name ?? "Epreuve sans nom" }}</h1>
             </ion-col>
             <ion-col class="numberCircle ion-padding-end">
-              <span v-if="match?.game_id">
-                {{ match.game_id }}
-              </span>
-              <ion-spinner v-else></ion-spinner>
+              <ion-spinner v-if="isLoadingGame"></ion-spinner>
+              <span v-else>{{ game ? game.id : "?" }}</span>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -24,69 +32,74 @@
           <ion-card-content class="ion-no-padding ion-padding-vertical">
             <ion-grid class="score-grid">
               <ion-row class="ion-align-items-center ion-text-center">
-                <ion-col size="5" v-if="isLoading" class="ion-no-padding"><ion-spinner></ion-spinner></ion-col>
-                <ion-col size="5" v-else @click="router.push(`/team/${firstPlayer?.id}`)" class="ion-no-padding ion-pointer">
+                <!-- First player -->
+                <ion-col size="5" v-if="isLoadingMatch || isLoadingFirstPlayer" class="ion-no-padding"><ion-spinner></ion-spinner></ion-col>
+                <ion-col size="5" v-else-if="firstPlayer" @click="router.push(`/team/${firstPlayer.id}`)" class="ion-no-padding ion-pointer">
                   <ion-text color="primary">
-                    <h1>{{ firstPlayer?.id }}</h1>
+                    <h1>{{ firstPlayer.id }}</h1>
                   </ion-text>
                   <ion-text color="dark">
-                    <p>{{ firstPlayer?.sectionName }}</p>
+                    <p>{{ firstPlayer.section.sectionName }}</p>
                   </ion-text>
                   <ion-text color="medium">
-                    <p>{{ firstPlayer?.city }}</p>
+                    <p>{{ firstPlayer.city }}</p>
                   </ion-text>
                 </ion-col>
                 <ion-col size="1">
                   <ion-text> vs </ion-text>
                 </ion-col>
-                <ion-col size="5" v-if="isLoading" class="ion-no-padding"><ion-spinner></ion-spinner></ion-col>
-                <ion-col size="5" v-else @click="router.push(`/team/${secondPlayer?.id}`)" class="ion-no-padding ion-pointer">
+                <!-- Second player -->
+                <ion-col size="5" v-if="isLoadingMatch || isLoadingSecondPlayer" class="ion-no-padding"><ion-spinner></ion-spinner></ion-col>
+                <ion-col size="5" v-else-if="secondPlayer" @click="router.push(`/team/${secondPlayer.id}`)" class="ion-no-padding ion-pointer">
                   <ion-text color="primary">
-                    <h1>{{ secondPlayer?.id }}</h1>
+                    <h1>{{ secondPlayer.id }}</h1>
                   </ion-text>
                   <ion-text color="dark">
-                    <p>{{ secondPlayer?.sectionName }}</p>
+                    <p>{{ secondPlayer.section.sectionName }}</p>
                   </ion-text>
                   <ion-text color="medium">
-                    <p>{{ secondPlayer?.city }}</p>
+                    <p>{{ secondPlayer.city }}</p>
                   </ion-text>
                 </ion-col>
               </ion-row>
               <!-- Score icons -->
-              <ion-row v-if="match?.draw" class="ion-align-items-center ion-text-center">
+              <ion-row v-if="match.draw" class="ion-align-items-center ion-text-center">
                 <ion-col size="11">
                   <div class="score-div draw-color">
                     <span class="draw-span ion-text-uppercase">égalité</span>
                   </div>
                 </ion-col>
               </ion-row>
-              <ion-row v-if="match?.winner">
+              <ion-row v-if="match.winner && firstPlayer && secondPlayer">
                 <ion-col size="5">
-                  <div class="score-div" :class="scoreColor(firstPlayer?.id)">
-                    <ion-icon class="score-icon" :ios="scoreIcon(firstPlayer?.id).ios" :md="scoreIcon(firstPlayer?.id).md"></ion-icon>
+                  <div class="score-div" :class="scoreColor(firstPlayer.id)">
+                    <ion-icon class="score-icon" :ios="scoreIcon(firstPlayer.id).ios" :md="scoreIcon(firstPlayer.id).md"></ion-icon>
                   </div>
                 </ion-col>
                 <ion-col size="1"></ion-col>
                 <ion-col size="5">
-                  <div class="score-div" :class="scoreColor(secondPlayer?.id)">
-                    <ion-icon class="score-icon" :ios="scoreIcon(secondPlayer?.id).ios" :md="scoreIcon(secondPlayer?.id).md"></ion-icon>
+                  <div class="score-div" :class="scoreColor(secondPlayer.id)">
+                    <ion-icon class="score-icon" :ios="scoreIcon(secondPlayer.id).ios" :md="scoreIcon(secondPlayer.id).md"></ion-icon>
                   </div>
                 </ion-col>
               </ion-row>
             </ion-grid>
-            <ion-button expand="block" color="medium" class="ion-margin-top ion-margin-horizontal" :router-link="`/game/${match.game_id}`">
+            <ion-button expand="block" color="medium" class="ion-margin-top ion-margin-horizontal" :router-link="`/game/${match.gameId}`">
               Voir jeu
             </ion-button>
           </ion-card-content>
         </ion-card>
-        <ion-card v-if="showModeration">
+        <ion-card v-if="useCanSeeModeration">
           <ion-card-header>
             <ion-card-title>Modération</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <ion-list  lines="none" v-if="match?.reporter" class="no-pointer">
+            <ion-list lines="none" v-if="reporterId" class="no-pointer">
               <ion-item class=""><ion-label>
-                Reporter: {{reporterName}} ({{reporter?.sectionName}})
+                <span>Modififé par : </span>
+                <ion-spinner v-if="isLoadingReporter"></ion-spinner>
+                <span v-else-if="reporter">{{reporter.name}} ({{reporter.sectionName}})</span>
+                <ion-text color="error">Impossible de charger le profil</ion-text>
               </ion-label></ion-item>
               <ion-item class=""><ion-label>
                 Modifié à : {{formatedDate}}
@@ -95,7 +108,7 @@
             <ion-list-header v-else><h2>Le score n'a pas encore été enregsitré</h2></ion-list-header>
           </ion-card-content>
         </ion-card>
-        <div class="ion-margin-top" style="max-width: 600px; margin: 0 auto" v-if="canSetScore">
+        <div class="ion-margin-top" style="max-width: 600px; margin: 0 auto" v-if="canEditScores">
           <ion-button v-if="match.noScores" class="ion-margin-horizontal ion-margin-top" color="medium" expand="block" disabled>
             Pas de score pour ce jeu
           </ion-button>
@@ -112,135 +125,121 @@
           </ion-button>
         </div>
       </div>
-      <div v-else class="not-found">
-        <strong class="capitalize">Nous n'avons pas trouvé ce duel...</strong>
-        <p>Retour à <a @click="router.back()">la page précédente</a></p>
-      </div>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardSubtitle, IonRow, IonCol, IonIcon, IonGrid, IonButton, IonText, useIonRouter, IonSpinner, 
-IonLabel, IonItem, IonList, IonListHeader, IonCardHeader, IonCardTitle} from "@ionic/vue";
-import { closeOutline, closeSharp, trophyOutline, trophySharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { ROLES, useAuthStore } from "@/services/users";
-import { computed, ref } from "@vue/reactivity";
-import { useRoute } from "vue-router";
-import { onBeforeMount, onMounted, watchEffect } from "vue";
-import { streamMatch, Match, resetMatchScore, setMatchDraw, setMatchScore } from "@/services/matches";
-import { addTeamDraw, addTeamWin, streamTeam, removeTeamDraw, removeTeamWin, Team } from "@/services/teams";
-import { canSetGameScore, Game, streamGame } from "@/services/games";
-import { isScoresFrozen } from "@/services/settings";
-import { getSchedule } from "@/services/settings";
-import { choicePopup, errorPopup, toastPopup } from "@/services/popup";
-import { addSectionDraw, addSectionWin, removeSectionDraw, removeSectionWin } from "@/services/sections";
 import RefresherComponent from "@/components/RefresherComponent.vue";
+import { useAppConfig, useAppSettings } from "@/composables/app";
+import { useGame } from "@/composables/game";
+import { useMatch } from "@/composables/match";
+import { useCanEditScores, useCanSeeModerationStuff } from "@/composables/rights";
+import { useTeam } from "@/composables/team";
+import { useCurrentUserProfile, useUserProfile } from "@/composables/userProfile";
+import { DEFAULT_GAME_ID, DEFAULT_MATCH_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID } from "@/constants";
+import { choicePopup, errorPopup, toastPopup } from "@/services/popup";
+import { RefPlayerSection } from "@/types";
+import { resetMatchScore, setMatchDraw, setMatchScore } from "@/utils/match";
+import { addSectionDraw, addSectionWin, removeSectionDraw, removeSectionWin } from "@/utils/playerSection";
+import { addTeamDraw, addTeamWin, removeTeamDraw, removeTeamWin } from "@/utils/team";
+// prettier-ignore
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSpinner, IonText, useIonRouter } from "@ionic/vue";
+import { computed, ref } from "@vue/reactivity";
+import { useRouteParams } from "@vueuse/router";
+import { FirestoreError } from "firebase/firestore";
+import { closeOutline, closeSharp, trophyOutline, trophySharp } from "ionicons/icons";
+import { onMounted, watch } from "vue";
 
-const userStore = useAuthStore();
-const route = useRoute();
+// Composables
+
 const router = useIonRouter();
+const matchId = useRouteParams("matchId", DEFAULT_MATCH_ID)
+const { data: match, pending: isLoadingMatch, error: errorLoadingMatch } = useMatch(matchId)
+const { data: game, pending: isLoadingGame, error: errorLoadingGame } = useGame(match.value?.gameId ?? DEFAULT_GAME_ID)
+const { data: firstPlayer, pending: isLoadingFirstPlayer, error: errorLoadingFirstPlayer } = useTeam(match.value?.playerIds[0] ?? DEFAULT_TEAM_ID)
+const { data: secondPlayer, pending: isLoadingSecondPlayer, error: errorLoadingSecondPlayer } = useTeam(match.value?.playerIds[0] ?? DEFAULT_TEAM_ID)
+const canEditScores = useCanEditScores(game)
+const appSettings = useAppSettings()
+const appConfig = useAppConfig()
+const useCanSeeModeration = useCanSeeModerationStuff()
+const userProfile = useCurrentUserProfile()
 
 // reactive data
 
-const matchId = ref("");
-const canSetScore = ref(false);
-const isLoading = ref(true);
 const isSettingScore = ref(false);
 const isResettingScore = ref(false);
 
 // lifecycle hooks
 
-onBeforeMount(() => {
-  if (route.params.matchId) matchId.value = route.params.matchId as string;
-  if (!matchId.value) console.error("Match ID not set in the URL");
-});
 onMounted(() => {
-  setTimeout(() => {
-    isLoading.value = false;
-  }, 5000);
+  if (matchId.value === DEFAULT_MATCH_ID){
+    const msg = "Match ID missing from the url"
+    toastPopup(msg)
+    console.error(msg)
+  }
 });
 
 // Computed
 
-const match = computed((): Match => {
-  return streamMatch(matchId.value as string) as Match;
-});
-const game = computed((): Game | undefined => {
-  return match.value?.game_id ? (streamGame(match.value?.game_id) as Game) : undefined;
-});
-const isMatch = computed(() => {
-  if (match.value?.id) {
-    isLoading.value = false;
-    return true;
-  }
-  return false;
-});
 const pageTitle = computed(() => {
-  if (isMatch.value) return `Duel ${match.value?.player_ids[0]} vs ${match.value?.player_ids[1]}`;
-  if (isLoading.value) return "Chargement";
+  if (isLoadingMatch.value) return "Chargement...";
+  if (match.value) return `Duel ${match.value.playerIds[0]} vs ${match.value.playerIds[1]}`;
   return "Duel inconnu";
 });
-const firstPlayer = computed((): Team | undefined => {
-  return match.value?.player_ids[0] ? streamTeam(match.value.player_ids[0]) : undefined;
-});
-const secondPlayer = computed((): Team | undefined => {
-  return match.value?.player_ids[1] ? streamTeam(match.value.player_ids[1]) : undefined;
-});
+
 const schedule = computed(() => {
-  return match.value?.time ? getSchedule(match.value?.time - 1) : { start: " ", stop: " " };
+  if(appConfig.value && match.value) {
+    return appConfig.value.playerSchedule[match.value.time]
+  }
+  return { start: "", stop: "" };
 });
-const showModeration = computed(() => {
-  return userStore.profile.role >= ROLES.Organisateur;
-})
-const reporter = computed(() => {
-  if(!showModeration) return // to prevent any unrequired db calls 
-  if(! match.value?.reporter) return undefined;
-  return userStore.getProfile(match.value.reporter);
+const reporterId = computed(() => {
+  if(!useCanSeeModeration.value) return DEFAULT_USER_ID // to prevent any unnecessary db calls 
+  if(!match.value || !match.value.reporter) return DEFAULT_USER_ID
+  return match.value.reporter
 });
-const reporterName = computed(() => {
-  if(!showModeration) return // to prevent any unrequired db calls 
-  if(! match.value?.reporter) return undefined;
-  return userStore.getName(match.value.reporter);
-});
+const { data: reporter, pending: isLoadingReporter, error: errorLoadingReporter } = useUserProfile(reporterId)
 const formatedDate = computed(() => {
-  if(!showModeration) return // to prevent any unrequired db calls 
-  const date = new Date(match.value.lastModified);
-  return date.toLocaleString("fr-BE");
-});
-
-// Watchers
-
-// async update canSetScore value
-watchEffect(async () => {
-  if (!match.value?.game_id) return; // do not run this watcher if match is not initialized
-  canSetScore.value = await canSetGameScore(match.value.game_id);
+  if(match.value && match.value.lastModified) {
+    const date = new Date(match.value.lastModified);
+    return date.toLocaleString("fr-BE");
+  }
 });
 
 // Methods
 
 const winHandler = async (winner: string) => {
+  if (!userProfile.value) {
+    isSettingScore.value = false;
+    console.error(`userProfile is undefined`)
+    return errorPopup("L'utilisateur n'est pas connecté");
+  }
+  if (!match.value) {
+    isSettingScore.value = false;
+    console.error(`match is undefined`)
+    return errorPopup("Le match n'a pas encore été chargé");
+  }
   if(match.value.winner == winner) {
     isSettingScore.value = false;
     return errorPopup(`L'équipe ${winner} est déjà enregistrée comme gagnante`);
   }
-  let winningSection: number;
-  let losingSection: number;
+  let winningSection: RefPlayerSection;
+  let losingSection: RefPlayerSection;
   const promises = [];
-  const loser = match.value.player_ids[0] === winner ? match.value.player_ids[1] : match.value.player_ids[0];
-  if (firstPlayer.value && secondPlayer.value) {
-    if(firstPlayer.value.id == winner){
-      winningSection = firstPlayer.value.sectionId;
-      losingSection = secondPlayer.value.sectionId;
-    } else {
-      winningSection = secondPlayer.value.sectionId;
-      losingSection = firstPlayer.value.sectionId;
-    }
-  } else {
+  const loser = match.value.playerIds[0] === winner ? match.value.playerIds[1] : match.value.playerIds[0];
+  if (!firstPlayer.value ||  !secondPlayer.value) {
     isSettingScore.value = false;
     console.error(`firstPlayer or secondPlayer is undefined`, firstPlayer.value, secondPlayer.value);
     return errorPopup(`Le match n'a pas encore été chargé`);
+  }
+  if(firstPlayer.value.id == winner){
+    winningSection = firstPlayer.value.section;
+    losingSection = secondPlayer.value.section;
+  } else {
+    winningSection = secondPlayer.value.section;
+    losingSection = firstPlayer.value.section;
   }
   try {
     // if a scores was already set, remove it
@@ -258,7 +257,7 @@ const winHandler = async (winner: string) => {
     // set the new score
     promises.push(addTeamWin(winner));
     promises.push(addSectionWin(winningSection));
-    promises.push(setMatchScore(matchId.value, winner, loser));
+    promises.push(setMatchScore(matchId.value, winner, loser, userProfile.value.id));
 
     await Promise.all(promises);
     toastPopup("Le score a été enregistré");
@@ -269,6 +268,16 @@ const winHandler = async (winner: string) => {
   isSettingScore.value = false;
 }
 const drawHandler = async () => {
+  if (!userProfile.value) {
+    isSettingScore.value = false;
+    console.error(`userProfile is undefined`)
+    return errorPopup("L'utilisateur n'est pas connecté");
+  }
+  if (!match.value) {
+    isSettingScore.value = false;
+    console.error(`match is undefined`)
+    return errorPopup("Le match n'a pas encore été chargé");
+  }
   if(match.value.draw) {
     isSettingScore.value = false;
     return errorPopup("Ce duel est déjà enregistré comme égalité");
@@ -281,15 +290,15 @@ const drawHandler = async () => {
   }
   try{
     if(match.value.winner) {
-      const previousWinningSection = firstPlayer.value.id == match.value.winner ? firstPlayer.value.sectionId : secondPlayer.value.sectionId;
+      const previousWinningSection = firstPlayer.value.id == match.value.winner ? firstPlayer.value.section : secondPlayer.value.section;
       promises.push(removeTeamWin(match.value.winner));
       promises.push(removeSectionWin(previousWinningSection));
     }
     promises.push(addTeamDraw(firstPlayer.value.id as string));
     promises.push(addTeamDraw(secondPlayer.value.id as string));
-    promises.push(addSectionDraw(firstPlayer.value.sectionId));
-    promises.push(addSectionDraw(secondPlayer.value.sectionId));
-    promises.push(setMatchDraw(matchId.value));
+    promises.push(addSectionDraw(firstPlayer.value.section));
+    promises.push(addSectionDraw(secondPlayer.value.section));
+    promises.push(setMatchDraw(matchId.value, userProfile.value.id));
 
     await Promise.all(promises);
     toastPopup("Le score a été enregistré");
@@ -301,7 +310,12 @@ const drawHandler = async () => {
 }
 
 const setScore = () => {
-  if (isScoresFrozen()) {
+  if (!match.value) {
+    isSettingScore.value = false;
+    console.error(`match is undefined`)
+    return errorPopup("Le match n'a pas encore été chargé");
+  }
+  if (appSettings.value?.canSetScores) {
     errorPopup("Il n'est pas ou plus possible d'enregistrer des scores");
     return;
   }
@@ -310,7 +324,7 @@ const setScore = () => {
     if (choice === "Égalité") {
       drawHandler();
     } else if (choice === "Victoire") {
-      choicePopup("Qui est l'heureux gagnant ?", [match.value.player_ids[0], match.value.player_ids[1]], winHandler, "score-choice-popup");
+      choicePopup("Qui est l'heureux gagnant ?", [match.value?.playerIds[0] ?? "", match.value?.playerIds[1] ?? ""], winHandler, "score-choice-popup");
     } else {
       console.error(`Unknown choice: ${choice}`);
     }
@@ -320,7 +334,17 @@ const setScore = () => {
 };
 
 const resetScore = async () => {
-  if (isScoresFrozen()) {
+  if (!match.value) {
+    isSettingScore.value = false;
+    console.error(`match is undefined`)
+    return errorPopup("Le match n'a pas encore été chargé");
+  }
+  if (!userProfile.value) {
+    isSettingScore.value = false;
+    console.error(`userProfile is undefined`)
+    return errorPopup("L'utilisateur n'est pas connecté");
+  }
+  if (appSettings.value?.canSetScores) {
     errorPopup("Il n'est pas ou plus possible de modifier des scores");
     return;
   }
@@ -337,20 +361,20 @@ const resetScore = async () => {
   const promises = [];
   try {
     if(match.value.winner) {
-      const previousWinningSection = firstPlayer.value.id == match.value.winner ? firstPlayer.value.sectionId : secondPlayer.value.sectionId;
+      const previousWinningSection = firstPlayer.value.id == match.value.winner ? firstPlayer.value.sectionId : secondPlayer.value.section;
       promises.push(removeTeamWin(match.value.winner));
       promises.push(removeSectionWin(previousWinningSection));
     }
     if(match.value.draw) {
       promises.push(removeTeamDraw(firstPlayer.value.id as string));
       promises.push(removeTeamDraw(secondPlayer.value.id as string));
-      promises.push(removeSectionDraw(firstPlayer.value.sectionId));
-      promises.push(removeSectionDraw(secondPlayer.value.sectionId));
+      promises.push(removeSectionDraw(firstPlayer.value.section));
+      promises.push(removeSectionDraw(secondPlayer.value.section));
     }
-    promises.push(resetMatchScore(matchId.value));
+    promises.push(resetMatchScore(matchId.value, userProfile.value.id));
     await Promise.all(promises);
     toastPopup("Le score a été réinitialisé");
-    console.log(`Score reset for match ${matchId.value} by ${userStore.uid}`)
+    console.log(`Score reset for match ${matchId.value} by ${userProfile.value.id}`);
   } catch(error: any) {
     errorPopup(`La réinitialisation du score a échoué : ${error.message}`);
     console.log(error);
@@ -359,15 +383,46 @@ const resetScore = async () => {
 };
 
 const scoreColor = (playerId: string | undefined) => {
-  if (playerId === match.value.winner) return "winner-color";
-  if (playerId === match.value.loser) return "loser-color";
+  if (match.value) {
+    if (playerId === match.value.winner) return "winner-color";
+    if (playerId === match.value.loser) return "loser-color";
+  }
   return "";
 };
 const scoreIcon = (playerId: string | undefined) => {
-  if (playerId === match.value.winner) return { ios: trophyOutline, md: trophySharp };
-  if (playerId === match.value.loser) return { ios: closeOutline, md: closeSharp };
+  if (match.value) {
+    if (playerId === match.value.winner) return { ios: trophyOutline, md: trophySharp };
+    if (playerId === match.value.loser) return { ios: closeOutline, md: closeSharp };
+  }
   return { md: undefined, ios: undefined };
 };
+
+// Watchers
+
+watch(errorLoadingGame, (error: FirestoreError | undefined) => {
+  if (error) {
+    toastPopup("Erreur lors du chargement du jeu");
+    console.error(`Error loading game: ${error.message}`);
+  }
+});
+watch(errorLoadingFirstPlayer, (error: FirestoreError | undefined) => {
+  if (error) {
+    toastPopup("Erreur lors du chargement de l'équipe 1");
+    console.error(`Error loading first player: ${error.message}`);
+  }
+});
+watch(errorLoadingSecondPlayer, (error: FirestoreError | undefined) => {
+  if (error) {
+    toastPopup("Erreur lors du chargement de l'équipe 2");
+    console.error(`Error loading second player: ${error.message}`);
+  }
+});
+watch(errorLoadingReporter, (error: FirestoreError | undefined) => {
+  if (error) {
+    toastPopup("Erreur lors du chargement du modérateur");
+    console.error(`Error loading reporter: ${error.message}`);
+  }
+});
 </script>
 <style scoped>
 .score-grid {

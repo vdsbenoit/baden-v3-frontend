@@ -25,9 +25,9 @@
         </div>
         <div v-if="matches && matches.length > 0">
           <ion-item v-for="match in matches.values()" :key="match.id" :routerLink="`/match/${match.id}`" class="">
-            <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ match.game_id }}</ion-badge>
+            <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ match.gameId }}</ion-badge>
             <ion-label>
-              {{ match.game_name }}
+              {{ match.gameName }}
             </ion-label>
             <ion-icon v-if="isScoreRecorded(match)" :color="iconColor(match)" slot="end" :ios="checkmarkCircle" :md="checkmarkCircleSharp"></ion-icon>
             <ion-icon v-else color="danger" slot="end" :ios="closeCircle" :md="closeCircleSharp"></ion-icon>

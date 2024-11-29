@@ -22,8 +22,8 @@
         <ion-grid class="ion-padding-horizontal ion-padding-top">
           <ion-row class="ion-align-items-center">
             <ion-col class="ion-padding-start" :router-link="`/section/${section?.id}`">
-              <ion-card-subtitle v-if="team?.city">{{ team.city }}</ion-card-subtitle>
-              <h1 v-if="team?.sectionName" class="ion-no-margin" style="font-weight: bold">{{ team.sectionName }}</h1>
+              <ion-card-subtitle v-if="team.city">{{ team.city }}</ion-card-subtitle>
+              <h1 v-if="team.section.name" class="ion-no-margin" style="font-weight: bold">{{ team.section.name }}</h1>
               <ion-spinner v-else></ion-spinner>
             </ion-col>
             <ion-col class="numberCircle ion-padding-end">
@@ -41,7 +41,7 @@
           <ion-card-content>
             <ion-list class="no-pointer">
               <ion-item class="ion-no-padding">
-                <ion-label>Score de l'équipe</ion-label><ion-note slot="end">{{ team?.score }}</ion-note></ion-item
+                <ion-label>Score de l'équipe</ion-label><ion-note slot="end">{{ team.score }}</ion-note></ion-item
               >
               <ion-item class="ion-no-padding">
                 <ion-label>Score de la section</ion-label>
@@ -84,11 +84,11 @@
             <ion-list v-else-if="matches && matches.length > 0">
               <ion-item v-for="[i, match] in matches.entries()" :key="match.id" :routerLink="`/match/${match.id}`" class="ion-no-padding">
                 <ion-label>
-                  <span>{{ match.game_name }}</span>
+                  <span>{{ match.gameName }}</span>
                   <p>
                     <ion-icon :ios="locationOutline" :md="locationSharp"></ion-icon><span>{{ playerSchedule[i].start }} - {{ playerSchedule[i].stop }}</span>
                     <span> | </span>
-                    <ion-icon :ios="timeOutline" :md="timeSharp"></ion-icon><span>Jeu n° {{ match.game_id }}</span>
+                    <ion-icon :ios="timeOutline" :md="timeSharp"></ion-icon><span>Jeu n° {{ match.gameId }}</span>
                   </p>
                 </ion-label>
                 <ion-icon :ios="statusIcon(match).ios" :md="statusIcon(match).md" :color="statusIcon(match).color" slot="end"></ion-icon>

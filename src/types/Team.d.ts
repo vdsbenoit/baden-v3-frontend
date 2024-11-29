@@ -6,7 +6,7 @@ export type Team = {
   number: number
   sectionTypeId: string
   sectionId: string
-  sectionName: string
+  section: VueFirePlayerSection
   city: string
   scores: number[]
   score: number

@@ -57,7 +57,7 @@
 ## Keep in mind
 
 - Keep match times starting at 1 instead of 0 (even though [it might sound retarded](https://preview.redd.it/iwnqgrrbls5z.png?auto=webp&s=746c0b97fbb5ba8effbe596ad9f2e5c38832bea2)). That's useful in some checks like in the `CheckScoresPage`. Same same for game numbers
-- [ ] Try to change the first index of the timings to 0. It's annoying with all the arrays
+- [x] Try to change the first index of the timings to 0. It's annoying with all the arrays
 
 ## Parking
 

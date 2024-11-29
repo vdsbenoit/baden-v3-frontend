@@ -8,7 +8,7 @@ export function useCanEditScores(rGame: RefGame) {
   const currentUserProfile = useCurrentUserProfile()
   const appSettings = useAppSettings()
 
-  const canEditTiming = (timingId: string) => {
+  const canEditScoresAt = (timingId: string) => {
     if (!rGame.value) {
       console.debug("Cannot edit score, game variable is not set yet")
       return false
@@ -84,7 +84,7 @@ export function useCanEditScores(rGame: RefGame) {
     return false
   })
 
-  return { canEditScores, canEditTiming }
+  return { canEditScores, canEditTiming: canEditScoresAt }
 }
 
 // todo: check that these rules match with the Game registration setters
@@ -131,6 +131,13 @@ export function useCanRegister() {
 }
 
 export function useCanEditGames() {
+  const currentUserProfile = useCurrentUserProfile()
+  return computed(() => {
+    if (!currentUserProfile.value) return false
+    return currentUserProfile.value.role >= ROLES.Organisateur
+  })
+}
+export function useCanSeeModerationStuff() {
   const currentUserProfile = useCurrentUserProfile()
   return computed(() => {
     if (!currentUserProfile.value) return false

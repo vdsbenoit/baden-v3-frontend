@@ -2,11 +2,11 @@ import { Ref } from "vue"
 import { VueFirestoreDocumentData} from "vuefire"
 
 export type Match = {
-  game_id: number
-  game_name: string
+  gameId: string
+  gameName: string
   time: number
-  player_ids: string[]
-  player_numbers: number[]
+  playerIds: string[]
+  playerNumbers: number[]
   winner: string
   loser: string
   draw: boolean
