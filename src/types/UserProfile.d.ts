@@ -14,7 +14,7 @@ export type UserProfile = {
   rejectionReason?: string
   sectionId?: string
   sectionName?: string
-  team?: string
+  team?: string // if it's a player
   games?: { [timingId: string]: VueFireGame }  // if it's an attendant
   settings?: any
 }
