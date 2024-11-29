@@ -64,9 +64,6 @@ const editedRole = ref(0);
 
 const {data: latestUsers, pending: isLoadingUsers, error: errorLoadingUsers} = useLatestUsers(limit);
 
-// Computed
-
-
 // Watchers
 
 watch(errorLoadingUsers, (error) => {
