@@ -4,7 +4,6 @@ import { Section } from "./Section"
 
 export interface AttendantSection extends Section {
   isAttendant: true
-  isStaff: boolean
 }
 
 export interface VueFireAttendantSection extends AttendantSection {

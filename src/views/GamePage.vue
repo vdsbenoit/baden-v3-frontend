@@ -119,9 +119,9 @@
               <ion-item v-for="[i, match] in matches.entries()" :key="match.id" :routerLink="`/match/${match.id}`" class="item-no-padding">
                 <ion-label>
                   <ion-text>⌚ {{ playerSchedule[i].start }} - {{ playerSchedule[i].stop }} : </ion-text>
-                  <ion-text color="primary" style="font-weight: bold">{{ match.player_ids[0] }}</ion-text>
+                  <ion-text color="primary" style="font-weight: bold">{{ match.playerIds[0] }}</ion-text>
                   <ion-text> vs </ion-text>
-                  <ion-text color="primary" style="font-weight: bold">{{ match.player_ids[1] }}</ion-text>
+                  <ion-text color="primary" style="font-weight: bold">{{ match.playerIds[1] }}</ion-text>
                 </ion-label>
                 <ion-badge slot="end" class="ion-no-margin" :color="match.draw ? 'warning' : 'success'" v-if="getWinner(match)">{{ getWinner(match) }}</ion-badge>
               </ion-item>
