@@ -1,5 +1,8 @@
 # Baden score app
 
+> [!NOTE]  
+> I am currently performing a huge refactoring of the project in the `feature/refactore_and_use_vuefire` branch. I am changing the way the project communicate with Firestore, transitioning from Magnetar (+ service functions) to VueFire (+ composables). 
+
 ## v3
 
 New UI from scratch, made with Vue & Ionic.  
@@ -78,4 +81,4 @@ I initially created this project for the Baden Battle only. Due to time constrai
 
 ## Contributing
 
-I am currently performing a huge refactoring of the project in the `feature/refactore_and_use_vuefire` branch. I am changing the way the project communicate with Firestore, transitioning from Magnetar (+ service functions) to VueFire (+ composables). Therefore, I wouldn't recommend anyone to onboard right now. Once this operation is done, I would be please to receive any contributions. In the meantime, the last stable version of the project is 0.3.10 (see git tags)
+Due to the huge refactoring that is taking place in the `feature/refactore_and_use_vuefire` branch, I wouldn't recommend anyone to onboard right now. Once this operation is done, I would be please to receive any contributions. In the meantime, the last stable version of the project is 0.3.10 (see git tags)
