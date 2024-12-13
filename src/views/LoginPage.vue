@@ -24,6 +24,10 @@
               <ion-spinner v-if="isSendingEmail"></ion-spinner>
               <span v-else>{{sendButtonText}}</span>
           </ion-button>
+          <ion-button expand="block"  @click="signInWithClipboard" color="tertiary">
+              <ion-spinner v-if="isValidating"></ion-spinner>
+              <span v-else>J'ai déjà reçu un mail</span>
+          </ion-button>
         </ion-list>
       </form>
     </ion-content>
@@ -52,18 +56,13 @@ const email = ref("");
 const isSendingEmail = ref(false);
 const isEmailSent = ref(false);
 const dgprChecked = ref(false);
+const isValidating = ref(false);
 
 // lifecycle hooks
 
 onMounted(async () => {
   if (props.validation) {
-    const success = await processSignInLink(window.location.href);
-    if (success) {
-      if (user.profile.role === -1) await user.forceFetchCurrentUserProfile();
-      if (user.profile.role === ROLES.Newbie && ! user.profile.hasDoneOnboarding) router.replace("/onboarding");
-      else router.replace("/home");
-    }
-    else errorPopup("Impossible de se connecter");
+    signIn(window.location.href);
   }
 });
 
@@ -90,6 +89,65 @@ const sendEmail = async () => {
   }
   isSendingEmail.value = false;
 };
+
+const signIn = async (href: string) => {
+  const success = await processSignInLink(href);
+  if (success) {
+    if (user.profile.role === -1) await user.forceFetchCurrentUserProfile();
+    if (user.profile.role === ROLES.Newbie && ! user.profile.hasDoneOnboarding) router.replace("/onboarding");
+    else router.replace("/home");
+  }
+  else errorPopup("Impossible de se connecter");
+}
+
+function sanitizeClipboardContent(input: string): string | null {
+  try {
+    const url = new URL(input);
+
+    // Check for valid HTTPS protocol
+    if (url.protocol !== "https:") {
+      return null;
+    }
+
+    // Example: Allow Firebase Dynamic Links or direct Firebase sign-in links
+    const allowedDomains = [
+      "app.badenbattle.be",
+      window.location.hostname,
+    ];
+
+    if (allowedDomains.some((domain) => url.hostname.endsWith(domain))) {
+      return url.href; // Return sanitized link
+    }
+  } catch {
+    console.error("Clipboard content is not a valid or supported Firebase sign-in link.");
+  }
+  return null;
+}
+
+
+/**
+ * Reads the clipboard content and attempts to sign in with the extracted Firebase sign-in link.
+ */
+async function signInWithClipboard() {
+  // Ensure the Clipboard API is supported
+  if (!navigator.clipboard) {
+    errorPopup("Cette fonctionnalité n'est pas supportée");
+    return;
+  }
+
+  // Read the content of the clipboard
+  const clipboardText = await navigator.clipboard.readText();
+  console.log(`clipboardText: ${clipboardText}`);
+  // Sanitize the clipboard content
+  const sanitizedLink = sanitizeClipboardContent(clipboardText);
+  console.log(`Sanitized link: ${sanitizedLink}`);
+  if (!sanitizedLink) {
+    errorPopup("Copie le lien qui t'as été envoyé par email", "Le lien dans le presse-papier n'est pas valide");
+    return
+  }
+
+  signIn(clipboardText);
+}
 
 const showPrivacyNotice = () => {
   const privacyNotice = `
