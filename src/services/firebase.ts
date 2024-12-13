@@ -29,7 +29,11 @@ const auth = getAuth(app);
     // This must be true.
     handleCodeInApp: true
   };
-  await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+  try{
+    await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+  } catch (error: any) {
+    console.error(error.message);
+  }
 
 };
 

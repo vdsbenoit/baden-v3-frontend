@@ -4,7 +4,7 @@ if (process.env.NODE_ENV === "production") {
     // prod DB
     firebaseConfig = {
         apiKey: "AIzaSyBPS9sBLuX7ULxwqxVLI9e431w9ggmKiaM",
-        authDomain: "badenbattle-a0dec.firebaseapp.com",
+        authDomain: "app.badenbatte.be",
         databaseURL: "https://badenbattle-a0dec.firebaseio.com",
         projectId: "badenbattle-a0dec",
         storageBucket: "badenbattle-a0dec.appspot.com",
@@ -26,7 +26,7 @@ if (process.env.NODE_ENV === "production") {
 }
 firebaseConfig = {
     apiKey: "AIzaSyBPS9sBLuX7ULxwqxVLI9e431w9ggmKiaM",
-    authDomain: "badenbattle-a0dec.firebaseapp.com",
+    authDomain: "app.badenbatte.be",
     databaseURL: "https://badenbattle-a0dec.firebaseio.com",
     projectId: "badenbattle-a0dec",
     storageBucket: "badenbattle-a0dec.appspot.com",

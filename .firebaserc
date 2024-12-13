@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "badenbattle"
-  }
+    "default": "badenbattle-a0dec"
+  },
+  "targets": {},
+  "etags": {}
 }
