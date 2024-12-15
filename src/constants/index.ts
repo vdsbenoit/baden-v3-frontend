@@ -9,7 +9,8 @@ export const USER_PROFILES_COLLECTION_REF = collection(db, USER_PROFILES_COLLECT
 export const USER_PROFILES_GAMES_KEY = "games"
 // prettier-ignore
 export const ROLES = {
-  Anonyme:        0,  // Anynymous
+  Erreur:        -1,  // Error
+  Anonyme:        0,  // Anonymous
   Newbie:         1,  // Newbie
   Participant:    2,  // Player
   Animateur:      4,  // Attendant
