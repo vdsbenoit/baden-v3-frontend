@@ -4,12 +4,12 @@
     <ion-content :fullscreen="true" class="ion-padding">
       <refresher-component></refresher-component>
       <ion-card>
-        <ion-card-header v-if="userStore.profile.rejectionReason">
+        <ion-card-header v-if="currentUser && currentUser.rejectionReason">
           <ion-card-title>Aille !</ion-card-title>
           <p>
             Il semblerait que ta demande d'accès ait été refusée.
             <br><br>
-            {{ userStore.profile.rejectionReason }}
+            {{ currentUser.rejectionReason }}
             <br><br>
             Est-ce que tu peux recommencer stp ?
           </p>
@@ -21,13 +21,9 @@
         <form @submit.prevent="submitForm"  @keydown.enter="submitForm">
           <ion-list class="ion-no-padding">
           <ion-item>
-            <ion-label position="floating" color="primary">Totem</ion-label>
-            <ion-input v-model="totem" name="totem" type="text" autocorrect="off" @ionChange="handleNameChange"></ion-input>
-            <ion-note v-if="nameError" slot="error">Mentionne au minium ton totem ou ton nom</ion-note>
-          </ion-item>
-          <ion-item>
-            <ion-label position="floating" color="primary">Nom</ion-label>
-            <ion-input v-model="name" name="name" type="text" autocorrect="off" @ionChange="handleNameChange"></ion-input>
+            <ion-label position="floating" color="primary">Totem / Nom</ion-label>
+            <ion-input v-model="name" name="name" type="text" autocorrect="off" @ionChange="handleNameChange" required></ion-input>
+            <ion-note v-if="nameError" slot="error">Mentionne ton totem ou ton nom</ion-note>
           </ion-item>
           <ion-item>
             <ion-label position="floating" color="primary">Quel sera ton role durant la BB ?</ion-label>
@@ -39,20 +35,24 @@
           <ion-item v-if="isParticipant">
             <ion-label position="floating" color="primary">Type de section</ion-label>
             <ion-select v-model="selectedSectionType" interface="popover" required>
-              <ion-select-option v-for="sectionType in sectionTypes" :key="sectionType" :value="sectionType">{{ sectionType }}</ion-select-option>
-            </ion-select>
-          </ion-item>  
-          <ion-item v-if="isParticipant && selectedSectionType">
-            <ion-label position="floating" color="primary">Section</ion-label>
-            <ion-select v-model="selectedSectionId" interface="popover" required>
-              <ion-select-option v-for="s in sections.values()" :key="s.id" :value="s.id"> {{ s.name }} ({{ s.city }}) </ion-select-option>
+              <ion-select-option v-for="(sectionType, id) in appConfig?.sectionTypes" :key="id" :value="id">{{ sectionType }}</ion-select-option>
             </ion-select>
           </ion-item>
-  
-          <ion-item v-if="isLeader">
+          <ion-item v-if="isParticipant && selectedSectionType">
             <ion-label position="floating" color="primary">Section</ion-label>
-            <ion-select v-model="selectedLeaderSectionId" interface="popover" required>
-              <ion-select-option v-for="s in leaderSections.values()" :key="s.id" :value="s.id"> {{ s.name }} ({{ s.city }}) </ion-select-option>
+            <ion-spinner v-if="isLoadingSections"></ion-spinner>
+            <div v-else-if="errorLoadingSections">Erreur : {{ errorLoadingSections.message }}</div>
+            <ion-select v-else v-model="selectedSectionId" interface="popover" required>
+              <ion-select-option v-for="section in sections" :key="section.id" :value="section.id"> {{ section.name }} ({{ section.city }}) </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item v-if="isAttendant">
+            <ion-label position="floating" color="primary">Section</ion-label>
+            <ion-spinner v-if="isLoadingAttendantSections"></ion-spinner>
+            <div v-else-if="errorLoadingAttendantSections">Erreur : {{ errorLoadingAttendantSections.message }}</div>
+            <ion-select v-else v-model="selectedAttendantSectionId" interface="popover" required>
+              <ion-select-option v-for="attendantSection in attendantSections" :key="attendantSection.id" :value="attendantSection.id"> {{ attendantSection.name }} ({{ attendantSection.city }}) </ion-select-option>
             </ion-select>
           </ion-item>
 
@@ -68,20 +68,25 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonLabel, IonSelect, IonSelectOption, IonItem, IonInput, IonButton, IonCard, IonCardHeader, IonCardTitle, 
-  IonNote, IonList } from "@ionic/vue";
+// prettier-ignore
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { useRouter } from 'vue-router';
-import { computed, ref, watch } from "vue";
-import { ROLES, useAuthStore } from "@/services/users";
-import { confirmPopup, errorPopup, toastPopup } from "@/services/popup";
-import { getSectionTypes } from "@/services/settings";
-import { streamSection, getSectionsBySectionType, Section } from "@/services/sections";
-import { streamLeaderSection, getLeaderSections, getStaffSectionId, LeaderSection } from "@/services/leaderSections";
 import RefresherComponent from "@/components/RefresherComponent.vue";
+import { useAppConfig } from "@/composables/app";
+import { useAttendantSections } from "@/composables/attendantSection";
+import { useSections } from "@/composables/playerSection";
+import { useCurrentUserProfile } from "@/composables/userProfile";
+import { DEFAULT_ATTENDANT_SECTION_ID, DEFAULT_SECTION_ID, DEFAULT_SECTION_TYPE_ID, ROLES } from "@/constants";
+import { confirmPopup, errorPopup, toastPopup } from "@/services/popup";
+import { Section } from "@/types/Section";
+import { getAttendantSection, getStaffSection } from "@/utils/attendantSection";
+import { sanitizeInput } from "@/utils/form";
+import { getPlayerSection } from "@/utils/playerSection";
+import { updateUserProfile } from "@/utils/userProfile";
+import { IonButton, IonCard, IonCardHeader, IonCardTitle, IonContent, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonSelect, IonSelectOption } from "@ionic/vue";
+import { computed, ref } from "vue";
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const userStore = useAuthStore();
 
 // Strip Anonyme & Newbie from ROLES
 const roles = Object.fromEntries(Object.entries(ROLES).filter(([, value]) => value !== ROLES.Anonyme && value !== ROLES.Newbie));
@@ -89,42 +94,27 @@ const roles = Object.fromEntries(Object.entries(ROLES).filter(([, value]) => val
 // reactive data
 
 const name = ref('');
-const totem = ref('');
 const selectedRole = ref(-1);
-const selectedSectionType = ref('');
-const selectedSectionId = ref(-1);
-const selectedLeaderSectionId = ref(-1);
+const selectedSectionType = ref(DEFAULT_SECTION_TYPE_ID);
+const selectedSectionId = ref(DEFAULT_SECTION_ID);
+const selectedAttendantSectionId = ref(DEFAULT_ATTENDANT_SECTION_ID);
 const nameError = ref(false);
-const isLoadingSections = ref(false);
 const isUpdatingProfile = ref(false);
 
-// watchers 
+// composables & computed data
 
-watch(selectedSectionType, (newVal) => {
-  if (newVal) {
-    isLoadingSections.value = true;
-    setTimeout(() => {
-      isLoadingSections.value = false;
-    }, 5000);
-  }
-});
+const currentUser = useCurrentUserProfile();
+const appConfig = useAppConfig();
+const { data: sections, pending: isLoadingSections, error: errorLoadingSections } = useSections(selectedSectionType);
 
-// computed data
+const isParticipant = computed(() => selectedRole.value === ROLES.Participant && name.value != "");
+const isAttendant = computed(() => (selectedRole.value === ROLES.Animateur || selectedRole.value === ROLES.Chef) && name.value != "");
+const { data: attendantSections, pending: isLoadingAttendantSections, error: errorLoadingAttendantSections } = useAttendantSections(false, isAttendant);
 
-const sectionTypes = computed(() => {
-  return getSectionTypes();
-});
-const sections = computed((): Map<string, Section> => {
-  return getSectionsBySectionType(selectedSectionType.value); 
-});
-const leaderSections = computed((): Map<string, LeaderSection> => {
-  return getLeaderSections();
-});
-const isParticipant = computed(() => selectedRole.value === ROLES.Participant && !nameError.value);
-const isLeader = computed(() => (selectedRole.value === ROLES.Animateur || selectedRole.value === ROLES.Chef) && !nameError.value);
 const canSubmit = computed(() => {
-  if (isParticipant.value && selectedSectionType.value && selectedSectionId.value > 0) return true
-  if (isLeader.value && selectedLeaderSectionId.value > 0) return true
+  if (!name.value) return false;
+  if (isParticipant.value && selectedSectionType.value != DEFAULT_SECTION_TYPE_ID && selectedSectionId.value != DEFAULT_SECTION_ID) return true
+  if (isAttendant.value && selectedAttendantSectionId.value != DEFAULT_ATTENDANT_SECTION_ID) return true
   if (selectedRole.value >= ROLES.Organisateur) return true
   return false;
 });
@@ -133,39 +123,37 @@ const canSubmit = computed(() => {
 
 const handleRoleChange = () => {
     // Reset section and leaderSection values when changing the role
-    selectedSectionType.value = ''
-    selectedSectionId.value = -1
-    selectedLeaderSectionId.value = -1
-    if (!name.value && !totem.value) nameError.value = true;
+    selectedSectionType.value = DEFAULT_SECTION_TYPE_ID
+    selectedSectionId.value = DEFAULT_SECTION_ID
+    selectedAttendantSectionId.value = DEFAULT_ATTENDANT_SECTION_ID
+    if (!name.value) nameError.value = true;
 }
 const handleNameChange = () => {
-    if (name.value || totem.value) nameError.value = false;
+    nameError.value = name.value ? false : true;
 }
 
-const processForm = () => {
+const processForm = (sectionData: Section) => {
   isUpdatingProfile.value = true;
   let newProfile = {};
   if (selectedRole.value === ROLES.Participant) {
     newProfile = {
-      totem: totem.value,
-      name: name.value,
+      name: sanitizeInput(name.value),
       role: ROLES.Participant,
       sectionId: selectedSectionId.value,
-      sectionName: streamSection(selectedSectionId.value)?.name,
+      sectionName: sectionData.name,
       hasDoneOnboarding: true,
     };
   } else {
     newProfile = {
-      totem: totem.value,
-      name: name.value,
+      name: sanitizeInput(name.value),
       requestedRole: selectedRole.value,
-      requestedSectionId: selectedLeaderSectionId.value,
-      requestedSectionName: streamLeaderSection(selectedLeaderSectionId.value)?.name,
+      requestedSectionId: selectedAttendantSectionId.value,
+      requestedSectionName: sectionData.name,
       hasDoneOnboarding: true,
     }
   }
-  userStore
-    .updateProfile(userStore.uid, newProfile)
+  if (!currentUser.value) return errorPopup("currentUser not found", "Impossible de mettre à jour le profil");
+  updateUserProfile(currentUser.value.id, newProfile)
     .then(() => {
       toastPopup("Ton profil a été mis à jour");
       isUpdatingProfile.value = false;
@@ -181,42 +169,52 @@ const processForm = () => {
 }
 
 const submitForm = async () => {
-  if (!name.value && !totem.value) return errorPopup('Mentionne au minium ton totem ou ton nom');
-  if (selectedRole.value < ROLES.Participant) return errorPopup('Choisis un role');
-  if (selectedRole.value === ROLES.Participant){
-    if (selectedSectionId.value) return processForm();
-    else return errorPopup('Choisis une section');
-  }
-
   let message="";
-  if (selectedRole.value === ROLES.Animateur) {
-    if (selectedLeaderSectionId.value){
-      const leaderSectionName = streamLeaderSection(selectedLeaderSectionId.value)?.name;
-      message = `Tu as choisi le role d'animateur. 
-      Cela signifie qu'un des chefs de la section ${leaderSectionName} ou un organisateur de la Baden Battle devra
-      <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
-    } else return errorPopup('Choisis une section');
-  }
-  if (selectedRole.value === ROLES.Chef) {
-    if (selectedLeaderSectionId.value){
-      const leaderSectionName = streamLeaderSection(selectedLeaderSectionId.value)?.name;
-      message = `Tu as choisi le role de chef. 
-      Cela signifie qu'un des chefs de la section ${leaderSectionName} ou un organisateur de la Baden Battle devra
-      <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
-    } else return errorPopup('Choisis une section');
-  }
-  if (selectedRole.value === ROLES.Organisateur) {
-    selectedLeaderSectionId.value = await getStaffSectionId();
-    message = `Tu as choisi le role d'organisateur de la Baden Battle. 
-    Cela signifie qu'un autre organisateur de la Baden Battle devra <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
-  }
-  if (selectedRole.value === ROLES.Administrateur) {
-    selectedLeaderSectionId.value = await getStaffSectionId();
-    message = `Tu as choisi le role d'administrateur de l'application. 
-    Cela signifie qu'un autre administrateur devra <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
+  let sectionData: Section;
+
+  // Check if all required fields are filled
+  if (!name.value) return errorPopup('Mentionne au minium ton totem ou ton nom');
+  if (selectedRole.value < ROLES.Participant) return errorPopup('Choisis un role');
+  if (!selectedAttendantSectionId.value) return errorPopup('Choisis une section');
+
+  try{
+    // If the user is a participant
+    if (selectedRole.value === ROLES.Participant){
+      sectionData = await getPlayerSection(selectedSectionId.value);
+      if (selectedSectionId.value) return processForm(sectionData);
+      else return errorPopup('Choisis une section');
+    }
+  
+    // If the user is an attendant
+    if (selectedRole.value === ROLES.Animateur) {
+        sectionData = await getAttendantSection(selectedAttendantSectionId.value);
+        message = `Tu as choisi le role d'animateur. 
+        Cela signifie qu'un•e des chefs de la section ${sectionData.name} ou un•e organisateur/organisatrice de la Baden Battle devra
+        <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
+    }
+    if (selectedRole.value === ROLES.Chef) {
+        sectionData = await getAttendantSection(selectedAttendantSectionId.value);
+        message = `Tu as choisi le role de chef. 
+        Cela signifie qu'un•e des chefs de la section ${sectionData.name} ou un•e organisateur/organisatrice de la Baden Battle devra
+        <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
+    }
+
+    // If the user is from the staff
+    if (selectedRole.value === ROLES.Organisateur) {
+      [sectionData, selectedAttendantSectionId.value] = await getStaffSection()
+      message = `Tu as choisi le role d'organisateur de la Baden Battle. 
+      Cela signifie qu'une autre personne avec le rôle d'organisateur de la Baden Battle devra <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
+    }
+    if (selectedRole.value === ROLES.Administrateur) {
+      [sectionData, selectedAttendantSectionId.value] = await getStaffSection()
+      message = `Tu as choisi le role d'administrateur de l'application. 
+      Cela signifie qu'une autre personne avec le rôle d'administrateur devra <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
+    }
+  } catch (error: any) {
+    return errorPopup(`Une erreur est survenue : ${error.message}`);
   }
   message += ` Veux-tu continuer ?`
-  const handler = () => processForm();
+  const handler = () => processForm(sectionData);
   return confirmPopup(message, handler, null, 'Attention');
   // Handle form submission
 

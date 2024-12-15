@@ -1,4 +1,4 @@
-import { DEFAULT_SECTION_TYPE_VALUE, DEFAULT_TEAM_ID, TEAMS_COLLECTION_REF } from "@/constants"
+import { DEFAULT_SECTION_TYPE_ID, DEFAULT_TEAM_ID, TEAMS_COLLECTION_REF } from "@/constants"
 import { Team } from "@/types"
 import { doc, limit as fbLimit, orderBy, query, where } from "firebase/firestore"
 import { MaybeRefOrGetter, computed, toValue } from "vue"
@@ -20,7 +20,7 @@ export function useTopTeams(rSectionType: MaybeRefOrGetter<string>, rLimit: Mayb
   const dbRef = computed(() => {
     const sectionType = toValue(rSectionType)
     const limit = toValue(rLimit)
-    if (sectionType === DEFAULT_SECTION_TYPE_VALUE) return null
+    if (sectionType === DEFAULT_SECTION_TYPE_ID) return null
     console.debug(`Fetching the ${limit} top teams from sectionType ${sectionType}`)
     // prettier-ignore
     return query(

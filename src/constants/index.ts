@@ -22,7 +22,7 @@ export const ROLES = {
 // teams
 
 export const DEFAULT_TEAM_ID = ""
-export const DEFAULT_SECTION_TYPE_VALUE = ""
+export const DEFAULT_SECTION_TYPE_ID = ""
 export const TEAMS_COLLECTION_NAME = "teams"
 export const TEAMS_COLLECTION_REF = collection(db, TEAMS_COLLECTION_NAME)
 

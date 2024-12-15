@@ -1,8 +1,24 @@
 import { PLAYER_SECTIONS_COLLECTION_NAME, PLAYER_SECTIONS_COLLECTION_REF } from "@/constants"
 import { incrementDocField } from "@/services/firebase"
 import { RefPlayerSection, PlayerSection } from "@/types"
-import { doc, updateDoc } from "firebase/firestore"
+import { Section } from "@/types/Section"
+import { doc, getDocs, query, updateDoc, where } from "firebase/firestore"
 import { toValue } from "vue"
+
+// Getters
+
+/**
+ * Get the section data of a given player section id
+ * @param sectionId a player section id
+ * @returns the section data (without the id)
+ */
+export const getPlayerSection = async (sectionId: string): Promise<Section> => {
+  const dbRef = query(PLAYER_SECTIONS_COLLECTION_REF, where("sectionId", "==", sectionId))
+  const querySnapshot = await getDocs(dbRef)
+  if (querySnapshot.empty) throw Error("Player section not found in DB")
+  if (querySnapshot.size > 1) throw Error(`There is more than one player section with id ${sectionId} in the database`)
+  return querySnapshot.docs[0].data() as Section
+}
 
 // Setters
 
