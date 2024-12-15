@@ -93,14 +93,13 @@ const sendEmail = async () => {
 
 const signIn = async (href: string) => {
   const success = await processSignInLink(href);
-    if (success) {
-      if (!userProfile.value || 
-      (userProfile.value.role === ROLES.Newbie && ! userProfile.value.hasDoneOnboarding)) {
-        router.replace("/onboarding")
-      } else router.replace("/home");
-    }
-    else errorPopup("Impossible de se connecter");
+  if (success) {
+    if (!userProfile.value || 
+    (userProfile.value.role === ROLES.Newbie && ! userProfile.value.hasDoneOnboarding)) {
+      router.replace("/onboarding")
+    } else router.replace("/home");
   }
+  else errorPopup("Impossible de se connecter");
 }
 
 function sanitizeClipboardContent(input: string): string | null {
