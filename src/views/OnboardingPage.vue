@@ -34,11 +34,11 @@
   
           <ion-item v-if="isParticipant">
             <ion-label position="floating" color="primary">Type de section</ion-label>
-            <ion-select v-model="selectedSectionType" interface="popover" required>
-              <ion-select-option v-for="(sectionType, id) in appConfig?.sectionTypes" :key="id" :value="id">{{ sectionType }}</ion-select-option>
+            <ion-select v-model="selectedSectionTypeId" interface="popover" required>
+              <ion-select-option v-for="(sectionType, id) in appConfig?.sectionTypes" :key="id" :value="id">{{ sectionType.name }}</ion-select-option>
             </ion-select>
           </ion-item>
-          <ion-item v-if="isParticipant && selectedSectionType">
+          <ion-item v-if="isParticipant && selectedSectionTypeId">
             <ion-label position="floating" color="primary">Section</ion-label>
             <ion-spinner v-if="isLoadingSections"></ion-spinner>
             <div v-else-if="errorLoadingSections">Erreur : {{ errorLoadingSections.message }}</div>
@@ -73,7 +73,7 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useAppConfig } from "@/composables/app";
 import { useAttendantSections } from "@/composables/attendantSection";
-import { useSections } from "@/composables/playerSection";
+import { useSectionTypeSections } from "@/composables/playerSection";
 import { useCurrentUserProfile } from "@/composables/userProfile";
 import { DEFAULT_ATTENDANT_SECTION_ID, DEFAULT_SECTION_ID, DEFAULT_SECTION_TYPE_ID, ROLES } from "@/constants";
 import { confirmPopup, errorPopup, toastPopup } from "@/services/popup";
@@ -95,7 +95,7 @@ const roles = Object.fromEntries(Object.entries(ROLES).filter(([, value]) => val
 
 const name = ref('');
 const selectedRole = ref(-1);
-const selectedSectionType = ref(DEFAULT_SECTION_TYPE_ID);
+const selectedSectionTypeId = ref(DEFAULT_SECTION_TYPE_ID);
 const selectedSectionId = ref(DEFAULT_SECTION_ID);
 const selectedAttendantSectionId = ref(DEFAULT_ATTENDANT_SECTION_ID);
 const nameError = ref(false);
@@ -105,7 +105,7 @@ const isUpdatingProfile = ref(false);
 
 const currentUser = useCurrentUserProfile();
 const appConfig = useAppConfig();
-const { data: sections, pending: isLoadingSections, error: errorLoadingSections } = useSections(selectedSectionType);
+const { data: sections, pending: isLoadingSections, error: errorLoadingSections } = useSectionTypeSections(selectedSectionTypeId);
 
 const isParticipant = computed(() => selectedRole.value === ROLES.Participant && name.value != "");
 const isAttendant = computed(() => (selectedRole.value === ROLES.Animateur || selectedRole.value === ROLES.Chef) && name.value != "");
@@ -113,7 +113,7 @@ const { data: attendantSections, pending: isLoadingAttendantSections, error: err
 
 const canSubmit = computed(() => {
   if (!name.value) return false;
-  if (isParticipant.value && selectedSectionType.value != DEFAULT_SECTION_TYPE_ID && selectedSectionId.value != DEFAULT_SECTION_ID) return true
+  if (isParticipant.value && selectedSectionTypeId.value != DEFAULT_SECTION_TYPE_ID && selectedSectionId.value != DEFAULT_SECTION_ID) return true
   if (isAttendant.value && selectedAttendantSectionId.value != DEFAULT_ATTENDANT_SECTION_ID) return true
   if (selectedRole.value >= ROLES.Organisateur) return true
   return false;
@@ -123,7 +123,7 @@ const canSubmit = computed(() => {
 
 const handleRoleChange = () => {
     // Reset section and leaderSection values when changing the role
-    selectedSectionType.value = DEFAULT_SECTION_TYPE_ID
+    selectedSectionTypeId.value = DEFAULT_SECTION_TYPE_ID
     selectedSectionId.value = DEFAULT_SECTION_ID
     selectedAttendantSectionId.value = DEFAULT_ATTENDANT_SECTION_ID
     if (!name.value) nameError.value = true;
