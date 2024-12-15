@@ -19,12 +19,12 @@ export function useAttendantSections(
   rExcludeStaff: MaybeRefOrGetter<boolean>,
   rShouldLoad: MaybeRefOrGetter<boolean> = true
 ) {
-  console.debug(`Fetching attendant sections`)
   const currentUser = useCurrentUserProfile()
   const dbRef = computed(() => {
     const queryParams = []
     if (!rShouldLoad) return null
     if (!currentUser.value) return null
+    console.debug(`Fetching attendant sections`)
     // Chefs can only see their own sections attendants
     if (currentUser.value.role <= ROLES.Chef) {
       console.debug(`Filtering to section ${currentUser.value.sectionId}`)
