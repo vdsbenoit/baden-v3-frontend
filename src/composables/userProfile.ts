@@ -51,7 +51,7 @@ export function useMembersOfSection(rSectionId: MaybeRefOrGetter<string>) {
 
 /**
  * List the applicants for a specific section
- * This function might return applicants that the current user cannot accept
+ * Note: this function might return applicants that the current user cannot accept
  * @param rLimit The maximum number of applicants to fetch
  * @param rSectionId The section id to fetch applicants from. If the default section id is provided, no applicants will be fetched
  * @returns The list of applicants
@@ -63,8 +63,8 @@ export function useSectionApplicants(rLimit: MaybeRefOrGetter<number>, rSectionI
     const limit = toValue(rLimit)
     console.debug(`Fetching pending applicants for section ${sectionId}`)
     const queryParams = []
-    queryParams.push(orderBy("requestedRole", "desc"))
     queryParams.push(where("requestedSectionId", "==", toValue(rSectionId)))
+    queryParams.push(orderBy("requestedRole", "asc"))
     queryParams.push(fbLimit(limit))
     return query(USER_PROFILES_COLLECTION_REF, ...queryParams)
   })
@@ -83,11 +83,12 @@ export function useApplicants(rLimit: MaybeRefOrGetter<number>) {
     const limit = toValue(rLimit)
     console.debug(`Fetching pending applicants for a ${getRoleByValue(maxApplicantRole.value)}`)
     const queryParams = []
-    queryParams.push(orderBy("requestedRole", "desc"))
-    queryParams.push(where("requestedRole", "<=", maxApplicantRole.value))
-    if (applicantSectionIdFilter.value) {
+    queryParams.push(orderBy("requestedSectionId", "asc"))
+    if (applicantSectionIdFilter.value != DEFAULT_SECTION_ID) {
       queryParams.push(where("requestedSectionId", "==", applicantSectionIdFilter.value))
     }
+    queryParams.push(orderBy("requestedRole", "asc"))
+    queryParams.push(where("requestedRole", "<=", maxApplicantRole.value))
     queryParams.push(fbLimit(limit))
     return query(USER_PROFILES_COLLECTION_REF, ...queryParams)
   })

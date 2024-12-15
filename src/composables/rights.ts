@@ -2,7 +2,7 @@ import { useCurrentUserProfile } from "@/composables/userProfile"
 import { RefGame } from "@/types"
 import { computed, reactive, watchEffect } from "vue"
 import { useAppSettings } from "./app"
-import { ROLES } from "@/constants"
+import { DEFAULT_SECTION_ID, ROLES } from "@/constants"
 
 export function useCanEditScores(rGame: RefGame) {
   const currentUserProfile = useCurrentUserProfile()
@@ -157,8 +157,9 @@ export function useCanAcceptApplicants() {
     return currentUserProfile.value.role
   })
   const applicantSectionIdFilter = computed(() => {
-    if (!currentUserProfile.value) return null // if this is true, canAcceptApplicants will be false
-    if (currentUserProfile.value.role > ROLES.Chef) return null
+    if (!currentUserProfile.value) return DEFAULT_SECTION_ID // when this is true, canAcceptApplicants is false
+    if (currentUserProfile.value.role > ROLES.Chef) return DEFAULT_SECTION_ID
+    if (!currentUserProfile.value.sectionId) return DEFAULT_SECTION_ID
     return currentUserProfile.value.sectionId
   })
   return { canAcceptApplicants, maxApplicantRole, applicantSectionIdFilter }
