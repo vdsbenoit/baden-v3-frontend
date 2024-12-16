@@ -4,7 +4,7 @@ import { computed, reactive, watchEffect } from "vue"
 import { useAppSettings } from "./app"
 import { DEFAULT_SECTION_ID, ROLES } from "@/constants"
 
-export function useCanEditScores(rGame: RefGame) {
+export function useEditScoreRights(rGame: RefGame) {
   const currentUserProfile = useCurrentUserProfile()
   const appSettings = useAppSettings()
 
@@ -84,7 +84,7 @@ export function useCanEditScores(rGame: RefGame) {
     return false
   })
 
-  return { canEditScores, canEditTiming: canEditScoresAt }
+  return { canEditScores, canEditScoresAt }
 }
 
 // todo: check that these rules match with the Game registration setters
@@ -137,6 +137,7 @@ export function useCanEditGames() {
     return currentUserProfile.value.role >= ROLES.Organisateur
   })
 }
+
 export function useCanSeeModerationStuff() {
   const currentUserProfile = useCurrentUserProfile()
   return computed(() => {
@@ -145,7 +146,7 @@ export function useCanSeeModerationStuff() {
   })
 }
 
-export function useCanAcceptApplicants() {
+export function useAcceptApplicantRights() {
   const currentUserProfile = useCurrentUserProfile()
   const canAcceptApplicants = computed(() => {
     if (!currentUserProfile.value) return false

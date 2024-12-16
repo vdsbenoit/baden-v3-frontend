@@ -135,7 +135,7 @@ import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useAppConfig, useAppSettings } from "@/composables/app";
 import { useGame } from "@/composables/game";
 import { useMatch } from "@/composables/match";
-import { useCanEditScores, useCanSeeModerationStuff } from "@/composables/rights";
+import { useEditScoreRights, useCanSeeModerationStuff } from "@/composables/rights";
 import { useTeam } from "@/composables/team";
 import { useCurrentUserProfile, useUserProfile } from "@/composables/userProfile";
 import { DEFAULT_GAME_ID, DEFAULT_MATCH_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID } from "@/constants";
@@ -160,7 +160,7 @@ const { data: match, pending: isLoadingMatch, error: errorLoadingMatch } = useMa
 const { data: game, pending: isLoadingGame, error: errorLoadingGame } = useGame(match.value?.gameId ?? DEFAULT_GAME_ID)
 const { data: firstPlayer, pending: isLoadingFirstPlayer, error: errorLoadingFirstPlayer } = useTeam(match.value?.playerIds[0] ?? DEFAULT_TEAM_ID)
 const { data: secondPlayer, pending: isLoadingSecondPlayer, error: errorLoadingSecondPlayer } = useTeam(match.value?.playerIds[0] ?? DEFAULT_TEAM_ID)
-const canEditScores = useCanEditScores(game)
+const { canEditScores } = useEditScoreRights(game)
 const appSettings = useAppSettings()
 const appConfig = useAppConfig()
 const useCanSeeModeration = useCanSeeModerationStuff()
