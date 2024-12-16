@@ -75,7 +75,7 @@ import { useAppConfig } from "@/composables/app";
 import { useAttendantSections } from "@/composables/attendantSection";
 import { useSectionTypeSections } from "@/composables/playerSection";
 import { useCurrentUserProfile } from "@/composables/userProfile";
-import { DEFAULT_ATTENDANT_SECTION_ID, DEFAULT_SECTION_ID, DEFAULT_SECTION_TYPE_ID, ROLES } from "@/constants";
+import { DEFAULT_ATTENDANT_SECTION_ID, DEFAULT_ROLE_VALUE, DEFAULT_SECTION_ID, DEFAULT_SECTION_TYPE_ID, ROLES } from "@/constants";
 import { confirmPopup, errorPopup, toastPopup } from "@/services/popup";
 import { Section } from "@/types/Section";
 import { getAttendantSection, getStaffSection } from "@/utils/attendantSection";
@@ -94,7 +94,7 @@ const roles = Object.fromEntries(Object.entries(ROLES).filter(([, value]) => val
 // reactive data
 
 const name = ref('');
-const selectedRole = ref(-1);
+const selectedRole = ref(DEFAULT_ROLE_VALUE);
 const selectedSectionTypeId = ref(DEFAULT_SECTION_TYPE_ID);
 const selectedSectionId = ref(DEFAULT_SECTION_ID);
 const selectedAttendantSectionId = ref(DEFAULT_ATTENDANT_SECTION_ID);

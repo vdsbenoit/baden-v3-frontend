@@ -18,6 +18,7 @@ export const ROLES = {
   Organisateur:   6,  // Staff
   Administrateur: 8,  // AppAdmin
 }
+export const DEFAULT_ROLE_VALUE = -1
 
 // teams
 
