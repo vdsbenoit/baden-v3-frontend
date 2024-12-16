@@ -5,7 +5,7 @@ import { Section } from "./Section"
 export interface PlayerSection extends Section {
   isAttendant: false
   isStaff: false
-  sectionTypeId: number
+  sectionTypeId: string
   scores: number[]
   score: number
   teams: string[]

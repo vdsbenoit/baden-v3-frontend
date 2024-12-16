@@ -1,5 +1,5 @@
 import { useCurrentUserProfile } from "@/composables/userProfile"
-import { RefGame } from "@/types"
+import { RefGame, RefUserProfile } from "@/types"
 import { computed, reactive, watchEffect } from "vue"
 import { useAppSettings } from "./app"
 import { DEFAULT_SECTION_ID, ROLES } from "@/constants"
@@ -164,4 +164,69 @@ export function useAcceptApplicantRights() {
     return currentUserProfile.value.sectionId
   })
   return { canAcceptApplicants, maxApplicantRole, applicantSectionIdFilter }
+}
+
+export function useEditProfileRights(targetUserProfile: RefUserProfile) {
+  const currentUserProfile = useCurrentUserProfile()
+
+  // Determine if the displayed profile is the current user's profile
+  const isOwnProfile = computed(() => {
+    if (!currentUserProfile.value) return false
+    if (!targetUserProfile.value) return false
+    return targetUserProfile.value.id === currentUserProfile.value.id
+  });
+
+  // User can edit profile if it is its own profile or if it is an organizer
+  const canEditProfile = computed(() => {
+    if (!currentUserProfile.value) return false
+    if (currentUserProfile.value.role >= ROLES.Organisateur) return true;
+    return isOwnProfile.value;
+  });
+
+  
+  // Only moderators & user itself can see email address (GPDR)
+  const canSeeEmail = computed(() => {
+    if (!currentUserProfile.value) return false
+    if (currentUserProfile.value.role >= ROLES.Organisateur) return true;
+    return isOwnProfile.value;
+  });
+
+  // User can edit games if :
+  // - it is its own profile
+  // - it is an organizer
+  // - it is a chef and the target user is in the same section
+  const canEditGames = computed(() => {
+    if (!currentUserProfile.value) return false
+    if (!targetUserProfile.value) return false
+    if (canEditProfile.value) return true;
+    if (currentUserProfile.value.role == ROLES.Chef && currentUserProfile.value.sectionId == targetUserProfile.value.sectionId) return true;
+    return false;
+  });
+
+  // User can edit section if it is an organizer
+  const canEditAttendantSection = computed(() => {
+    if (!currentUserProfile.value) return false
+    return currentUserProfile.value.role >= ROLES.Organisateur;
+  });
+
+  // User can set role if it is an organizer
+  const canEditRole = computed(() => {
+    if (!currentUserProfile.value) return false
+    return currentUserProfile.value.role >= ROLES.Organisateur;
+  });
+
+  // User can reset the onboarding if it is an organizer
+  const canResetOnboarding = computed(() => {
+    if (!currentUserProfile.value) return false
+    return currentUserProfile.value.role >= ROLES.Organisateur;
+  });
+
+  // User can delete profile if it is an organizer or if it is its own profile
+  const canDeleteProfile = computed(() => {
+    if (!currentUserProfile.value) return false
+    if (currentUserProfile.value.role >= ROLES.Administrateur) return true;
+    return isOwnProfile.value;
+  });
+
+  return { isOwnProfile, canEditProfile, canSeeEmail, canEditGames, canEditAttendantSection, canEditRole, canResetOnboarding, canDeleteProfile }
 }
