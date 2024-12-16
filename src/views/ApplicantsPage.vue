@@ -7,6 +7,7 @@
     </header-template>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
+      <!-- Show applicants from all sections to moderators -->
       <div v-if="canSeeModerationStuff">
         <div v-if="isLoadingAttendantSections" class="not-found" style="background: transparent">
           <ion-spinner></ion-spinner>
@@ -19,11 +20,14 @@
           v-else
           v-for="attendantSection in attendantSections"
           :key="attendantSection.id"
-          :attendantSection="attendantSection"
+          :attendant-section-id="attendantSection.id"
+          :attendant-section-name="attendantSection.name"
+          :attendant-section-city="attendantSection.city"
           :limit="limit"
           @has-applicants="(hasApplicants: boolean) => countCardsWithApplicants += hasApplicants ? 1 : -1"
         />
       </div>
+      <!-- Show applicants from the current user section to leaders -->
       <div v-else>
         <div v-if="isLoadingCurrentUserData" class="not-found" style="background: transparent">
           <ion-spinner></ion-spinner>
@@ -33,11 +37,16 @@
           <ion-text color="error">{{ errorCurrentUserData.message }}</ion-text>
         </div>
         <applicant-card
-          v-else
-          :attendantSection="currentUserAttendantSection"
+          v-else-if="currentUserAttendantSection"
+          :attendant-section-id="currentUserSectionId"
+          :attendant-section-name="currentUserAttendantSection.name"
+          :attendant-section-city="currentUserAttendantSection.city"
           :limit="limit"
           @has-applicants="(v:boolean) => hasApplicantsCurrentUserSection = v"
         />
+        <div v-else class="not-found">
+          <h2 class="ion-text-center ion-align-items-center">Erreur lors de chargement de ta section</h2>
+        </div>
       </div>
       <div v-if="isNoApplicants" class="not-found">
         <h2 class="ion-text-center ion-align-items-center">Pas de demandes d'accès</h2>
@@ -49,6 +58,7 @@
 <script setup lang="ts">
 import HeaderTemplate from "@/components/HeaderTemplate.vue"
 import RefresherComponent from "@/components/RefresherComponent.vue"
+import ApplicantCard from "@/components/ApplicantCard.vue"
 import { useAttendantSection, useAttendantSections } from "@/composables/attendantSection"
 import { useCanSeeModerationStuff } from "@/composables/rights"
 import { useCurrentUserProfile } from "@/composables/userProfile"

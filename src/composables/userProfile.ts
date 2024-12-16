@@ -4,7 +4,7 @@ import { getRoleByValue } from "@/utils/userProfile"
 import { doc, limit as fbLimit, orderBy, query, where } from "firebase/firestore"
 import { MaybeRefOrGetter, computed, toValue } from "vue"
 import { useCollection, useCurrentUser, useDocument } from "vuefire"
-import { useCanAcceptApplicants } from "./rights"
+import { useAcceptApplicantRights } from "./rights"
 
 export function useUserProfile(rUid: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
@@ -77,7 +77,7 @@ export function useSectionApplicants(rLimit: MaybeRefOrGetter<number>, rSectionI
  * @returns The list of applicants
  */
 export function useApplicants(rLimit: MaybeRefOrGetter<number>) {
-  const { canAcceptApplicants, maxApplicantRole, applicantSectionIdFilter } = useCanAcceptApplicants()
+  const { canAcceptApplicants, maxApplicantRole, applicantSectionIdFilter } = useAcceptApplicantRights()
   const dbRef = computed(() => {
     if (!canAcceptApplicants.value) return null
     const limit = toValue(rLimit)

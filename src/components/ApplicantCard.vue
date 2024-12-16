@@ -1,7 +1,7 @@
 <template>
     <ion-card v-if="isLoadingApplicants || errorLoadingApplicants || applicants.length > 0"> 
       <ion-card-header>
-        <ion-card-title>{{ attendantSection.name }} ({{ attendantSection.city }})</ion-card-title>
+        <ion-card-title>{{ attendantSectionName }} ({{ attendantSectionCity }})</ion-card-title>
       </ion-card-header>
       <ion-card-content class="ion-no-padding ion-padding-vertical">
         <div v-if="isLoadingApplicants" class="not-found" style="background: transparent">
@@ -26,14 +26,16 @@
 
 <script lang="ts" setup>
 import { useCurrentUserProfile, useSectionApplicants } from "@/composables/userProfile"
-import { ROLES } from "@/constants";
-import { VueFireAttendantSection, VueFireUserProfile } from "@/types"
+import { DEFAULT_ROLE_VALUE, ROLES } from "@/constants";
+import { VueFireUserProfile } from "@/types"
 import { defineProps, defineEmits, watch } from "vue"
 import { getRoleByValue, updateUserProfile } from "@/utils/userProfile";
 import { choicePopup, errorPopup, textInputPopup } from "@/services/popup";
 
 const props = defineProps<{
-  attendantSection: VueFireAttendantSection
+  attendantSectionId: string
+  attendantSectionName: string
+  attendantSectionCity: string
   limit: number
 }>()
 const emit = defineEmits(["hasApplicants"])
@@ -45,7 +47,7 @@ const {
   data: applicants,
   pending: isLoadingApplicants,
   error: errorLoadingApplicants
-} = useSectionApplicants(props.limit, props.attendantSection.id)
+} = useSectionApplicants(props.limit, props.attendantSectionId)
 
 // watchers
 
@@ -107,7 +109,7 @@ const handleRequest = (applicant: VueFireUserProfile) => {
   let message = "";
   if (applicant.requestedRole === ROLES.Animateur || applicant.requestedRole === ROLES.Chef) {
     message = `Tu es sur le point d'ajouter ${applicant.name} (${applicant.email})
-    comme <b>${getRoleByValue(applicant.requestedRole)}</b> de la section ${props.attendantSection.name}.`;
+    comme <b>${getRoleByValue(applicant.requestedRole)}</b> de la section ${props.attendantSectionName}.`;
   }
   if (applicant.requestedRole >= ROLES.Organisateur){
     message = `Tu es sur le point d'ajouter ${applicant.name} (${applicant.email})
@@ -124,7 +126,7 @@ const handleRequest = (applicant: VueFireUserProfile) => {
           role: applicant.requestedRole,
           sectionId: applicant.requestedSectionId,
           sectionName: applicant.requestedSectionName,
-          requestedRole: -1,
+          requestedRole: DEFAULT_ROLE_VALUE,
           requestedSectionId: "",
           rejectionReason: "" 
     });
