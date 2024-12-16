@@ -16,9 +16,9 @@ export function useTeam(rId: MaybeRefOrGetter<string>) {
   return useDocument<Team>(dbRef)
 }
 
-export function useTopTeams(rSectionType: MaybeRefOrGetter<string>, rLimit: MaybeRefOrGetter<number>) {
+export function useTopTeams(rSectionTypeId: MaybeRefOrGetter<string>, rLimit: MaybeRefOrGetter<number>) {
   const dbRef = computed(() => {
-    const sectionType = toValue(rSectionType)
+    const sectionType = toValue(rSectionTypeId)
     const limit = toValue(rLimit)
     if (sectionType === DEFAULT_SECTION_TYPE_ID) return null
     console.debug(`Fetching the ${limit} top teams from sectionType ${sectionType}`)

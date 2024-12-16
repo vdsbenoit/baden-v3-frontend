@@ -9,107 +9,57 @@
     </header-template>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Lutins</ion-card-title>
-        </ion-card-header>
-        <ion-card-content class="ion-no-padding">
-          <ion-grid class="ion-no-padding">
-            <ion-row>
-              <ion-col size="12" size-sm="6">
-                <ranking-component type="section" :printable-scores="showPrintableScores" :ranking-list="lutinTopSections"/>
-              </ion-col>
-              <ion-col size="12" size-sm="6">
-                <ranking-component type="team" :printable-scores="showPrintableScores" :ranking-list="lutinTopTeams"/>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ion-card-content>
-      </ion-card>
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Louveteaux</ion-card-title>
-        </ion-card-header>
-        <ion-card-content class="ion-no-padding">
-          <ion-grid class="ion-no-padding">
-            <ion-row>
-              <ion-col size="12" size-sm="6">
-                <ranking-component type="section" :printable-scores="showPrintableScores" :ranking-list="loupTopSections"/>
-              </ion-col>
-              <ion-col size="12" size-sm="6">
-                <ranking-component type="team" :printable-scores="showPrintableScores" :ranking-list="loupTopTeams"/>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ion-card-content>
-      </ion-card>
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Baladins / Nutons</ion-card-title>
-        </ion-card-header>
-        <ion-card-content class="ion-no-padding">
-          <ion-grid class="ion-no-padding">
-            <ion-row>
-              <ion-col size="12" size-sm="6">
-                <ranking-component type="section" :printable-scores="showPrintableScores" :ranking-list="nutonTopSections"/>
-              </ion-col>
-              <ion-col size="12" size-sm="6">
-                <ranking-component type="team" :printable-scores="showPrintableScores" :ranking-list="nutonTopTeams"/>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ion-card-content>
-      </ion-card>
+      <div v-if="appConfig" >
+        <ion-card v-for="(sectionType, sectionTypeId) in appConfig.sectionTypes" :key="sectionTypeId">
+          <ion-card-header>
+            <ion-card-title>{{ sectionType.name }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content class="ion-no-padding">
+            <ion-grid class="ion-no-padding">
+              <ion-row>
+                <ion-col size="12" size-sm="6">
+                  <ranking-section :sectionTypeId="String(sectionTypeId)" :limit="limit" :printable-scores="showPrintableScores"/>
+                </ion-col>
+                <ion-col size="12" size-sm="6">
+                  <ranking-team :sectionTypeId="String(sectionTypeId)" :limit="limit" :printable-scores="showPrintableScores"/>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+      </div>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonGrid, IonRow, IonCol, IonLabel, IonToggle,
-AlertInput, alertController, IonIcon, IonButton } from "@ionic/vue";
-import { settingsOutline, settingsSharp} from "ionicons/icons";
+// prettier-ignore
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import RankingComponent from "@/components/RankingComponent.vue";
-import { computed, ref } from "@vue/reactivity";
-import { streamTopSections } from "@/services/sections";
-import { streamTopTeams } from "@/services/teams";
+import RankingSection from "@/components/RankingSection.vue";
+import RankingTeam from "@/components/RankingTeam.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
-import { ROLES, useAuthStore } from "@/services/users";
-
-const user = useAuthStore();
+import { useAppConfig } from "@/composables/app";
+import { useCurrentUserProfile } from "@/composables/userProfile";
+import { ROLES } from "@/constants";
+import { alertController, AlertInput, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonLabel, IonPage, IonRow, IonToggle } from "@ionic/vue";
+import { settingsOutline, settingsSharp } from "ionicons/icons";
+import { computed, ref } from "vue";
 
 // reactive data
 
-const maxItems = ref(10);
+const limit = ref(10);
 const showPrintableScores = ref(false);
 
-// lifecycle hooks
+// Composables
+
+const currentUserProfile = useCurrentUserProfile();
+const appConfig = useAppConfig();
 
 // Computed
 
-const lutinTopSections = computed(() => {
-  return streamTopSections("Lutins", maxItems.value);
-});
-const lutinTopTeams = computed(() => {
-  return streamTopTeams("Lutins", maxItems.value);
-});
-const loupTopSections = computed(() => {
-  return streamTopSections("Louveteaux", maxItems.value);
-});
-const loupTopTeams = computed(() => {
-  return streamTopTeams("Louveteaux", maxItems.value);
-});
-const nutonTopSections = computed(() => {
-  return streamTopSections("Baladins & Nutons", maxItems.value);
-});
-const nutonTopTeams = computed(() => {
-  return streamTopTeams("Baladins & Nutons", maxItems.value);
-});
 const canPrint = computed(() => {
-  return user.profile.role === ROLES.Organisateur
+  return currentUserProfile.value && currentUserProfile.value.role >= ROLES.Organisateur
 });
-
-// Watchers
 
 // Methods
 
@@ -122,9 +72,9 @@ const setLimit = async () => {
       label: option.toString(),
       value: option,
       handler: () => {
-        maxItems.value = option;
+        limit.value = option;
       },
-      checked: option === maxItems.value,
+      checked: option === limit.value,
     });
   });
   const alert = await alertController.create({
