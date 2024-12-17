@@ -126,36 +126,29 @@
             </ion-item>
           </div>
           <div v-if="isAttendant">
-            <ion-item lines="full">
-              <!-- morningGame -->
-              <ion-label position="stacked" color="primary">Épreuve du matin</ion-label>
-              <ion-select v-if="isEditting.morningGame" v-model="formData.morningGame" 
-              @ion-change="setMorningGame" 
-              cancel-text="Annuler" interface="action-sheet">
-                <ion-select-option v-for="game in games.values()" :key="game.id" :value="game.id">{{ game.id }}{{ isGameFull(game.morningLeaders) ? " [COMPLET] " : " " }}{{ game.name }}</ion-select-option>
-              </ion-select>
-              <ion-input v-else type="text" :readonly="true" inputmode="none" @click="goToGamePage(userProfile.morningGame)">
-                <span v-if="userProfile.morningGame">{{ userProfile.morningGame }}: {{ morningGame?.name }}</span>
-              </ion-input>
-              <ion-icon v-if="isEditting.morningGame" slot="end" :ios="closeOutline" :md="closeSharp" @click="toggleEdit('morningGame')"></ion-icon>
-              <ion-spinner v-else-if="isUpdating.morningGame"></ion-spinner>
-              <ion-icon v-else-if="canEditGames" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="toggleEdit('morningGame')"></ion-icon>
-            </ion-item>
-            <!-- afternoonGame -->
-            <ion-item lines="full">
-              <ion-label position="stacked" color="primary">Épreuve de l'après-midi</ion-label>
-              <ion-select v-if="isEditting.afternoonGame" v-model="formData.afternoonGame" 
-              @ion-change="setAfternoonGame" 
-              cancel-text="Annuler" interface="action-sheet">
-                <ion-select-option v-for="game in games.values()" :key="game.id" :value="game.id">{{ game.id }}{{ isGameFull(game.afternoonLeaders) ? " [COMPLET] " : " " }}{{ game.name }}</ion-select-option>
-              </ion-select>
-              <ion-input v-else type="text" :readonly="true" inputmode="none" @click="goToGamePage(userProfile.afternoonGame)">
-                <span v-if="userProfile.afternoonGame">{{ userProfile.afternoonGame }}: {{ afternoonGame?.name }}</span>
-              </ion-input>
-              <ion-icon v-if="isEditting.afternoonGame" slot="end" :ios="closeOutline" :md="closeSharp" @click="toggleEdit('afternoonGame')"></ion-icon>
-              <ion-spinner v-else-if="isUpdating.afternoonGame"></ion-spinner>
-              <ion-icon v-else-if="canEditGames" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="toggleEdit('afternoonGame')"></ion-icon>
-            </ion-item>
+            <div v-for="timeSlot in attendantSchedule" :key="timeSlot.id">
+              <!-- Attendant Game (edit mode) -->
+              <ion-item lines="full" v-if="formData.attendantGames.isEditting">
+                <ion-label position="stacked" color="primary">Épreuve {{ timeSlot.name }}</ion-label>
+                <ion-select v-model="formData.attendantGames.value[timeSlot.id].id" 
+                @ion-change="setGame"
+                @ion-cancel="formData.attendantGames.isEditting = false; updateFormData()"
+                cancel-text="Annuler" interface="action-sheet">
+                  <ion-select-option v-for="game in games" :key="game.id" :value="game.id">{{ game.id }}{{ isTimeSlotFull(game, timeSlot.id) ? " [COMPLET] " : " " }}{{ game.name }}</ion-select-option>
+                </ion-select>
+                <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="formData.attendantGames.isEditting = false; updateFormData()"></ion-icon>
+              </ion-item>
+              <!-- Attendant Game (read mode) -->
+              <ion-item lines="full" v-else>
+                <ion-label position="stacked" color="primary">Épreuve {{ timeSlot.name }}</ion-label>
+                <ion-input v-if="timeSlot.id in formData.attendantGames.value" type="text" :readonly="true" inputmode="none" @click="goToGamePage(formData.attendantGames.value[timeSlot.id].id)">
+                  <span>{{ formData.attendantGames.value[timeSlot.id].id }}: {{ formData.attendantGames.value[timeSlot.id].name }}</span>
+                </ion-input>
+                <ion-input v-else type="text" :readonly="true" inputmode="none">Pas d'épreuve sélectionnée</ion-input>
+                <ion-spinner v-if="formData.attendantGames.isUpdating"></ion-spinner>
+                <ion-icon v-else-if="canEditGames" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="shouldLoadGames = true; formData.attendantGames.isEditting = true"></ion-icon>
+              </ion-item>
+            </div>
           </div>
           
           <!-- email -->
@@ -187,13 +180,15 @@
 // prettier-ignore
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
-import { useAppConfig } from "@/composables/app";
+import { useAppConfig, useAppSettings } from "@/composables/app";
 import { useAttendantSections } from "@/composables/attendantSection";
+import { useGames } from "@/composables/game";
 import { useSection, useSectionTypeSections } from "@/composables/playerSection";
 import { useEditProfileRights } from "@/composables/rights";
 import { useCurrentUserProfile, useUserProfile } from "@/composables/userProfile";
 import { DEFAULT_ATTENDANT_SECTION_ID, DEFAULT_GAME_ID, DEFAULT_ROLE_VALUE, DEFAULT_SECTION_ID, DEFAULT_SECTION_TYPE_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID, ROLES } from "@/constants";
 import { confirmPopup, errorPopup, loadingPopup, toastPopup } from "@/services/popup";
+import { VueFireGame } from "@/types";
 import { getRoleByValue } from "@/utils/userProfile";
 import { IonButton, IonCard, IonCol, IonContent, IonGrid, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue";
 import { useRouteParams } from "@vueuse/router";
@@ -209,6 +204,11 @@ const formData = reactive({
     isUpdating: false,
     value: ""
   },
+  role: {
+    isEditting: false,
+    isUpdating: false,
+    value: DEFAULT_ROLE_VALUE
+  },
   playerSection: {
     isEditting: false,
     isUpdating: false,
@@ -216,26 +216,21 @@ const formData = reactive({
     id: DEFAULT_SECTION_ID,
     name: ""
   },
+  team: {
+    isEditting: false,
+    isUpdating: false,
+    value: DEFAULT_TEAM_ID
+  },
   attendantSection: {
     isEditting: false,
     isUpdating: false,
     id: DEFAULT_ATTENDANT_SECTION_ID,
     name: ""
   },
-  team: {
+  attendantGames:{
     isEditting: false,
     isUpdating: false,
-    value: DEFAULT_TEAM_ID
-  },
-  role: {
-    isEditting: false,
-    isUpdating: false,
-    value: DEFAULT_ROLE_VALUE
-  },
-  games:{
-    isEditting: false,
-    isUpdating: false,
-    value: {}
+    value: {} as { [timingId: string]: {name: string, id: string} }
   },
 })
 
@@ -243,6 +238,7 @@ const formData = reactive({
 
 const router = useRouter();
 const appConfig = useAppConfig()
+const appSettings = useAppSettings()
 const currentUserProfile = useCurrentUserProfile()
 const queryUserId = useRouteParams("userId", DEFAULT_USER_ID)
 const userId = computed(() => {
@@ -289,11 +285,18 @@ const selectedPlayerSectionId = computed(() => {
 })
 const selectedPlayerSection = useSection(selectedPlayerSectionId)
 
+// Lazy loading of games
+// They are only loaded after the user starts editting the attendantGames
+const shouldLoadGames = ref(false)
+const games = useGames(shouldLoadGames)
+
 
 // Lazy loading of attendant sections
-// They are only loaded after the user has started editting the field
+// They are only loaded after the user starts editting the field
 const shouldLoadAttendantSections = ref(false)
 const attendantSections = useAttendantSections(false, shouldLoadAttendantSections)
+
+const attendantSchedule = computed(() => (appConfig.value?.attendantSchedule ?? []))
 
 
 const targetSection = computed((): Section | LeaderSection | undefined => {
@@ -318,7 +321,6 @@ const updateFormData = () => {
   // players
   if (userProfile.value.role == ROLES.Participant){
     if (!formData.team.isEditting) formData.team.value = userProfile.value.team ?? DEFAULT_TEAM_ID;
-    if (!formData.games.isEditting) formData.games.value = userProfile.value.games ?? {};
     if (!formData.playerSection.isEditting) {
       formData.playerSection.id = userProfile.value.sectionId ?? DEFAULT_SECTION_ID;
       formData.playerSection.typeId = selectedPlayerSection.value?.sectionTypeId ?? DEFAULT_SECTION_TYPE_ID;
@@ -330,6 +332,16 @@ const updateFormData = () => {
     formData.attendantSection.id = userProfile.value.sectionId ?? DEFAULT_ATTENDANT_SECTION_ID
     formData.attendantSection.name = userProfile.value.sectionName ?? ""
   } 
+
+  // attendants
+  if ((userProfile.value.role == ROLES.Animateur || userProfile.value.role == ROLES.Chef) && !formData.attendantGames.isEditting){
+    formData.attendantGames.value = {} as { [timingId: string]: {name: string, id: string} }
+    if (userProfile.value.games) {
+      for (const [timeSlotId, game] of Object.entries(userProfile.value.games)){
+        formData.attendantGames.value[timeSlotId] = {name: game.name, id: game.id}
+      }
+    }
+  }
 }
 
 // Watchers
@@ -366,6 +378,14 @@ const goToTeamPage = (teamId: string) => {
 const goToGamePage = (gameId: string) => {
   if (gameId != DEFAULT_GAME_ID) router.push(`/game/${gameId}`);
 };
+
+const isTimeSlotFull = (game: VueFireGame, timeSlotId: string) => {
+  if (!appSettings.value) return true;
+  return game.attendants[timeSlotId].length >= appSettings.value.maxGameAttendants 
+}
+
+// todo: think about running a updateFormData() when the user profile changes in the method down below
+
 const setName = async () => {
   if (!formData.name) {
     toastPopup("Erreur : aucun nom n'a été entré");
