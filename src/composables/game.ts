@@ -14,9 +14,9 @@ export function useGame(rGameId: MaybeRefOrGetter<string>) {
   return useDocument<Game>(dbRef)
 }
 
-export function useGames() {
+export function useGames(rShouldLoad: MaybeRefOrGetter<boolean> = true) {
   console.debug(`Fetching all games`)
-  const dbRef = query(GAMES_COLLECTION_REF, orderBy("id"))
+  const dbRef = computed(() => toValue(rShouldLoad) ? query(GAMES_COLLECTION_REF, orderBy("id")) : null)
   return useCollection<Game>(dbRef)
 }
 

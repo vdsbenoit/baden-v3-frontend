@@ -22,7 +22,7 @@ export function useAttendantSections(
   const currentUser = useCurrentUserProfile()
   const dbRef = computed(() => {
     const queryParams = []
-    if (!rShouldLoad) return null
+    if (!toValue(rShouldLoad)) return null
     if (!currentUser.value) return null
     console.debug(`Fetching attendant sections`)
     // Chefs can only see their own sections attendants
