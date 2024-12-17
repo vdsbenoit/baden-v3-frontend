@@ -42,7 +42,7 @@
                   <ion-text style="font-weight: bold">{{ attendant.name }}</ion-text>
                   <ion-text color="medium">&nbsp;({{ attendant.sectionName ?? "" }})</ion-text>
                 </ion-label>
-                <ion-icon v-if="edit.isOn" :ios="closeOutline" :md="closeSharp" @click="removeAttendant(gameId, attendant.id, timeSlot)"></ion-icon>
+                <ion-icon v-if="edit.isOn" :ios="closeOutline" :md="closeSharp" @click="removeAttendant(gameId, attendant.id, timeSlot.id)"></ion-icon>
               </ion-item>
             </ion-list>
             <ion-grid class="ion-margin-top">
@@ -290,7 +290,7 @@ const register = async (result: any, payload: any) => {
       confirmPopup(
         message,
         async () => {
-          await removeAttendant(currentGameId, _targetUser.id, _timeSlot).then(() => {
+          await removeAttendant(currentGameId, _targetUser.id, _timeSlot.id).then(() => {
             toastPopup(`Désinscription à l'épreuve ${currentGameId} effectuée`)
           })
           await addAttendant(_game.id, _targetUser.id, _timeSlot).then(() => {
@@ -324,7 +324,7 @@ const unregister = async (result: any, payload: any) => {
   if (!_game) throw Error("Undefined game")
   if (!_targetUser) throw Error("Undefined target user")
 
-  await removeAttendant(_game.id, _targetUser.id, _timing).then(() => {
+  await removeAttendant(_game.id, _targetUser.id, _timing.id).then(() => {
     toastPopup(`Désinscription à l'épreuve ${_game.id} effectuée`)
   })
 }

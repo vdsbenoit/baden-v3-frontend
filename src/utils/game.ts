@@ -37,15 +37,15 @@ export const addAttendant = async (gameId: string, uid: string, timeSlot: Attend
 /**
  * Remove attendant from the game, and the game from the attendant profile
  */
-export const removeAttendant = async (gameId: string, uid: string, timeSlot: AttendantTimeSlot) => {
+export const removeAttendant = async (gameId: string, uid: string, timeSlotId: string) => {
   const userDocRef = doc(USER_PROFILES_COLLECTION_REF, uid)
   // remove from game
-  console.debug(`Removing user ${uid} from game ${gameId} at timing ${timeSlot.name}`)
-  const gameMergePromise = removeFromDocArray(GAMES_COLLECTION_NAME, gameId, `attendants.${timeSlot.id}`, userDocRef)
+  console.debug(`Removing user ${uid} from game ${gameId} at timing ${timeSlotId}`)
+  const gameMergePromise = removeFromDocArray(GAMES_COLLECTION_NAME, gameId, `attendants.${timeSlotId}`, userDocRef)
 
   // remove from user profile
-  console.debug(`Removing game ${gameId} from user profile ${uid} at timing ${timeSlot.name}`)
-  const userMergePromise = updateUserProfile(uid, { [`games.${timeSlot.id}`]: DEFAULT_GAME_ID })
+  console.debug(`Removing game ${gameId} from user profile ${uid} at timing ${timeSlotId}`)
+  const userMergePromise = updateUserProfile(uid, { [`games.${timeSlotId}`]: DEFAULT_GAME_ID })
 
   return Promise.all([gameMergePromise, userMergePromise])
 }
