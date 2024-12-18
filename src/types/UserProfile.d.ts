@@ -1,6 +1,5 @@
 import { Ref } from "vue"
 import { VueFirestoreDocumentData } from "vuefire"
-import { VueFireGame } from "./Game"
 
 export type UserProfile = {
   creationDate: Timestamp
@@ -15,7 +14,7 @@ export type UserProfile = {
   sectionId?: string
   sectionName?: string
   team?: string // if it's a player
-  games?: { [timingId: string]: VueFireGame }  // if it's an attendant
+  games?: { [timingId: string]: string }  // if it's an attendant
   settings?: any
 }
 

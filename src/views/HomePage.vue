@@ -30,7 +30,7 @@
             <tile-col v-if="userProfile.sectionId" :target="`/attendant/${userProfile.sectionId}`">Ma section</tile-col>
             <div v-if="userProfile.role === ROLES.Animateur || userProfile.role === ROLES.Chef">
               <div v-for="timeSlot in attendantSchedule" :key="timeSlot.id">
-                <tile-col v-if="userProfile.games && userProfile.games[timeSlot.id]" :target="`/game/${userProfile.games[timeSlot.id].id}`">Mon épreuve ({{ timeSlot.name }})</tile-col>
+                <tile-col v-if="userProfile.games && userProfile.games[timeSlot.id]" :target="`/game/${userProfile.games[timeSlot.id]}`">Mon épreuve ({{ timeSlot.name }})</tile-col>
                 <tile-col v-else-if="appSettings && appSettings.isAttendantRegistrationOpen" target="/games">Inscris-toi à une épreuve ({{ timeSlot.name }})</tile-col>
               </div>
             </div>

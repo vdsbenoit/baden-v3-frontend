@@ -225,7 +225,7 @@ const attendantSchedule = computed(() => (appConfig.value?.attendantSchedule ?? 
 const isUserRegisteredHere = computed(() => {
   if (!currentUser.value) return false
   if (!currentUser.value.games) return false
-  return Object.values(currentUser.value.games).map(game => game.id).includes(gameId.value)
+  return Object.values(currentUser.value.games).includes(gameId.value)
 })
 
 // Methods
@@ -281,8 +281,8 @@ const register = async (result: any, payload: any) => {
       Le nombre maximum d'animateurs a été atteint au timing ${_timeSlot.name} de l'épreuve ${_game.id}
     `)
     // if target user is busy at target timing
-    if (_targetUser.games && _timeSlot.id in _targetUser.games && _targetUser.games[_timeSlot.id].id != DEFAULT_GAME_ID) {
-      const currentGameId = _targetUser.games[_timeSlot.id].id
+    if (_targetUser.games && _timeSlot.id in _targetUser.games && _targetUser.games[_timeSlot.id] != DEFAULT_GAME_ID) {
+      const currentGameId = _targetUser.games[_timeSlot.id]
       const message =
         isCurrentUser
           ? `Tu es déjà inscrit.e à l'épreuve ${currentGameId} au timing ${_timeSlot.name}. Veux-tu te désincrire ?`
