@@ -27,7 +27,8 @@
           <!-- Role (edit mode) -->
           <ion-item lines="full" v-if="formData.role.isEditting">
             <ion-label position="stacked" color="primary">Role</ion-label>
-            <ion-select v-model="formData.role.value" 
+            <ion-select 
+              v-model="formData.role.value" 
               @ion-change="setRole"
               @ion-cancel="formData.role.isEditting = false; resetFormData()"
               cancel-text="Annuler" interface="action-sheet"
@@ -49,7 +50,14 @@
             <ion-item lines="full" v-if="formData.playerSection.isEditting">
               <ion-label position="stacked" color="primary">Type de section</ion-label>
               <ion-input v-if="!appConfig" type="text" readonly>Error: cannot load section types (i.e. appConfig)</ion-input>
-              <ion-select v-else v-model="formData.playerSection.typeId" cancel-text="Annuler" interface="action-sheet">
+              <ion-select 
+                v-else 
+                v-model="formData.playerSection.typeId"
+                @ion-change="formData.playerSection.id = DEFAULT_SECTION_ID; formData.playerSection.name = ''"
+                @ion-cancel="formData.playerSection.isEditting = false; resetFormData()"
+                cancel-text="Annuler" 
+                interface="action-sheet"
+              >
                 <ion-select-option v-for="sectionType, sectionTypeId in appConfig.sectionTypes" :key="sectionTypeId" :value="sectionTypeId">{{ sectionType.name }}</ion-select-option>
               </ion-select>
               <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="formData.playerSection.isEditting = false; resetFormData()"></ion-icon>
@@ -67,8 +75,9 @@
               <ion-label position="stacked" color="primary">Section</ion-label>
               <p v-if="formData.playerSection.typeId === DEFAULT_SECTION_TYPE_ID" class="field-error">Selectionne d'abord un type de section</p>
               <ion-select 
-                v-else-if="playerSections.length > 0" v-model="formData.playerSection.typeId"
-                @ion-change="setSection"
+                v-else-if="playerSections.length > 0" 
+                v-model="formData.playerSection.id"
+                @ion-change="setPlayerSection"
                 @ion-cancel="formData.playerSection.isEditting = false; resetFormData()"
                 cancel-text="Annuler" interface="action-sheet"
               >
@@ -87,10 +96,13 @@
               <!-- Team (edit mode)-->
             <ion-item lines="full" v-if="formData.playerSection.isEditting">
               <ion-label position="stacked" color="primary">Équipe</ion-label>
-              <ion-select v-if="selectedPlayerSection && selectedPlayerSection.teams.length > 0" v-model="formData.team.value" 
-              @ion-change="setTeam"
-              @ion-cancel="formData.team.isEditting = false; resetFormData()"
-              cancel-text="Annuler" interface="action-sheet">
+              <ion-select 
+                v-if="selectedPlayerSection && selectedPlayerSection.teams.length > 0" 
+                v-model="formData.team.value" 
+                @ion-change="setTeam"
+                @ion-cancel="formData.team.isEditting = false; resetFormData()"
+                cancel-text="Annuler" interface="action-sheet"
+              >
                 <ion-select-option v-for="team in selectedPlayerSection.teams" :key="team" :value="team">{{ team }}</ion-select-option>
               </ion-select>
               <p v-else class="field-error">Pas de team pour cette section</p>
@@ -108,10 +120,13 @@
             <!-- Attendant Section (edit mode) -->
             <ion-item lines="full" v-if="formData.attendantSection.isEditting">
               <ion-label position="stacked" color="primary">Section</ion-label>
-              <ion-select v-if="attendantSections.length > 0" v-model="formData.attendantSection.id"
-              @ion-change="setAttendantSection"
-              @ion-cancel="formData.attendantSection.isEditting = false; resetFormData()"
-              cancel-text="Annuler" interface="action-sheet">
+              <ion-select 
+                v-if="attendantSections.length > 0" 
+                v-model="formData.attendantSection.id"
+                @ion-change="setAttendantSection"
+                @ion-cancel="formData.attendantSection.isEditting = false; resetFormData()"
+                cancel-text="Annuler" interface="action-sheet"
+              >
                 <ion-select-option v-for="section in attendantSections" :key="section.id" :value="section.id">{{ section.name }}</ion-select-option>
               </ion-select>
               <p v-else class="field-error">Pas de section</p>
@@ -130,10 +145,12 @@
               <!-- Attendant Game (edit mode) -->
               <ion-item lines="full" v-if="formData.attendantGames.isEditting">
                 <ion-label position="stacked" color="primary">Épreuve {{ timeSlot.name }}</ion-label>
-                <ion-select v-model="formData.attendantGames.value[timeSlot.id].id" 
-                @ion-change="setGame"
-                @ion-cancel="formData.attendantGames.isEditting = false; resetFormData()"
-                cancel-text="Annuler" interface="action-sheet">
+                <ion-select 
+                  v-model="formData.attendantGames.value[timeSlot.id]" 
+                  @ion-change="setGame(timeSlot.id)"
+                  @ion-cancel="formData.attendantGames.isEditting = false; resetFormData()"
+                  cancel-text="Annuler" interface="action-sheet"
+                >
                   <ion-select-option v-for="game in games" :key="game.id" :value="game.id">{{ game.id }}{{ isTimeSlotFull(game, timeSlot.id) ? " [COMPLET] " : " " }}{{ game.name }}</ion-select-option>
                 </ion-select>
                 <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="formData.attendantGames.isEditting = false; resetFormData()"></ion-icon>
@@ -141,8 +158,8 @@
               <!-- Attendant Game (read mode) -->
               <ion-item lines="full" v-else>
                 <ion-label position="stacked" color="primary">Épreuve {{ timeSlot.name }}</ion-label>
-                <ion-input v-if="timeSlot.id in formData.attendantGames.value" type="text" :readonly="true" inputmode="none" @click="goToGamePage(formData.attendantGames.value[timeSlot.id].id)">
-                  <span>{{ formData.attendantGames.value[timeSlot.id].id }}: {{ formData.attendantGames.value[timeSlot.id].name }}</span>
+                <ion-input v-if="timeSlot.id in formData.attendantGames.value" type="text" :readonly="true" inputmode="none" @click="goToGamePage(formData.attendantGames.value[timeSlot.id])">
+                  <span>{{ formData.attendantGames.value[timeSlot.id] }}</span>
                 </ion-input>
                 <ion-input v-else type="text" :readonly="true" inputmode="none">Pas d'épreuve sélectionnée</ion-input>
                 <ion-spinner v-if="formData.attendantGames.isUpdating"></ion-spinner>
@@ -164,7 +181,7 @@
               <ion-button expand="block" class="" color="warning" @click="logOut"> Se déconnecter </ion-button>
             </ion-col>
             <ion-col v-if="canDeleteProfile" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
-              <ion-button expand="block" class="" color="danger" @click="deleteAccount"> Supprimer le compte </ion-button>
+              <ion-button expand="block" class="" color="danger" @click="removeAccount"> Supprimer le compte </ion-button>
             </ion-col>
             <ion-col v-if="canResetOnboarding" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
               <ion-button expand="block" class="" color="medium" @click="resetOnboarding"> Reset onboarding </ion-button>
@@ -190,8 +207,8 @@ import { DEFAULT_ATTENDANT_SECTION_ID, DEFAULT_GAME_ID, DEFAULT_ROLE_VALUE, DEFA
 import { confirmPopup, errorPopup, loadingPopup, toastPopup } from "@/services/popup";
 import { VueFireGame } from "@/types";
 import { sanitizeInput } from "@/utils/form";
-import { removeAttendant } from "@/utils/game";
-import { getRoleByValue, updateUserProfile } from "@/utils/userProfile";
+import { addAttendant, removeAttendant } from "@/utils/game";
+import { getRoleByValue, removeFirebaseAccount, signOut, updateUserProfile } from "@/utils/userProfile";
 import { IonButton, IonCard, IonCol, IonContent, IonGrid, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue";
 import { useRouteParams } from "@vueuse/router";
 import { checkmarkOutline, checkmarkSharp, closeOutline, closeSharp, pencilOutline, pencilSharp } from "ionicons/icons";
@@ -199,7 +216,7 @@ import { computed, reactive, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 
 
-// reactive data
+// reactive form data
 const formData = reactive({
   name: {
     isEditting: false,
@@ -232,7 +249,7 @@ const formData = reactive({
   attendantGames:{
     isEditting: false,
     isUpdating: false,
-    value: {} as { [timingId: string]: {name: string, id: string} }
+    value: {} as { [timingId: string]: string }
   },
 })
 
@@ -241,6 +258,7 @@ const formData = reactive({
 const router = useRouter();
 const appConfig = useAppConfig()
 const appSettings = useAppSettings()
+const attendantSchedule = computed(() => (appConfig.value?.attendantSchedule ?? []))
 const currentUserProfile = useCurrentUserProfile()
 const queryUserId = useRouteParams("userId", DEFAULT_USER_ID)
 const userId = computed(() => {
@@ -267,6 +285,11 @@ const isStaff = computed(() => {
 });
 const { isOwnProfile, canEditProfile, canSeeEmail, canEditGames, canEditAttendantSection, canEditRole, canResetOnboarding, canDeleteProfile } = useEditProfileRights(userProfile)
 
+const isTimeSlotFull = (game: VueFireGame, timeSlotId: string) => {
+  if (!appSettings.value) return true;
+  return game.attendants[timeSlotId].length >= appSettings.value.maxGameAttendants 
+}
+
 const pageTitle = computed(() => {
   if (isOwnProfile.value) return "Ton profil";
   if (!userProfile.value || !userProfile.value.email) return "Profil inconnu";
@@ -275,11 +298,12 @@ const pageTitle = computed(() => {
   
 });
 
-const selectedSectionTypeId = computed(() => {
-  if (!formData.playerSection.isEditting) return DEFAULT_SECTION_TYPE_ID // prevents loading the sections before going into edit mode
-  return formData.playerSection.typeId
+// Lazy loading of all player sections
+// They are only loaded after the user starts editting the player section
+const selectedPlayerSectionTypeId = computed(() => {
+  return formData.playerSection.isEditting ? formData.playerSection.typeId : DEFAULT_SECTION_TYPE_ID
 })
-const playerSections = useSectionTypeSections(selectedSectionTypeId)
+const playerSections = useSectionTypeSections(selectedPlayerSectionTypeId)
 
 // This computed variable is necessary in order to keep the reactivity
 const selectedPlayerSectionId = computed(() => {
@@ -292,21 +316,10 @@ const selectedPlayerSection = useSection(selectedPlayerSectionId)
 const shouldLoadGames = ref(false)
 const games = useGames(shouldLoadGames)
 
-
 // Lazy loading of attendant sections
 // They are only loaded after the user starts editting the field
 const shouldLoadAttendantSections = ref(false)
 const attendantSections = useAttendantSections(false, shouldLoadAttendantSections)
-
-const attendantSchedule = computed(() => (appConfig.value?.attendantSchedule ?? []))
-
-
-const targetSection = computed((): Section | LeaderSection | undefined => {
-  if (formData.playerSection.id == DEFAULT_SECTION_ID) return undefined;
-  if (isPlayer.value) return streamSection(formData.sectionId);
-  if (isAttendant.value || isStaff.value) return streamLeaderSection(formData.sectionId);
-  return undefined;
-});
 
 
 /**
@@ -337,10 +350,10 @@ const resetFormData = () => {
 
   // attendants
   if ((userProfile.value.role == ROLES.Animateur || userProfile.value.role == ROLES.Chef) && !formData.attendantGames.isEditting){
-    formData.attendantGames.value = {} as { [timingId: string]: {name: string, id: string} }
+    formData.attendantGames.value = {} as { [timingId: string]: string }
     if (userProfile.value.games) {
       for (const [timeSlotId, game] of Object.entries(userProfile.value.games)){
-        formData.attendantGames.value[timeSlotId] = {name: game.name, id: game.id}
+        formData.attendantGames.value[timeSlotId] = game
       }
     }
   }
@@ -355,18 +368,7 @@ watch(userProfile, (newProfileValue) => {
   }
 });
 
-
-// Reset the section id when the section type changes
-watch(
-  () => formData.playerSection.typeId,
-  (newValue, oldValue) => {
-    if(newValue && oldValue && newValue != oldValue) {
-      formData.playerSection.id = DEFAULT_SECTION_ID;
-    }
-  }
-);
-
-// Methods
+// Go to pages
 
 const goToPlayerSectionPage = (sectionId: string) => {
   if (sectionId != DEFAULT_SECTION_ID) router.push(`/section/${sectionId}`);
@@ -381,13 +383,25 @@ const goToGamePage = (gameId: string) => {
   if (gameId != DEFAULT_GAME_ID) router.push(`/game/${gameId}`);
 };
 
-const isTimeSlotFull = (game: VueFireGame, timeSlotId: string) => {
-  if (!appSettings.value) return true;
-  return game.attendants[timeSlotId].length >= appSettings.value.maxGameAttendants 
-}
 
-// todo: think about running a updateFormData() when the user profile changes in the method down below
+// Setters
 
+/**
+ * Setters
+ * 
+ * Each setter is responsible for updating the user profile with the new data
+ * It also handles the loading and error states
+ * 
+ * The resetFormData function is called at the end of each setter to reset the form data
+ * 
+ * If an error occurs, the function throws an error and the form data is not reset
+ */
+
+ 
+/**
+ * Set a new name for the user
+ * Sanitize the input before updating the user profile
+ */
 const setName = async () => {
   if (!formData.name.value) {
     toastPopup("Erreur : aucun nom n'a été entré");
@@ -404,6 +418,13 @@ const setName = async () => {
   resetFormData()
 };
 
+
+/**
+ * Set a new role for the user
+ * If the user was registered to games & that the new roles is not an attendant, remove the games
+ * Throw an error if trying to upgrade a participant to an higher role
+ * Throw an error if trying to downgrade an attendant (or higher) to a participant
+ */
 const setRole = async () => {
   if (!formData.role.value || formData.role.value === DEFAULT_ROLE_VALUE) {
     toastPopup("Erreur : aucun rôle n'a été sélectionné");
@@ -418,7 +439,13 @@ const setRole = async () => {
     return
   }
   if (userProfile.value.role < ROLES.Animateur) {
-    errorPopup("Il n'est pas possible de changer le rôle d'un participant")
+    errorPopup("Il n'est pas possible de changer le rôle d'un participant. Pour cela, il faut supprimer et recréer l'utilisateur.")
+    formData.role.isEditting = false
+    resetFormData()
+    return
+  }
+  if (userProfile.value.role >= ROLES.Animateur && formData.role.value < ROLES.Animateur){
+    errorPopup("Il n'est pas possible de rétrograder un utilisateur au role de participant. Pour cela, il faut supprimer et recréer l'utilisateur.")
     formData.role.isEditting = false
     resetFormData()
     return
@@ -429,9 +456,9 @@ const setRole = async () => {
   if (userProfile.value.games && Object.values(userProfile.value.games).length > 0 && formData.role.value > ROLES.Chef) {
     for (const [timeSlotId, game] of Object.entries(userProfile.value.games)){
       try {
-        await removeAttendant(game.id, userProfile.value.id, timeSlotId)
+        await removeAttendant(game, userProfile.value.id, timeSlotId)
       } catch (error: any){
-        errorPopup(`Erreur lors du désenregistrement de l'utilisateur à l'épreuve ${game.id} : ${error.message}`);
+        errorPopup(`Erreur lors du désenregistrement de l'utilisateur à l'épreuve ${game} : ${error.message}`);
         formData.role.isUpdating = false
         resetFormData()
         throw error
@@ -440,9 +467,7 @@ const setRole = async () => {
     }
   }
   try {
-    await updateUserProfile(userProfile.value.id, { 
-      role: formData.role.value,
-    })
+    await updateUserProfile(userProfile.value.id, { role: formData.role.value })
   } catch(error: any){
     errorPopup(`Le rôle n'a pas pu être mis à jour : ${error.message}`);
     formData.role.isUpdating = false
@@ -453,30 +478,51 @@ const setRole = async () => {
   resetFormData()
 };
 
-const setSection = async () => {
-  if (!formData.sectionId) {
-    toastPopup("Erreur : aucune section n'a été sélectionnée");
-    return toggleEdit("section");
+/**
+ * Set a new player section
+ * Side effect: it resets the team value
+ */
+const setPlayerSection = async () => {
+  if (formData.playerSection.id === DEFAULT_SECTION_ID) {
+    formData.team.isEditting = false
+    resetFormData()
+    return
   }
-  toggleEdit("section");
-  isUpdating.section = true;
-  await userStore.updateProfile(userId.value, { 
-    sectionId: formData.sectionId,
-    sectionName: targetSection.value?.name,
-    team: "",
-  }).catch((error) => {
-    errorPopup(`La section n'a pas pu être mise à jour : ${error.message}`);
-  });
-  isUpdating.section = false;
-  formData.sectionId = -1;
+  formData.playerSection.isEditting = false
+  formData.playerSection.isUpdating = true
+  const selectedSection = playerSections.value.find(section => section.id === formData.playerSection.id)
+  if (!selectedSection){
+    errorPopup("La section n'a pas été trouvée")
+    formData.playerSection.isUpdating = false
+    resetFormData()
+    return
+  }
+  try {
+    await updateUserProfile(userId.value, { 
+      sectionId: formData.playerSection.id,
+      sectionName: selectedSection.name,
+      team: DEFAULT_TEAM_ID,
+    })
+  } catch (error: any) {
+    errorPopup(`La section n'a pas pu être mise à jour : ${error.message}`)
+    formData.playerSection.isUpdating = false
+    resetFormData()
+    throw error
+  }
+  toastPopup("Vu que la section a changé, l'équipe a été effacée du profil")
+  formData.playerSection.isUpdating = false
+  resetFormData()
 };
 
-
+/**
+ * Set a new team
+ */
 const setTeam = async () => {
   if (formData.team.value === DEFAULT_TEAM_ID) {
     toastPopup("Erreur : aucune équipe n'a été sélectionnée");
     formData.team.isEditting = false
     resetFormData()
+    return
   }
   formData.team.isEditting = false
   formData.team.isUpdating = true
@@ -492,19 +538,29 @@ const setTeam = async () => {
   resetFormData()
 };
 
-
+/**
+ * Set a new attendant section
+ */
 const setAttendantSection = async () => {
   if (formData.attendantSection.id === DEFAULT_ATTENDANT_SECTION_ID) {
     toastPopup("Erreur : aucune section n'a été sélectionnée");
     formData.attendantSection.isEditting = false
     resetFormData()
+    return
   }
   formData.attendantSection.isEditting = false
   formData.attendantSection.isUpdating = true
+  const selectedSection = attendantSections.value.find(section => section.id === formData.attendantSection.id)
+  if (!selectedSection){
+    errorPopup("La section n'a pas été trouvée")
+    formData.attendantSection.isUpdating = false
+    resetFormData()
+    return
+  }
   try {
     await updateUserProfile(userId.value, { 
       sectionId: formData.attendantSection.id,
-      sectionName: formData.attendantSection.name
+      sectionName: selectedSection.name,
     })
   } catch (error: any) {
     errorPopup(`La section n'a pas pu être mise à jour : ${error.message}`);
@@ -516,104 +572,121 @@ const setAttendantSection = async () => {
   resetFormData()
 };
 
-const targetMorningGame = useGame(formData.morningGame)
-const targetAfternoonGame = useGame(formData.afternoonGame)
-const setMorningGame = async () => {
-  if (!formData.morningGame) {
+/**
+ * Set a new game for the user
+ * If the user was already registered to a game, remove the user from the previous game
+ */
+const setGame = async (timeSlotId: string) => {
+  if (!formData.attendantGames.value[timeSlotId]) {
     toastPopup("Erreur : aucun match n'a été sélectionné");
-    return toggleEdit("morningGame");
+    formData.attendantGames.isEditting = false
+    resetFormData()
+    return
   }
-  toggleEdit("morningGame");
-  isUpdating.morningGame = true;
-  if (formData.morningGame != userProfile.value.morningGame){
-    if (userProfile.value.morningGame) {
-      await removeMorningLeader(userProfile.value.morningGame, userId.value).catch((error) => {
-        errorPopup(`Erreur lors de la suppression de l'utilisateur de l'épreuve du matin précédente : ${error.message}`);
-        isUpdating.morningGame = false;
-        formData.morningGame = 0;
-        return;
-      });
+  if (!userProfile.value) {
+    errorPopup("Le profil de l'utilisateur n'a pas été chargé")
+    formData.attendantGames.isEditting = false
+    resetFormData()
+    return
+  }
+  formData.attendantGames.isEditting = false
+  formData.attendantGames.isUpdating = true
+
+  // if the user was already registered to a game
+  if (userProfile.value.games && userProfile.value.games[timeSlotId]){
+    // if the user is already registered to this game, cancel the operation and notify the user
+    if (userProfile.value.games[timeSlotId] === formData.attendantGames.value[timeSlotId]){
+      toastPopup("L'utilisateur est déjà inscrit à cette épreuve")
+      formData.attendantGames.isUpdating = false
+      resetFormData()
+      return
     }
-    const promises = [];
-    promises.push(setMorningLeader(targetMorningGame, userId.value).catch((error) => {
-      errorPopup(`Le jeu du matin n'a pas pu être mis à jour : ${error.message}`);
-    }));
-    promises.push(userStore.updateProfile(userId.value, { morningGame: formData.morningGame }).catch((error) => {
-      errorPopup(`Le profil n'a pas pu être mis à jour : ${error.message}`);
-    }));
-    await Promise.all(promises);
-  }
-  isUpdating.morningGame = false;
-  formData.morningGame = 0;
-};
-const setAfternoonGame = async () => {
-  if (!formData.afternoonGame) {
-    toastPopup("Erreur : aucun match n'a été sélectionné");
-    return toggleEdit("afternoonGame");
-  }
-  toggleEdit("afternoonGame");
-  isUpdating.afternoonGame = true;
-  if (formData.afternoonGame != userProfile.value.afternoonGame){
-    if (userProfile.value.afternoonGame) {
-      await removeAfternoonLeader(userProfile.value.afternoonGame, userId.value).catch((error) => {
-        errorPopup(`Erreur lors de la suppression de l'utilisateur de l'épreuve du matin précédente : ${error.message}`);
-        isUpdating.afternoonGame = false;
-        formData.afternoonGame = 0;
-        return;
-      });
+    // else, remove the user from the previous game
+    try {
+      await removeAttendant(userProfile.value.games[timeSlotId], userProfile.value.id, timeSlotId)
+    } catch (error: any){
+      errorPopup(`Erreur lors du désenregistrement de l'utilisateur à l'épreuve ${userProfile.value.games[timeSlotId]} : ${error.message}`);
+      formData.attendantGames.isUpdating = false
+      resetFormData()
+      throw error
     }
-    const promises = [];
-    promises.push(setAfternoonLeader(targetAfternoonGame, userId.value).catch((error) => {
-      errorPopup(`Le jeu de l'après-midi n'a pas pu être mis à jour : ${error.message}`);
-    }));
-    promises.push(userStore.updateProfile(userId.value, { afternoonGame: formData.afternoonGame }).catch((error) => {
-      errorPopup(`Le profil n'a pas pu être mis à jour : ${error.message}`);
-    }));
-    await Promise.all(promises);
   }
-  isUpdating.afternoonGame = false;
-  formData.afternoonGame = 0;
+  try {
+    await addAttendant(formData.attendantGames.value[timeSlotId], userProfile.value.id, timeSlotId)
+  }
+  catch (error: any){
+    errorPopup(`Erreur lors de l'enregistrement de l'utilisateur à l'épreuve ${formData.attendantGames.value[timeSlotId]} : ${error.message}`);
+    formData.attendantGames.isUpdating = false
+    resetFormData()
+    throw error
+  }
+  formData.attendantGames.isUpdating = false
+  resetFormData()
 };
+
+// Actions
+
+/**
+ * Reset the onboarding process
+ */
 const resetOnboarding = async () => {
   const loading = await loadingPopup("Réinitialisation de l'onboarding");
-  await userStore.updateProfile(userId.value, { hasDoneOnboarding: false }).catch((error) => {
+  try {
+    await updateUserProfile(userId.value, { hasDoneOnboarding: false });
+  } catch (error: any) {
     errorPopup(`L'onboarding n'a pas pu être réinitialisée : ${error.message}`);
-  });
+  }
   loading.dismiss();
-};
+}
+
+/**
+ * Log out the user
+ */
 const logOut = () => {
   confirmPopup("Es-tu certain.e de vouloir te déconnecter ?", async () => {
     const loading = await loadingPopup("Déconnexion");
-    await stopMagnetar();
-    const result = await userStore.logout();
-    if (result) router.replace("/home");
+    try {
+      await signOut();
+      router.replace("/home");
+    } catch (error: any) {
+      errorPopup(`Une erreur est survenue durant la déconnexion: ${error.message}`);
+    }
     loading.dismiss();
   });
 };
-const deleteAccount = async () => {
+
+const removeAccount = async () => {
   const confirmTitle = "Es-tu sûr.e ?";
-  const confirmMessage = "Cette opération supprimera toute les données liées à ton profil";
+  const confirmMessage = "Cette opération supprimera toutes les données liées au profil";
   const removeAccountHandler = async () => {
+    if (!userProfile.value) {
+      errorPopup("Le profil de l'utilisateur n'a pas été chargé")
+      return
+    }
     const wasOwnProfile = isOwnProfile.value;
     const loading = await loadingPopup("Suppression du profil");
-    let removeMorningGamePromise = null;
-    let removeAfternoonGamePromise = null;
+    if (userProfile.value.games){
+      for (const [timeSlotId, game] of Object.entries(userProfile.value.games)){
+        try {
+          await removeAttendant(game, userProfile.value.id, timeSlotId)
+        } catch (error: any){
+          errorPopup(`Erreur lors du désenregistrement de l'utilisateur ${userProfile.value.id} à l'épreuve ${game} : ${error.message}`);
+        }
+      } 
+    }
     try {
-      if (userProfile.value.morningGame) removeMorningGamePromise = removeMorningLeader(userProfile.value.morningGame, userId.value);
-      if (userProfile.value.afternoonGame) removeAfternoonGamePromise = removeAfternoonLeader(userProfile.value.afternoonGame, userId.value);
-      const removeAccountPromise = userStore.removeAccount(userId.value);
-      await Promise.all([removeMorningGamePromise, removeAfternoonGamePromise, removeAccountPromise]);
+      await removeFirebaseAccount(userProfile.value.id)
     } catch (error: any) {
-      errorPopup(`Une erreur est survenue durant la suppression du profil: ${error.message}`);
+      errorPopup(`Erreur Lors de la suppression de l'utilisateur ${userProfile.value.id} : ${error.message}`);
+    }
+    if (wasOwnProfile) {
+      await signOut();
+      router.replace("/home");
     }
     loading.dismiss();
-    if (wasOwnProfile) await logOut();
   };
   confirmPopup(confirmMessage, removeAccountHandler, null, confirmTitle);
-};
-const isGameFull = (leaders: string[]): boolean => {
-  return (leaders.length >= getMaxGameLeaders());
-};
+}
 </script>
 
 <style scoped>

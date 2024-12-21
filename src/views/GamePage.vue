@@ -293,14 +293,14 @@ const register = async (result: any, payload: any) => {
           await removeAttendant(currentGameId, _targetUser.id, _timeSlot.id).then(() => {
             toastPopup(`Désinscription à l'épreuve ${currentGameId} effectuée`)
           })
-          await addAttendant(_game.id, _targetUser.id, _timeSlot).then(() => {
+          await addAttendant(_game.id, _targetUser.id, _timeSlot.id).then(() => {
             toastPopup("Responsables mis à jour")
           })
         },
         () => toastPopup("Enregistrement annulé")
       )
     } else {
-      await addAttendant(_game.id, _targetUser.id, _timeSlot).then(() => {
+      await addAttendant(_game.id, _targetUser.id, _timeSlot.id).then(() => {
         toastPopup("Responsables mis à jour")
       })
     }

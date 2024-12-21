@@ -1,9 +1,9 @@
-import { db } from "@/services/firebase";
-import { Timestamp } from "@firebase/firestore";
-import { deleteUser } from "firebase/auth";
 // prettier-ignore
 import { DEFAULT_SECTION_ID, DEFAULT_USER_ID, ROLES, USER_PROFILES_COLLECTION_NAME, USER_PROFILES_COLLECTION_REF } from "@/constants";
+import { db, fbSignOut } from "@/services/firebase";
 import { UserProfile } from "@/types";
+import { Timestamp } from "@firebase/firestore";
+import { deleteUser } from "firebase/auth";
 import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { MaybeRefOrGetter, toValue } from "vue";
 import { useFirebaseAuth } from "vuefire";
@@ -49,10 +49,14 @@ export async function updateUserProfile(uid: string, profileData: any) {
   return updateDoc(dbRef, profileData).then(() => console.debug(`User profile updated for ${uid}`))
 }
 
-export async function removeAccount(uid: string) {
+export async function signOut() {
+  return fbSignOut()
+}
+
+export async function removeFirebaseAccount(uid: string) {
   const dbRef = doc(db, USER_PROFILES_COLLECTION_NAME, uid)
   const auth = useFirebaseAuth()
-  if (!auth) throw Error("removeAccount() can only run on client side")
+  if (!auth) throw Error("Cannot access the firebase auth object")
   const user = auth.currentUser
   if (!user) throw Error("User not found in the auth db")
   const deleteDocPromise = deleteDoc(dbRef)

@@ -66,8 +66,7 @@ export function generateRandomId() {
  * @returns
  */
 export const fbSignOut = async () => {
-  await signOut(auth);
-  return true;
+  return await signOut(auth);
 };
 
 /**
