@@ -1,4 +1,4 @@
-import { DEFAULT_SECTION_ID, DEFAULT_USER_ID, USER_PROFILES_COLLECTION_REF } from "@/constants"
+import { DEFAULT_PLAYER_SECTION_ID, DEFAULT_USER_ID, USER_PROFILES_COLLECTION_REF } from "@/constants"
 import { UserProfile } from "@/types"
 import { getRoleByValue } from "@/utils/userProfile"
 import { doc, limit as fbLimit, orderBy, query, where } from "firebase/firestore"
@@ -35,10 +35,11 @@ export function useCurrentUserProfile() {
   return useUserProfile(uid)
 }
 
-export function useMembersOfSection(rSectionId: MaybeRefOrGetter<string>) {
+export function useMembersOfSection(rSectionId: MaybeRefOrGetter<string>, rShouldLoad: MaybeRefOrGetter<boolean> = true) {
   const dbRef = computed(() => {
     const sectionId = toValue(rSectionId)
-    if (sectionId === DEFAULT_SECTION_ID) return null
+    if (!toValue(rShouldLoad)) return null
+    if (sectionId === DEFAULT_PLAYER_SECTION_ID) return null
     console.debug(`Fetching users from section ${sectionId}`)
     // prettier-ignore
     return query(
@@ -59,7 +60,7 @@ export function useMembersOfSection(rSectionId: MaybeRefOrGetter<string>) {
 export function useSectionApplicants(rLimit: MaybeRefOrGetter<number>, rSectionId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
     const sectionId = toValue(rSectionId)
-    if (sectionId === DEFAULT_SECTION_ID) return null
+    if (sectionId === DEFAULT_PLAYER_SECTION_ID) return null
     const limit = toValue(rLimit)
     console.debug(`Fetching pending applicants for section ${sectionId}`)
     const queryParams = []
@@ -84,7 +85,7 @@ export function useApplicants(rLimit: MaybeRefOrGetter<number>) {
     console.debug(`Fetching pending applicants for a ${getRoleByValue(maxApplicantRole.value)}`)
     const queryParams = []
     queryParams.push(orderBy("requestedSectionId", "asc"))
-    if (applicantSectionIdFilter.value != DEFAULT_SECTION_ID) {
+    if (applicantSectionIdFilter.value != DEFAULT_PLAYER_SECTION_ID) {
       queryParams.push(where("requestedSectionId", "==", applicantSectionIdFilter.value))
     }
     queryParams.push(orderBy("requestedRole", "asc"))

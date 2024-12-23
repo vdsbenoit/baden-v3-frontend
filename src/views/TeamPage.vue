@@ -106,11 +106,11 @@
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useTeamMatches } from "@/composables/match";
-import { useSection } from "@/composables/playerSection";
+import { usePlayerSection } from "@/composables/playerSection";
 import { useAppConfig, useAppSettings } from "@/composables/app";
 import { useTeam } from "@/composables/team";
 import { useCurrentUserProfile } from "@/composables/userProfile";
-import { DEFAULT_SECTION_ID, DEFAULT_TEAM_ID, ROLES } from "@/constants";
+import { DEFAULT_PLAYER_SECTION_ID, DEFAULT_TEAM_ID, ROLES } from "@/constants";
 import { errorPopup, toastPopup } from "@/services/popup";
 import { updateUserProfile } from "@/utils/userProfile";
 import {
@@ -148,7 +148,7 @@ const appConfig = useAppConfig()
 const settings = useAppSettings()
 const teamId = useRouteParams('teamId', DEFAULT_TEAM_ID)
 const { data: team, pending: isLoadingTeam, error: errorLoadingTeam } = useTeam(teamId)
-const { data: section, pending: isLoadingSection, error: errorLoadingSection } = useSection(team.value?.sectionId ?? DEFAULT_SECTION_ID)
+const { data: section, pending: isLoadingSection, error: errorLoadingSection } = usePlayerSection(team.value?.sectionId ?? DEFAULT_PLAYER_SECTION_ID)
 const { data: matches, pending: isLoadingMatches, error: errorLoadingMatches } = useTeamMatches(teamId)
 
 // lifecycle hooks

@@ -1,20 +1,20 @@
-import { DEFAULT_SECTION_ID, DEFAULT_SECTION_TYPE_ID, PLAYER_SECTIONS_COLLECTION_REF } from "@/constants"
+import { DEFAULT_PLAYER_SECTION_ID, DEFAULT_SECTION_TYPE_ID, PLAYER_SECTIONS_COLLECTION_REF } from "@/constants"
 import { PlayerSection } from "@/types"
 import { doc, limit as fbLimit, orderBy, query, where } from "firebase/firestore"
 import { MaybeRefOrGetter, computed, toValue } from "vue"
 import { useCollection, useDocument } from "vuefire"
 
-export function useSection(rSectionId: MaybeRefOrGetter<string>) {
+export function usePlayerSection(rSectionId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
     const id = toValue(rSectionId)
-    if (id === DEFAULT_SECTION_ID) return null
+    if (id === DEFAULT_PLAYER_SECTION_ID) return null
     console.debug(`Fetching section ${id}`)
     return doc(PLAYER_SECTIONS_COLLECTION_REF, id)
   })
   return useDocument<PlayerSection>(dbRef)
 }
 
-export function useSectionTypeSections(rSectionTypeId: MaybeRefOrGetter<string>) {
+export function usePlayerSections(rSectionTypeId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
     const sectionTypeId = toValue(rSectionTypeId)
     if (sectionTypeId === DEFAULT_SECTION_TYPE_ID) return null

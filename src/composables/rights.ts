@@ -1,8 +1,18 @@
-import { useCurrentUserProfile } from "@/composables/userProfile"
-import { RefGame, RefUserProfile } from "@/types"
-import { computed, reactive, watchEffect } from "vue"
-import { useAppSettings } from "./app"
-import { DEFAULT_SECTION_ID, ROLES } from "@/constants"
+import { useCurrentUserProfile } from "@/composables/userProfile";
+import { DEFAULT_PLAYER_SECTION_ID, ROLES } from "@/constants";
+import { RefGame, RefUserProfile } from "@/types";
+import { computed, reactive, watchEffect } from "vue";
+import { useAppSettings } from "./app";
+
+export function useCanSeeRanking() {
+  const currentUserProfile = useCurrentUserProfile()
+  const appSettings = useAppSettings()
+  return computed(() => {
+    if (appSettings.value?.isRankingPublic) return true
+    if (!currentUserProfile.value) return false
+    return currentUserProfile.value.role >= ROLES.Organisateur
+  })
+}
 
 export function useEditScoreRights(rGame: RefGame) {
   const currentUserProfile = useCurrentUserProfile()
@@ -158,9 +168,9 @@ export function useAcceptApplicantRights() {
     return currentUserProfile.value.role
   })
   const applicantSectionIdFilter = computed(() => {
-    if (!currentUserProfile.value) return DEFAULT_SECTION_ID // when this is true, canAcceptApplicants is false
-    if (currentUserProfile.value.role > ROLES.Chef) return DEFAULT_SECTION_ID
-    if (!currentUserProfile.value.sectionId) return DEFAULT_SECTION_ID
+    if (!currentUserProfile.value) return DEFAULT_PLAYER_SECTION_ID // when this is true, canAcceptApplicants is false
+    if (currentUserProfile.value.role > ROLES.Chef) return DEFAULT_PLAYER_SECTION_ID
+    if (!currentUserProfile.value.sectionId) return DEFAULT_PLAYER_SECTION_ID
     return currentUserProfile.value.sectionId
   })
   return { canAcceptApplicants, maxApplicantRole, applicantSectionIdFilter }

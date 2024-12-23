@@ -4,7 +4,7 @@ import { collection, doc } from "firebase/firestore"
 // users
 
 export const DEFAULT_USER_ID = ""
-export const USER_PROFILES_COLLECTION_NAME = "users"
+export const USER_PROFILES_COLLECTION_NAME = "userProfiles"
 export const USER_PROFILES_COLLECTION_REF = collection(db, USER_PROFILES_COLLECTION_NAME)
 export const USER_PROFILES_GAMES_KEY = "games"
 // prettier-ignore
@@ -23,20 +23,20 @@ export const DEFAULT_ROLE_VALUE = -1
 // teams
 
 export const DEFAULT_TEAM_ID = ""
-export const DEFAULT_SECTION_TYPE_ID = ""
 export const TEAMS_COLLECTION_NAME = "teams"
 export const TEAMS_COLLECTION_REF = collection(db, TEAMS_COLLECTION_NAME)
 
-// sections
+// player sections
 
-export const DEFAULT_SECTION_ID = ""
-export const PLAYER_SECTIONS_COLLECTION_NAME = "sections"
+export const DEFAULT_SECTION_TYPE_ID = ""
+export const DEFAULT_PLAYER_SECTION_ID = ""
+export const PLAYER_SECTIONS_COLLECTION_NAME = "playerSections"
 export const PLAYER_SECTIONS_COLLECTION_REF = collection(db, PLAYER_SECTIONS_COLLECTION_NAME)
 
 // attendant sections
 
-export const DEFAULT_ATTENDANT_SECTION_ID = DEFAULT_SECTION_ID
-export const ATTENDANT_SECTIONS_COLLECTION_NAME = "leaderSections"
+export const DEFAULT_ATTENDANT_SECTION_ID = DEFAULT_PLAYER_SECTION_ID
+export const ATTENDANT_SECTIONS_COLLECTION_NAME = "attendantSections"
 export const ATTENDANT_SECTIONS_COLLECTION_REF = collection(db, ATTENDANT_SECTIONS_COLLECTION_NAME)
 
 // games

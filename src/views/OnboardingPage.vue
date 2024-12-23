@@ -73,9 +73,9 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useAppConfig } from "@/composables/app";
 import { useAttendantSections } from "@/composables/attendantSection";
-import { useSectionTypeSections } from "@/composables/playerSection";
+import { usePlayerSections } from "@/composables/playerSection";
 import { useCurrentUserProfile } from "@/composables/userProfile";
-import { DEFAULT_ATTENDANT_SECTION_ID, DEFAULT_ROLE_VALUE, DEFAULT_SECTION_ID, DEFAULT_SECTION_TYPE_ID, ROLES } from "@/constants";
+import { DEFAULT_ATTENDANT_SECTION_ID, DEFAULT_ROLE_VALUE, DEFAULT_PLAYER_SECTION_ID, DEFAULT_SECTION_TYPE_ID, ROLES } from "@/constants";
 import { confirmPopup, errorPopup, toastPopup } from "@/services/popup";
 import { Section } from "@/types/Section";
 import { getAttendantSection, getStaffSection } from "@/utils/attendantSection";
@@ -96,7 +96,7 @@ const roles = Object.fromEntries(Object.entries(ROLES).filter(([, value]) => val
 const name = ref('');
 const selectedRole = ref(DEFAULT_ROLE_VALUE);
 const selectedSectionTypeId = ref(DEFAULT_SECTION_TYPE_ID);
-const selectedSectionId = ref(DEFAULT_SECTION_ID);
+const selectedSectionId = ref(DEFAULT_PLAYER_SECTION_ID);
 const selectedAttendantSectionId = ref(DEFAULT_ATTENDANT_SECTION_ID);
 const nameError = ref(false);
 const isUpdatingProfile = ref(false);
@@ -105,7 +105,7 @@ const isUpdatingProfile = ref(false);
 
 const currentUser = useCurrentUserProfile();
 const appConfig = useAppConfig();
-const { data: sections, pending: isLoadingSections, error: errorLoadingSections } = useSectionTypeSections(selectedSectionTypeId);
+const { data: sections, pending: isLoadingSections, error: errorLoadingSections } = usePlayerSections(selectedSectionTypeId);
 
 const isParticipant = computed(() => selectedRole.value === ROLES.Participant && name.value != "");
 const isAttendant = computed(() => (selectedRole.value === ROLES.Animateur || selectedRole.value === ROLES.Chef) && name.value != "");
@@ -113,7 +113,7 @@ const { data: attendantSections, pending: isLoadingAttendantSections, error: err
 
 const canSubmit = computed(() => {
   if (!name.value) return false;
-  if (isParticipant.value && selectedSectionTypeId.value != DEFAULT_SECTION_TYPE_ID && selectedSectionId.value != DEFAULT_SECTION_ID) return true
+  if (isParticipant.value && selectedSectionTypeId.value != DEFAULT_SECTION_TYPE_ID && selectedSectionId.value != DEFAULT_PLAYER_SECTION_ID) return true
   if (isAttendant.value && selectedAttendantSectionId.value != DEFAULT_ATTENDANT_SECTION_ID) return true
   if (selectedRole.value >= ROLES.Organisateur) return true
   return false;
@@ -124,7 +124,7 @@ const canSubmit = computed(() => {
 const handleRoleChange = () => {
     // Reset section and leaderSection values when changing the role
     selectedSectionTypeId.value = DEFAULT_SECTION_TYPE_ID
-    selectedSectionId.value = DEFAULT_SECTION_ID
+    selectedSectionId.value = DEFAULT_PLAYER_SECTION_ID
     selectedAttendantSectionId.value = DEFAULT_ATTENDANT_SECTION_ID
     if (!name.value) nameError.value = true;
 }

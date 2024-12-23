@@ -1,6 +1,6 @@
 import { PLAYER_SECTIONS_COLLECTION_NAME, PLAYER_SECTIONS_COLLECTION_REF } from "@/constants"
 import { incrementDocField } from "@/services/firebase"
-import { RefPlayerSection, PlayerSection } from "@/types"
+import { RefPlayerSection, VueFirePlayerSection } from "@/types"
 import { Section } from "@/types/Section"
 import { doc, getDocs, query, updateDoc, where } from "firebase/firestore"
 import { toValue } from "vue"
@@ -23,11 +23,11 @@ export const getPlayerSection = async (sectionId: string): Promise<Section> => {
 // Setters
 
 // fixme: move this to cloud function
-export const updateSectionMeanScore = async (sectionId: string, section: PlayerSection) => {
+export const updateSectionMeanScore = async (section: VueFirePlayerSection) => {
   const meanScore = +(section.score / section.nbTeams || 0).toFixed(2)
-  const dbRef = doc(PLAYER_SECTIONS_COLLECTION_REF, sectionId)
+  const dbRef = doc(PLAYER_SECTIONS_COLLECTION_REF, section.id)
   return updateDoc(dbRef, { meanScore }).then(() =>
-    console.debug(`Updating the mean score of section ${sectionId} to ${meanScore}`)
+    console.debug(`Updating the mean score of section ${section.id} to ${meanScore}`)
   )
 }
 export const addSectionWin = async (rSection: RefPlayerSection) => {
@@ -35,26 +35,26 @@ export const addSectionWin = async (rSection: RefPlayerSection) => {
   if (!section) throw Error("Cannot update score : section is undefined")
   console.log(`Adding 2 points to section ${section.id}`)
   await incrementDocField(PLAYER_SECTIONS_COLLECTION_NAME, section.id, "score", 2)
-  await updateSectionMeanScore(section.id, section)
+  await updateSectionMeanScore(section)
 }
 export const removeSectionWin = async (rSection: RefPlayerSection) => {
   const section = toValue(rSection)
   if (!section) throw Error("Cannot update score : section is undefined")
   console.log(`Removing 2 points to section ${section.id}`)
   await incrementDocField(PLAYER_SECTIONS_COLLECTION_NAME, section.id, "score", -2)
-  await updateSectionMeanScore(section.id, section)
+  await updateSectionMeanScore(section)
 }
 export const addSectionDraw = async (rSection: RefPlayerSection) => {
   const section = toValue(rSection)
   if (!section) throw Error("Cannot update score : section is undefined")
   console.log(`Adding 1 points to section ${section.id}`)
   await incrementDocField(PLAYER_SECTIONS_COLLECTION_NAME, section.id, "score", 1)
-  await updateSectionMeanScore(section.id, section)
+  await updateSectionMeanScore(section)
 }
 export const removeSectionDraw = async (rSection: RefPlayerSection) => {
   const section = toValue(rSection)
   if (!section) throw Error("Cannot update score : section is undefined")
   console.log(`Removing 1 points to section ${section.id}`)
   await incrementDocField(PLAYER_SECTIONS_COLLECTION_NAME, section.id, "score", -1)
-  await updateSectionMeanScore(section.id, section)
+  await updateSectionMeanScore(section)
 }

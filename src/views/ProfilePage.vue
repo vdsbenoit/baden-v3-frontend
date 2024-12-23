@@ -53,7 +53,7 @@
               <ion-select 
                 v-else 
                 v-model="formData.playerSection.typeId"
-                @ion-change="formData.playerSection.id = DEFAULT_SECTION_ID; formData.playerSection.name = ''"
+                @ion-change="formData.playerSection.id = DEFAULT_PLAYER_SECTION_ID; formData.playerSection.name = ''"
                 @ion-cancel="formData.playerSection.isEditting = false; resetFormData()"
                 cancel-text="Annuler" 
                 interface="action-sheet"
@@ -200,10 +200,10 @@ import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useAppConfig, useAppSettings } from "@/composables/app";
 import { useAttendantSections } from "@/composables/attendantSection";
 import { useGames } from "@/composables/game";
-import { useSection, useSectionTypeSections } from "@/composables/playerSection";
+import { usePlayerSection, usePlayerSections } from "@/composables/playerSection";
 import { useEditProfileRights } from "@/composables/rights";
 import { useCurrentUserProfile, useUserProfile } from "@/composables/userProfile";
-import { DEFAULT_ATTENDANT_SECTION_ID, DEFAULT_GAME_ID, DEFAULT_ROLE_VALUE, DEFAULT_SECTION_ID, DEFAULT_SECTION_TYPE_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID, ROLES } from "@/constants";
+import { DEFAULT_ATTENDANT_SECTION_ID, DEFAULT_GAME_ID, DEFAULT_ROLE_VALUE, DEFAULT_PLAYER_SECTION_ID, DEFAULT_SECTION_TYPE_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID, ROLES } from "@/constants";
 import { confirmPopup, errorPopup, loadingPopup, toastPopup } from "@/services/popup";
 import { VueFireGame } from "@/types";
 import { sanitizeInput } from "@/utils/form";
@@ -232,7 +232,7 @@ const formData = reactive({
     isEditting: false,
     isUpdating: false,
     typeId: DEFAULT_SECTION_TYPE_ID,
-    id: DEFAULT_SECTION_ID,
+    id: DEFAULT_PLAYER_SECTION_ID,
     name: ""
   },
   team: {
@@ -303,13 +303,13 @@ const pageTitle = computed(() => {
 const selectedPlayerSectionTypeId = computed(() => {
   return formData.playerSection.isEditting ? formData.playerSection.typeId : DEFAULT_SECTION_TYPE_ID
 })
-const playerSections = useSectionTypeSections(selectedPlayerSectionTypeId)
+const playerSections = usePlayerSections(selectedPlayerSectionTypeId)
 
 // This computed variable is necessary in order to keep the reactivity
 const selectedPlayerSectionId = computed(() => {
   return formData.playerSection.id
 })
-const selectedPlayerSection = useSection(selectedPlayerSectionId)
+const selectedPlayerSection = usePlayerSection(selectedPlayerSectionId)
 
 // Lazy loading of games
 // They are only loaded after the user starts editting the attendantGames
@@ -337,7 +337,7 @@ const resetFormData = () => {
   if (userProfile.value.role == ROLES.Participant){
     if (!formData.team.isEditting) formData.team.value = userProfile.value.team ?? DEFAULT_TEAM_ID;
     if (!formData.playerSection.isEditting) {
-      formData.playerSection.id = userProfile.value.sectionId ?? DEFAULT_SECTION_ID;
+      formData.playerSection.id = userProfile.value.sectionId ?? DEFAULT_PLAYER_SECTION_ID;
       formData.playerSection.typeId = selectedPlayerSection.value?.sectionTypeId ?? DEFAULT_SECTION_TYPE_ID;
     }
   }
@@ -371,7 +371,7 @@ watch(userProfile, (newProfileValue) => {
 // Go to pages
 
 const goToPlayerSectionPage = (sectionId: string) => {
-  if (sectionId != DEFAULT_SECTION_ID) router.push(`/section/${sectionId}`);
+  if (sectionId != DEFAULT_PLAYER_SECTION_ID) router.push(`/section/${sectionId}`);
 };
 const goToAttendantSectionPage = (sectionId: string) => {
   if (sectionId != DEFAULT_ATTENDANT_SECTION_ID) router.push(`/leader/${sectionId}`);
@@ -483,7 +483,7 @@ const setRole = async () => {
  * Side effect: it resets the team value
  */
 const setPlayerSection = async () => {
-  if (formData.playerSection.id === DEFAULT_SECTION_ID) {
+  if (formData.playerSection.id === DEFAULT_PLAYER_SECTION_ID) {
     formData.team.isEditting = false
     resetFormData()
     return

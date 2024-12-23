@@ -25,6 +25,7 @@
             <ion-card>
               <ion-card-header>
                 <ion-card-title>Détails</ion-card-title>
+                <ion-badge v-if="section?.isStaff" color="danger">Staff</ion-badge>
               </ion-card-header>
               <ion-card-content>
                 <ion-list v-if="section">
