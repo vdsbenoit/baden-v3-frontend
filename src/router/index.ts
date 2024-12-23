@@ -88,25 +88,25 @@ const routes: Array<RouteRecordRaw> = [
   {
     name: 'sections',
     path: '/sections',
-    component: () => import ('../views/SectionsPage.vue'),
+    component: () => import ('../views/PlayerSectionsPage.vue'),
     meta: { minimumRole: ROLES.Participant }
   },
   {
     name: 'section',
     path: '/section/:sectionId',
-    component: () => import ('../views/SectionsPage.vue'),
+    component: () => import ('../views/PlayerSectionsPage.vue'),
     meta: { minimumRole: ROLES.Participant }
   },
   {
     name: 'attendants',
     path: '/attendants',
-    component: () => import ('../views/AttendantsPage.vue'),
+    component: () => import ('../views/AttendantSectionsPage.vue'),
     meta: { minimumRole: ROLES.Animateur }
   },
   {
     name: 'attendant',
     path: '/attendant/:sectionId',
-    component: () => import ('../views/AttendantsPage.vue'),
+    component: () => import ('../views/AttendantSectionsPage.vue'),
     meta: { minimumRole: ROLES.Animateur }
   },
   {
