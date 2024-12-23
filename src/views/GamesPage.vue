@@ -109,7 +109,7 @@ const gamesNotFound = computed(() => {
 })
 const showGameAvailabilities = computed(() => {
   if (!appSettings.value) return false
-  return appSettings.value.showGameAvailabilities
+  return appSettings.value.isGameAvailabilitiesDiplayed
 })
 
 // Methods

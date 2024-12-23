@@ -1,7 +1,7 @@
 // prettier-ignore
 import { APP_COLLECTION_NAME, APP_CONFIG_DOC_NAME, APP_CONFIG_DOC_REF, APP_SETTINGS_DOC_REF, ATTENDANT_SCHEDULE_KEY, GAMES_COLLECTION_NAME, USER_PROFILES_COLLECTION_NAME, USER_PROFILES_GAMES_KEY } from "@/constants";
 import { addToDocArray, generateRandomId, updateFieldInCollection } from "@/services/firebase";
-import { AttendantTimeSlot } from "@/types";
+import { AppSettings, AttendantTimeSlot } from "@/types";
 import { getDoc, updateDoc } from "firebase/firestore";
 
 // Getters
@@ -14,7 +14,7 @@ export async function isRankingPublic(): Promise<boolean> {
 
 // Setters
 
-export const updateAppSettings = async (settingsData: any) => {
+export const updateAppSettings = async (settingsData: Partial<AppSettings>) => {
   return updateDoc(APP_SETTINGS_DOC_REF, settingsData)
 }
 

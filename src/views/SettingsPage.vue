@@ -25,35 +25,51 @@
           <ion-card-title>Paramètres généraux</ion-card-title>
         </ion-card-header>
         <ion-card-content class="ion-no-padding">
-          <ion-list>
-            <ion-item>
-              <ion-input v-if="editMaxGameLeaders" v-model="editedItem.maxGameLeaders" name="maxGameLeaders" type="number" autocorrect="off"  slot="start"></ion-input>
-              <ion-label v-else  @click="toggleEditMaxGameLeaders" class="ion-text-wrap fixedLabel" slot="start">Max animateurs par épreuve</ion-label>
-              <ion-button v-if="editMaxGameLeaders" @click="setMaxLeaders" color="success" slot="end"><ion-icon slot="icon-only" :ios="checkmarkOutline" :md="checkmarkSharp"></ion-icon></ion-button>
-              <ion-input v-else @click="toggleEditMaxGameLeaders" name="maxGameLeaders" type="number" :readonly="true" inputmode="none" slot="end">{{ getMaxGameLeaders() }}</ion-input>
+          <div v-if="isLoadingAppSettings" class="ion-text-center" style="background: transparent">
+            <ion-spinner></ion-spinner>
+          </div>
+          <div v-else-if="errorLoadingAppSettings" class="not-found">
+            <strong class="capitalize">Erreur</strong>
+            <ion-text color="error">{{ errorLoadingAppSettings.message }}</ion-text>
+            <p>Retour à <a @click="router.back()">la page précédente</a></p>
+          </div>
+          <div v-else-if="!appSettings" class="not-found">
+            <strong class="capitalize">Erreur</strong>
+            <ion-text color="error">The app settings document is empty</ion-text>
+            <p>Retour à <a @click="router.back()">la page précédente</a></p>
+          </div>
+          <ion-list v-else>
+            <ion-item v-if="formData.maxGameAttendants.isEditting">
+              <!-- todo add keyup event handler -->
+              <ion-input v-model="formData.maxGameAttendants.value" name="maxGameAttendants" type="number" autocorrect="off"  slot="start"></ion-input>
+              <ion-button @click="setMaxAttendants" color="success" slot="end"><ion-icon slot="icon-only" :ios="checkmarkOutline" :md="checkmarkSharp"></ion-icon></ion-button>
+            </ion-item>
+            <ion-item v-else @click="formData.maxGameAttendants.isEditting = true" >
+              <ion-label class="ion-text-wrap fixedLabel" slot="start">Max animateurs par épreuve</ion-label>
+              <ion-input name="maxGameAttendants" type="number" :readonly="true" inputmode="none" slot="end">{{ appSettings.maxGameAttendants }}</ion-input>
             </ion-item>
             <ion-item>
               <ion-label>Geler les scores</ion-label>
-              <ion-toggle @IonChange="freezeScores" :checked="isScoresFrozen()"></ion-toggle>
+              <ion-toggle @IonChange="freezeScores" :checked="!appSettings.canSetScores"></ion-toggle>
             </ion-item>
             <ion-item>
               <ion-label class="ion-text-wrap">Rendre les classements publiques</ion-label>
-              <ion-toggle @IonChange="showRanking" :checked="isRankingPublic()"></ion-toggle>
+              <ion-toggle @IonChange="showRanking" :checked="appSettings.isRankingPublic"></ion-toggle>
             </ion-item>
             <ion-item>
               <ion-label>Inscriptions aux épreuves</ion-label>
-              <ion-toggle @IonChange="setLeaderRegistration" :checked="isLeaderRegistrationOpen()"></ion-toggle>
+              <ion-toggle @IonChange="setAttendantRegistration" :checked="appSettings.isAttendantRegistrationOpen"></ion-toggle>
             </ion-item>
             <ion-item>
               <ion-label>Afficher la disponibilités des épreuves</ion-label>
-              <ion-toggle @IonChange="setGameAvailabilites" :checked="isShowGameAvailabilities()"></ion-toggle>
+              <ion-toggle @IonChange="setGameAvailabilites" :checked="appSettings.isGameAvailabilitiesDiplayed"></ion-toggle>
             </ion-item>
             <ion-item>
               <ion-label class="ion-text-wrap">
                 <h2>Autoriser l'enregistrement de scores dans n'importe quelle épreuve</h2>
                 <p>Ne pas tenir compte des inscriptions aux épreuves</p>
               </ion-label>
-              <ion-toggle @IonChange="setScoreAnywhere" :checked="canSetScoreAnywhere()"></ion-toggle>
+              <ion-toggle @IonChange="setCanSetAnyScores" :checked="appSettings.canSetAnyScores"></ion-toggle>
             </ion-item>
           </ion-list>
         </ion-card-content>
@@ -63,47 +79,79 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonIcon, IonList, IonItem, IonLabel, IonButton, IonToggle, IonInput } from "@ionic/vue";
-import { chevronForwardOutline, chevronForwardSharp, checkmarkOutline, checkmarkSharp } from "ionicons/icons";
+// prettier-ignore
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { appSettingsDefaults, getMaxGameLeaders, isScoresFrozen, isRankingPublic, updateAppSettings, canSetScoreAnywhere, isLeaderRegistrationOpen, isShowGameAvailabilities } from "@/services/settings";
-import { reactive, ref } from "vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
+import { useAppSettings } from "@/composables/app";
+import { loadingPopup } from "@/services/popup";
+import { updateAppSettings } from "@/utils/app";
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonToggle, useIonRouter } from "@ionic/vue";
+import { checkmarkOutline, checkmarkSharp, chevronForwardOutline, chevronForwardSharp } from "ionicons/icons";
+import { reactive, watch } from "vue";
 
 // reactive data
 
-const editedItem = reactive(appSettingsDefaults);
-const editMaxGameLeaders = ref(false);
+const formData = reactive({
+  maxGameAttendants: {
+    isEditting: false,
+    value: 2
+  }
+})
 
-// lifecycle hooks
+// Composables
 
-// Computed
+const router = useIonRouter()
+const {data: appSettings, pending: isLoadingAppSettings, error: errorLoadingAppSettings } = useAppSettings()
 
-// Watchers
+
+/**
+ * Update formData with the current appSettings values
+ * Does not update the form data if the user is editting the field
+*/ 
+const resetFormData = () => {
+  if (!appSettings.value) return;
+  if (!formData.maxGameAttendants.isEditting) formData.maxGameAttendants.value = appSettings.value.maxGameAttendants
+
+}
+// Update the form data when the appSettings object is updated
+watch(appSettings, (newAppSettings) => {
+  if (newAppSettings) {
+    resetFormData()
+  }
+});
 
 // Methods
 
-const toggleEditMaxGameLeaders = () => {
-  editMaxGameLeaders.value = !editMaxGameLeaders.value;
-}
-const setMaxLeaders = () => {
-  updateAppSettings({ maxGameLeaders: editedItem.maxGameLeaders });
-  editMaxGameLeaders.value = false;
+const setMaxAttendants = async () => {
+  const loading = await loadingPopup()
+  await updateAppSettings({ maxGameAttendants: formData.maxGameAttendants.value });
+  formData.maxGameAttendants.isEditting = false;
+  loading.dismiss()
 };
-const freezeScores = (value: any) => {
-  updateAppSettings({ freezeScore: value.detail.checked });
+const freezeScores = async (event: any) => {
+  const loading = await loadingPopup()
+  await updateAppSettings({ canSetScores: !event.detail.checked });
+  loading.dismiss()
 };
-const showRanking = (value: any) => {
-  updateAppSettings({ showRankingToAll: value.detail.checked });
+const showRanking = async (event: any) => {
+  const loading = await loadingPopup()
+  await updateAppSettings({ isRankingPublic: event.detail.checked });
+  loading.dismiss()
 };
-const setLeaderRegistration = (value: any) => {
-  updateAppSettings({ leaderRegistration: value.detail.checked });
+const setAttendantRegistration = async (event: any) => {
+  const loading = await loadingPopup()
+  await updateAppSettings({ isAttendantRegistrationOpen: event.detail.checked });
+  loading.dismiss()
 };
-const setGameAvailabilites = (value: any) => {
-  updateAppSettings({ showGameAvailabilities: value.detail.checked });
+const setGameAvailabilites = async (event: any) => {
+  const loading = await loadingPopup()
+  await updateAppSettings({ isGameAvailabilitiesDiplayed: event.detail.checked });
+  loading.dismiss()
 };
-const setScoreAnywhere = (value: any) => {
-  updateAppSettings({ everyoneCanSetScoreAnywhere: value.detail.checked });
+const setCanSetAnyScores = async (event: any) => {
+  const loading = await loadingPopup()
+  await updateAppSettings({ canSetAnyScores: event.detail.checked });
+  loading.dismiss()
 };
 </script>
 <style scoped>
