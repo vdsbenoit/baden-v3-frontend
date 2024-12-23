@@ -44,7 +44,7 @@ export async function createUserProfile(uid: string, email: string) {
   return setDoc(docRef, newProfile).then(() => console.debug(`Created new user profile : ${uid}`))
 }
 
-export async function updateUserProfile(uid: string, profileData: any) {
+export async function updateUserProfile(uid: string, profileData: Partial<UserProfile>) {
   const dbRef = doc(db, USER_PROFILES_COLLECTION_NAME, uid)
   return updateDoc(dbRef, profileData).then(() => console.debug(`User profile updated for ${uid}`))
 }

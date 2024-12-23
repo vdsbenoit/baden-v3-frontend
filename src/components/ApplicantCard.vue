@@ -30,7 +30,7 @@ import { DEFAULT_ROLE_VALUE, ROLES } from "@/constants";
 import { VueFireUserProfile } from "@/types"
 import { defineProps, defineEmits, watch } from "vue"
 import { getRoleByValue, updateUserProfile } from "@/utils/userProfile";
-import { choicePopup, errorPopup, textInputPopup } from "@/services/popup";
+import { choicePopup, errorPopup, textInputPopup } from "@/utils/popup";
 
 const props = defineProps<{
   attendantSectionId: string

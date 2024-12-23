@@ -527,7 +527,7 @@ const setTeam = async () => {
   formData.team.isEditting = false
   formData.team.isUpdating = true
   try {
-    await updateUserProfile(userId.value, { team: formData.team })
+    await updateUserProfile(userId.value, { team: formData.team.value })
   } catch (error: any) {
     errorPopup(`L'équipe n'a pas pu être mise à jour : ${error.message}`)
     formData.team.isUpdating = false
