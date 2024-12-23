@@ -3,7 +3,6 @@ import { isRankingPublic } from '@/utils/app';
 import { getRoleByValue, getUserProfile } from '@/utils/userProfile';
 import OnboardingPage from '@/views/OnboardingPage.vue';
 import { createRouter, createWebHistory } from '@ionic/vue-router';
-import Nprogress from 'nprogress';
 import { RouteRecordRaw } from 'vue-router';
 import { getCurrentUser } from 'vuefire';
 import GuestHomePageVue from '../views/GuestHomePage.vue';
@@ -146,8 +145,6 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  // If this isn't an initial page load, start the route progress bar.
-  if (to.name) Nprogress.start()
   if (!to.meta.minimumRole) return true
   if (to.meta.minimumRole === ROLES.Anonyme) return true
   const currentUser = await getCurrentUser()
@@ -190,12 +187,6 @@ router.beforeEach(async (to, from, next) => {
     toastPopup(`Tu n'as pas le droit d'accéder à la page ${to.name?.toString()} avec ton role (${getRoleByValue(userProfile.role)})`);
     return false
   }  
-})
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-router.afterEach((to, from) => {
-  // Complete the animation of the route progress bar.
-  Nprogress.done()
 })
 
 export default router

@@ -28,8 +28,6 @@ import './theme/variables.css';
 // Above the createApp() line
 import { defineCustomElements } from '@ionic/pwa-elements/loader';
 
-import Nprogress from 'nprogress';
-
 
 const app = createApp(App)
   .use(IonicVue)
@@ -46,5 +44,3 @@ router.isReady().then(() => {
 
 // Call the element loader after the platform has been bootstrapped
 defineCustomElements(window);
-
-Nprogress.configure({ parent: '#app' })

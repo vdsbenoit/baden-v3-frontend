@@ -3,15 +3,15 @@
 
 ## En cours 
 
-- [ ] Use VueFire instead of Magnetar
-- [ ] Define isStaff to the Team BB leaderSection
-- [ ] use isStaff to define Team bb team
-- [ ] Mettre tous les checks de rôles au même endroit (dans un service dédidé). C'est parfois fait au niveau service (setMorningLeaders) et parfois pas (setGameScore). 
+- [x] Use VueFire instead of Magnetar
+- [x] Define isStaff to the Team BB leaderSection
+- [x] use isStaff to define Team bb team
+- [x] Mettre tous les checks de rôles au même endroit (dans un service dédidé). C'est parfois fait au niveau service (setMorningLeaders) et parfois pas (setGameScore). 
   - [ ] Essayer de centraliser tout ce qui est lié aux rôles (`App.vue` vs `router/index.ts`, plein de `showRanking` dans différents components)
 - [ ] Remove totem from UserProfile type
-- [ ] use useRouteParams from vueUse
-- [ ] Refactor morningGame & afternonGame into something generic : attendantTimings (similar to playerTimings)
-- [ ] Remove id from documents and custom types : use the built-in id from vuefire
+- [x] use useRouteParams from vueUse
+- [x] Refactor morningGame & afternonGame into something generic : attendantTimings (similar to playerTimings)
+- [x] Remove id from documents and custom types : use the built-in id from vuefire
 - [ ] Merge section & leaderSection collections
 - [ ] Edit the game roadmap template (on Windows)
   - [ ] Add attendantTime1
@@ -78,7 +78,7 @@
 - [ ] Remove weights
 - [ ] ? Optimize index (game_id>time and time>game_id)
 - [ ] Intégrer la couleur d'équipe dans l'app et la DB
-- [ ] Fix Nprogress
+- [x] Fix Nprogress -> removed atm as not necessary
 - [ ] Faire la distribution + générer les roadmaps/badges dans l'app
   - Créer des utilisateurs	
   - Créer les équipes (cf distribution équipe ci dessous)
@@ -91,7 +91,6 @@
 - [ ] Rewrite Profile page code
 - [ ] Refactor leaderSections into attendantGroups and sections into playerGroups
 - [ ] Refactor roles (cf users.ts)
-- [ ] Fix Nprogress
 - [ ] Update docs/
 - [ ] Ensure users cannot exists without required UserProfile properties (redirect to onboarding if needed)
 - [ ] Create AppSettings & AppConfig in the init process
