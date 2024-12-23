@@ -86,26 +86,14 @@ const routes: Array<RouteRecordRaw> = [
     meta: { minimumRole: ROLES.Participant }
   },
   {
-    name: 'sections',
-    path: '/sections',
-    component: () => import ('../views/PlayerSectionsPage.vue'),
-    meta: { minimumRole: ROLES.Participant }
-  },
-  {
     name: 'section',
-    path: '/section/:sectionId',
+    path: '/section/:sectionId?',
     component: () => import ('../views/PlayerSectionsPage.vue'),
     meta: { minimumRole: ROLES.Participant }
-  },
-  {
-    name: 'attendants',
-    path: '/attendants',
-    component: () => import ('../views/AttendantSectionsPage.vue'),
-    meta: { minimumRole: ROLES.Animateur }
   },
   {
     name: 'attendant',
-    path: '/attendant/:sectionId',
+    path: '/attendant/:sectionId?',
     component: () => import ('../views/AttendantSectionsPage.vue'),
     meta: { minimumRole: ROLES.Animateur }
   },

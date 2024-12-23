@@ -48,7 +48,6 @@
 - [x] Animateurs : liste des animateurs avec filtre par section
 - [x] Notifications : demande d'accès
 - [ ] Système de recherche par numéro d’une team. Dire où elle joue en ce moment
-- [ ] merge /section & /sections urls
 
 
 ## Modification DB

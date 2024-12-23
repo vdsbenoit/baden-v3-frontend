@@ -36,7 +36,7 @@
             </div>
           </div>
           <!-- organisateur -->
-          <tile-col v-if="userProfile.role >= ROLES.Organisateur" target="/attendants">Animateurs</tile-col>
+          <tile-col v-if="userProfile.role >= ROLES.Organisateur" target="/attendant">Animateurs</tile-col>
         </ion-row>
       </ion-grid>
     </ion-content>

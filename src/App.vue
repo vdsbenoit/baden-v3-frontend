@@ -171,13 +171,13 @@ const aboutPage = {
 }
 const sectionsPage = {
   title: "Sections",
-  url: "/sections",
+  url: "/section",
   iosIcon: peopleOutline,
   mdIcon: peopleOutline,
 }
 const attendantsPage = {
   title: "Animateurs",
-  url: "/attendants",
+  url: "/attendant",
   iosIcon: peopleOutline,
   mdIcon: peopleOutline,
 }
