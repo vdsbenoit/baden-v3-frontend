@@ -9,7 +9,7 @@ interface Break extends TimeSlot {
   name: string;
 }
 // check the backend before changing this interface (especially generate_game_roadmaps)
-interface AttendantTimeSlot extends TimeSlot  {
+export interface AttendantTimeSlot extends TimeSlot  {
   id: string;
   name: string;
 }
