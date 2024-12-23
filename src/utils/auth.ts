@@ -1,5 +1,5 @@
 import { fbSendSignInEmail, fbSignInWithEmailLink, isNewUser } from "@/services/firebase"
-import { choicePopup, errorPopup, loadingPopup } from "@/services/popup"
+import { choicePopup, errorPopup, loadingPopup } from "@/utils/popup"
 import { createUserProfile } from "./userProfile"
 
 export async function sendSignInEmail(email: string) {

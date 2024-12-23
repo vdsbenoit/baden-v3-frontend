@@ -37,7 +37,7 @@
 <script setup lang="ts">
 import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton, IonSpinner, IonCheckbox, IonNote } from "@ionic/vue";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { errorPopup, infoPopup, toastPopup } from "@/services/popup";
+import { errorPopup, infoPopup, toastPopup } from "@/utils/popup";
 import { useRouter } from "vue-router";
 import { onMounted, ref } from "vue";
 import { defineProps } from "vue";

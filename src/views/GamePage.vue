@@ -145,7 +145,7 @@ import { useCanEditGames, useCanRegister } from "@/composables/rights";
 import { useAppConfig, useAppSettings } from "@/composables/app";
 import { useCurrentUserProfile, useMembersOfSection } from "@/composables/userProfile";
 import { DEFAULT_GAME_ID, DEFAULT_ATTENDANT_SECTION_ID, ROLES } from "@/constants";
-import { confirmPopup, toastPopup } from "@/services/popup";
+import { confirmPopup, toastPopup } from "@/utils/popup";
 import { AttendantTimeSlot, VueFireUserProfile } from "@/types";
 import { addAttendant, removeAttendant, setGameNoScores } from "@/utils/game";
 import { setMatchNoScores } from "@/utils/match";

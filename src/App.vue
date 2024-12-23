@@ -39,17 +39,15 @@
 </template>
 
 <script setup lang="ts">
-import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, 
-IonSplitPane, IonText, IonFooter, IonToggle } from "@ionic/vue";
-import { informationCircleOutline, informationCircleSharp, peopleOutline, peopleSharp, personCircleOutline, personCircleSharp, moonOutline,
-homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, footballOutline, footballSharp, optionsOutline, optionsSharp, moonSharp,
-personAddOutline, personAddSharp, trophyOutline, trophySharp, checkmarkCircleOutline, checkmarkCircleSharp,  } from "ionicons/icons";
-import { computed, watch } from "vue";
-import { useRouter, useRoute } from "vue-router";
-import { useCurrentUserProfile } from "./composables/userProfile";
-import { useAppConfig, useAppSettings } from "./composables/app";
-import { ROLES } from "./constants";
+// prettier-ignore
+import { IonApp, IonContent, IonFooter, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, IonSplitPane, IonText, IonToggle } from "@ionic/vue";
 import { useLocalStorage } from "@vueuse/core";
+import { checkmarkCircleOutline, checkmarkCircleSharp, footballOutline, footballSharp, homeOutline, homeSharp, informationCircleOutline, informationCircleSharp, moonOutline, moonSharp, optionsOutline, optionsSharp, peopleCircleOutline, peopleCircleSharp, peopleOutline, peopleSharp, personAddOutline, personAddSharp, personCircleOutline, personCircleSharp, trophyOutline, trophySharp, } from "ionicons/icons";
+import { computed, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useAppConfig, useAppSettings } from "./composables/app";
+import { useCurrentUserProfile } from "./composables/userProfile";
+import { ROLES } from "./constants";
 
 const router = useRouter();
 const route = useRoute();
@@ -99,7 +97,7 @@ const appPages = computed(() => {
       iosIcon: peopleSharp,
       mdIcon: peopleSharp,
     }]
-    if (userProfile.value.role >= ROLES.Chef) pages = [...pages, requestsPage];
+    if (userProfile.value.role >= ROLES.Chef) pages = [...pages, applicantsPage];
     pages = [...pages, attendantsPage];
   }
   if (userProfile.value.role == ROLES.Participant) pages = [...pages, {
@@ -189,9 +187,9 @@ const gamesPage = {
   iosIcon: footballOutline,
   mdIcon: footballSharp,
 }
-const requestsPage = {
+const applicantsPage = {
   title: "Demandes d'accès",
-  url: "/requests",
+  url: "/applicants",
   iosIcon: personAddOutline,
   mdIcon: personAddSharp,
 }

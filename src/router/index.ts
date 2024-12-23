@@ -8,7 +8,7 @@ import { RouteRecordRaw } from 'vue-router';
 import { getCurrentUser } from 'vuefire';
 import GuestHomePageVue from '../views/GuestHomePage.vue';
 import HomePageVue from '../views/HomePage.vue';
-import { toastPopup } from './../services/popup';
+import { toastPopup } from '../utils/popup';
 
 const routes: Array<RouteRecordRaw> = [
   { 
@@ -110,10 +110,10 @@ const routes: Array<RouteRecordRaw> = [
     meta: { minimumRole: ROLES.Animateur }
   },
   {
-    name: 'requests',
-    path: '/requests',
+    name: 'applicants',
+    path: '/applicants',
     props: true,
-    component: () => import ('../views/RequestsPage.vue'),
+    component: () => import ('../views/ApplicantsPage.vue'),
     meta: { minimumRole: ROLES.Chef }
   },
   {
@@ -136,9 +136,9 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     name: 'users',
-    path: '/users/:userFilter?',
+    path: '/users',
     props: true,
-    component: () => import ('../views/UsersPage.vue'),
+    component: () => import ('../views/LatestUsersPage.vue'),
     meta: { minimumRole: ROLES.Administrateur }
   },
   {

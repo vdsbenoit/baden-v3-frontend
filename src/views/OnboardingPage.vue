@@ -76,7 +76,7 @@ import { useAttendantSections } from "@/composables/attendantSection";
 import { usePlayerSections } from "@/composables/playerSection";
 import { useCurrentUserProfile } from "@/composables/userProfile";
 import { DEFAULT_ATTENDANT_SECTION_ID, DEFAULT_ROLE_VALUE, DEFAULT_PLAYER_SECTION_ID, DEFAULT_SECTION_TYPE_ID, ROLES } from "@/constants";
-import { confirmPopup, errorPopup, toastPopup } from "@/services/popup";
+import { confirmPopup, errorPopup, toastPopup } from "@/utils/popup";
 import { Section } from "@/types/Section";
 import { getAttendantSection, getStaffSection } from "@/utils/attendantSection";
 import { sanitizeInput } from "@/utils/form";

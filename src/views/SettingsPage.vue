@@ -83,7 +83,7 @@
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useAppSettings } from "@/composables/app";
-import { loadingPopup } from "@/services/popup";
+import { loadingPopup } from "@/utils/popup";
 import { updateAppSettings } from "@/utils/app";
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonToggle, useIonRouter } from "@ionic/vue";
 import { checkmarkOutline, checkmarkSharp, chevronForwardOutline, chevronForwardSharp } from "ionicons/icons";

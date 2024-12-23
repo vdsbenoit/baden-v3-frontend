@@ -158,7 +158,7 @@ import { usePlayerSection, usePlayerSections } from "@/composables/playerSection
 import { useCanSeeModerationStuff, useCanSeeRanking } from "@/composables/rights";
 import { useCurrentUserProfile, useMembersOfSection } from "@/composables/userProfile";
 import { DEFAULT_PLAYER_SECTION_ID, DEFAULT_SECTION_TYPE_ID, ROLES } from "@/constants";
-import { errorPopup, loadingPopup } from "@/services/popup";
+import { errorPopup, loadingPopup } from "@/utils/popup";
 import { updateSectionMeanScore } from "@/utils/playerSection";
 import { IonBadge, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonNote, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue";
 import { computed, ref } from "@vue/reactivity";

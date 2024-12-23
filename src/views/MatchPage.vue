@@ -139,7 +139,7 @@ import { useEditScoreRights, useCanSeeModerationStuff } from "@/composables/righ
 import { useTeam } from "@/composables/team";
 import { useCurrentUserProfile, useUserProfile } from "@/composables/userProfile";
 import { DEFAULT_GAME_ID, DEFAULT_MATCH_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID } from "@/constants";
-import { choicePopup, errorPopup, toastPopup } from "@/services/popup";
+import { choicePopup, errorPopup, toastPopup } from "@/utils/popup";
 import { RefPlayerSection } from "@/types";
 import { resetMatchScore, setMatchDraw, setMatchScore } from "@/utils/match";
 import { addSectionDraw, addSectionWin, removeSectionDraw, removeSectionWin } from "@/utils/playerSection";

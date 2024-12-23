@@ -8,7 +8,7 @@ export type UserProfile = {
   role: number
   hasDoneOnboarding: boolean
   requestedRole?: number
-  requestedSectionId?: number
+  requestedSectionId?: string
   requestedSectionName?: string
   rejectionReason?: string
   sectionId?: string

@@ -204,7 +204,7 @@ import { usePlayerSection, usePlayerSections } from "@/composables/playerSection
 import { useEditProfileRights } from "@/composables/rights";
 import { useCurrentUserProfile, useUserProfile } from "@/composables/userProfile";
 import { DEFAULT_ATTENDANT_SECTION_ID, DEFAULT_GAME_ID, DEFAULT_ROLE_VALUE, DEFAULT_PLAYER_SECTION_ID, DEFAULT_SECTION_TYPE_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID, ROLES } from "@/constants";
-import { confirmPopup, errorPopup, loadingPopup, toastPopup } from "@/services/popup";
+import { confirmPopup, errorPopup, loadingPopup, toastPopup } from "@/utils/popup";
 import { VueFireGame } from "@/types";
 import { sanitizeInput } from "@/utils/form";
 import { addAttendant, removeAttendant } from "@/utils/game";

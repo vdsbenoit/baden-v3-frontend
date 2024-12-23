@@ -52,7 +52,7 @@
                 <ion-card-title>Membres</ion-card-title>
               </ion-card-header>
               <ion-card-content>
-                <ion-item v-if="nbApplicants" routerLink="/requests">
+                <ion-item v-if="nbApplicants" routerLink="/applicants">
                   <ion-label>Membres en attente de validation</ion-label>
                   <ion-badge slot="end" color="warning">{{ nbApplicants }}</ion-badge>
                 </ion-item>

@@ -1,4 +1,4 @@
-import { confirmPopup, errorPopup } from './services/popup';
+import { confirmPopup, errorPopup } from './utils/popup';
 import { buildInfo } from "@/app/buildinfo";
 import * as semver from "semver";
 

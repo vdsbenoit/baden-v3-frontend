@@ -111,7 +111,7 @@ import { useAppConfig, useAppSettings } from "@/composables/app";
 import { useTeam } from "@/composables/team";
 import { useCurrentUserProfile } from "@/composables/userProfile";
 import { DEFAULT_PLAYER_SECTION_ID, DEFAULT_TEAM_ID, ROLES } from "@/constants";
-import { errorPopup, toastPopup } from "@/services/popup";
+import { errorPopup, toastPopup } from "@/utils/popup";
 import { updateUserProfile } from "@/utils/userProfile";
 import {
   IonButton,

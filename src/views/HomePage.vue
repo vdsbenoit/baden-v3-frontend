@@ -18,8 +18,8 @@
           <tile-col v-if="userProfile.team" :target="`/team/${userProfile.team}`">Mon équipe</tile-col>
 
           <!-- >= chef -->
-          <tile-col v-if="nbPendingRequests" target="/requests">
-            {{ nbPendingRequests }} demande{{ typeof nbPendingRequests == 'string' || nbPendingRequests > 1  ? "s" : "" }} d'accès
+          <tile-col v-if="nbApplicants" target="/applicants">
+            {{ nbApplicants }} demande{{ typeof nbApplicants == 'string' || nbApplicants > 1  ? "s" : "" }} d'accès
           </tile-col>
 
           <!-- chef -->
@@ -80,7 +80,7 @@ const showRegisterAttendants = computed(() => {
   if (!appSettings.value || !appSettings.value.isAttendantRegistrationOpen) return false;
   return (userProfile.value.role === ROLES.Chef);
 });
-const nbPendingRequests = computed(() => {
+const nbApplicants = computed(() => {
   if(!applicants.value) return 0
   return applicants.value.length <= 15 ? applicants.value.length : "15+";
 });

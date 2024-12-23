@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { toastPopup } from "@/services/popup";
+import { toastPopup } from "@/utils/popup";
 import { actionSheetController } from "@ionic/vue"
 import { computed, defineProps, ref } from "vue"
 

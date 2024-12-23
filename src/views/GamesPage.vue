@@ -72,7 +72,7 @@ import { useCircuitGames } from "@/composables/game";
 import { useCanEditGames } from "@/composables/rights";
 import { useAppConfig, useAppSettings } from "@/composables/app";
 import { DEFAULT_CIRCUIT_VALUE, DEFAULT_GAME_ID } from "@/constants";
-import { toastPopup } from "@/services/popup";
+import { toastPopup } from "@/utils/popup";
 import { VueFireGame } from "@/types";
 import { setGameName } from "@/utils/game";
 import { IonBadge, IonButton, IonContent, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonSelect, IonSelectOption, IonSpinner, IonText, isPlatform, useIonRouter } from "@ionic/vue";

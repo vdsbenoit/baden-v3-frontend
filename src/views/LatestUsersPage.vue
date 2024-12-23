@@ -51,7 +51,7 @@ import { useLatestUsers } from "@/composables/userProfile";
 import { ROLES } from "@/constants";
 import { ref, watch } from "vue";
 import { FirestoreError } from "firebase/firestore";
-import { toastPopup } from "@/services/popup";
+import { toastPopup } from "@/utils/popup";
 import { VueFireUserProfile } from "@/types";
 import { getRoleByValue, updateUserProfile } from "@/utils/userProfile";
 
