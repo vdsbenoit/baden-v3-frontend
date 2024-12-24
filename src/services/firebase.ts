@@ -14,7 +14,8 @@ import {
 } from "firebase/auth";
 
 export const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+const dbId = process.env.NODE_ENV === "production" ? "(default)" : "development";
+export const db = getFirestore(app, dbId);
 const auth = getAuth(app);
 
 

@@ -1,6 +1,6 @@
-import { fbSendSignInEmail, fbSignInWithEmailLink, isNewUser } from "@/services/firebase"
+import { fbSendSignInEmail, fbSignInWithEmailLink } from "@/services/firebase"
 import { choicePopup, errorPopup, loadingPopup } from "@/utils/popup"
-import { createUserProfile } from "./userProfile"
+import { createUserProfile, getUserProfile } from "./userProfile"
 
 export async function sendSignInEmail(email: string) {
   email = email.trim()
@@ -35,13 +35,14 @@ export async function processSignInLink(href: string) {
   }
   if (!email) {
     if (displayEmailError) throw new Error("Impossible de récupérer l'email d'authentification")
-    else return
+    return
   }
   const loading = await loadingPopup()
   try {
     const response = await fbSignInWithEmailLink(email, href)
     if (response.user) {
-      if (isNewUser(response.user)) createUserProfile(response.user.uid as string, response.user.email as string)
+      const userProfile = getUserProfile(response.user.uid as string)
+      if (userProfile == undefined) createUserProfile(response.user.uid as string, response.user.email as string)
       window.localStorage.removeItem("emailForSignIn")
       loading.dismiss()
       return true
@@ -53,7 +54,10 @@ export async function processSignInLink(href: string) {
     if (e.code === "auth/invalid-action-code")
       errorPopup(`Le lien que tu viens d'utiliser n'est plus valide. 
         Clique sur le lien du dernier email que tu as reçu ou réessaie la procédure d'inscription depuis le début.`)
-    else errorPopup(e.message)
+    else {
+      errorPopup(e.message)
+      console.error(e)
+    } 
     loading.dismiss()
     return false
   }
