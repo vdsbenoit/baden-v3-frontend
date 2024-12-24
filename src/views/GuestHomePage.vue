@@ -7,7 +7,7 @@
         <img src="@/assets/img/logo-bb.png" alt="Logo Baden Battle" />
       </div>
       <div class="container ion-padding">
-        <p>Pour utiliser l'app, il faut d'abord</p>
+        <p>Pour accéder à l'app, il faut d'abord</p>
         <ion-button class="ion-text-lowercase" color="primary" @click="router.push('/login')">te connecter</ion-button>
       </div>
     </ion-content>

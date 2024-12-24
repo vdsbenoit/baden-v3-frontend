@@ -144,15 +144,15 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, from) => {
   if (!to.meta.minimumRole) return true
   if (to.meta.minimumRole === ROLES.Anonyme) return true
   const currentUser = await getCurrentUser()
+  // if the user is not connected, redirect to login
   if(!currentUser) {
-    if (to.name === "ranking" && await isRankingPublic()) return true
     toastPopup("Tu dois être connecté pour accéder à cette page");
     return {
-      path: '/guest',
+      path: '/login',
       query: {
         // we keep the current path in the query so we can
         // redirect to it after login with `router.push(route.query.redirect || '/')`
@@ -160,12 +160,17 @@ router.beforeEach(async (to, from, next) => {
       },
     }
   }
+  // if the user is connected and try to open the guest page, redirect to home
   if (to.name === "guest") return '/home'
+  // if the user is connected and try to open the login page, redirect to home
   if (to.name === "login"){
     toastPopup("Tu es déjà connecté");
     return '/home'
   }
-  if (to.name === "ranking" && await isRankingPublic()) return true
+  if (to.name === "ranking") {
+    const _isRankingPublic = await isRankingPublic()
+    if (_isRankingPublic) return true
+  }
   const userProfile = await getUserProfile(currentUser.uid)
   if (!userProfile) {
     toastPopup("Nous n'avons pas retrouvé ton profile dans la base de données")
@@ -175,18 +180,19 @@ router.beforeEach(async (to, from, next) => {
   if (to.name === "onboarding"){
     if (userProfile.hasDoneOnboarding) {
       toastPopup("Tu as déjà fait l'onboarding");
-      return next('/home');
+      return '/home';
     }
   }
-  if (!userProfile.hasDoneOnboarding && to.name !== "onboarding" && to.name !== "myProfile") {
+  if (!userProfile.hasDoneOnboarding && to.name !== "onboarding") {
     console.log("User is newbie, redirecting to onboarding instead of ", to.name);
     return '/onboarding'
   }
   if (userProfile.role >= +to.meta.minimumRole) return true
-  else {
-    toastPopup(`Tu n'as pas le droit d'accéder à la page ${to.name?.toString()} avec ton role (${getRoleByValue(userProfile.role)})`);
-    return false
-  }  
+  toastPopup(`Tu n'as pas le droit d'accéder à la page ${to.name?.toString()} avec ton role (${getRoleByValue(userProfile.role)})`);
+  console.error(
+    `The user ${userProfile.email} with the role ${userProfile.role} tried to access ${to.name?.toString()} which requires the role ${getRoleByValue(+to.meta.minimumRole)}`
+  )
+  return false  
 })
 
 export default router
