@@ -88,8 +88,8 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-// Strip Anonyme & Newbie from ROLES
-const roles = Object.fromEntries(Object.entries(ROLES).filter(([, value]) => value !== ROLES.Anonyme && value !== ROLES.Newbie));
+// Strip Erreur, Anonyme & Newbie from ROLES
+const roles = Object.fromEntries(Object.entries(ROLES).filter(([, value]) => ![ROLES.Erreur, ROLES.Anonyme, ROLES.Newbie].includes(value)))
 
 // reactive data
 

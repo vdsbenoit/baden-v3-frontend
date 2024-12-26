@@ -33,7 +33,7 @@
               @ion-cancel="formData.role.isEditting = false; resetFormData()"
               cancel-text="Annuler" interface="action-sheet"
             >
-              <ion-select-option v-for="(value, role) in ROLES" :key="value" :value="value">{{ role }}</ion-select-option>
+              <ion-select-option v-for="(value, role) in roles" :key="value" :value="value">{{ role }}</ion-select-option>
             </ion-select>
             <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="formData.role.isEditting = false; resetFormData()"></ion-icon>
           </ion-item>
@@ -215,6 +215,9 @@ import { checkmarkOutline, checkmarkSharp, closeOutline, closeSharp, pencilOutli
 import { computed, reactive, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 
+
+// Strip Erreur, Anonyme & Newbie from ROLES
+const roles = Object.fromEntries(Object.entries(ROLES).filter(([, value]) => ![ROLES.Erreur, ROLES.Anonyme, ROLES.Newbie].includes(value)))
 
 // reactive form data
 const formData = reactive({

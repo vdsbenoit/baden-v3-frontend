@@ -19,7 +19,7 @@
                 <ion-text style="font-weight: bold">{{ user.name }}</ion-text>
               </ion-label>
               <ion-select v-model="editedRole" cancel-text="Annuler" interface="popover">
-                <ion-select-option v-for="(value, role) in ROLES" :key="value" :value="value">{{ role }}</ion-select-option>
+                <ion-select-option v-for="(value, role) in roles" :key="value" :value="value">{{ role }}</ion-select-option>
               </ion-select> 
               <ion-button @click="setRole(user.id)" color="success"><ion-icon slot="icon-only" :ios="checkmarkOutline" :md="checkmarkSharp"></ion-icon></ion-button>
               <ion-icon @click="toggleEditRole(null)" slot="end" :ios="pencilOutline" :md="pencilSharp"></ion-icon>
@@ -54,6 +54,9 @@ import { FirestoreError } from "firebase/firestore";
 import { toastPopup } from "@/utils/popup";
 import { VueFireUserProfile } from "@/types";
 import { getRoleByValue, updateUserProfile } from "@/utils/userProfile";
+
+// Strip Erreur, Anonyme & Newbie from ROLES
+const roles = Object.fromEntries(Object.entries(ROLES).filter(([, value]) => ![ROLES.Erreur, ROLES.Anonyme, ROLES.Newbie].includes(value)))
 
 // reactive data
 const limit = ref(15);
