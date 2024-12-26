@@ -30,14 +30,17 @@ export const addAttendantTiming = async (attendantTimeSlot: AttendantTimeSlot) =
 export const removeAttendantTiming = (): never => {
   throw Error("One should not remove the attendantTiming one by one")
 }
-
+const defaultAttendantTimings :AttendantTimeSlot[] = [
+  {start: "08h30", stop: "12h00", id: "", name: "Matin"},
+  {start: "13h00", stop: "17h00", id: "", name: "Après-midi"}
+]
 /**
  * Reset attendants timings
  * Do not use if attendant have already registered to games as it would reset the id of the timings
  * @param attendantTimings new attendant timings 
  * @returns 
  */
-export const resetAttendantTimings = async (attendantTimings: AttendantTimeSlot[]) => {
+export const resetAttendantTimings = async (attendantTimings: AttendantTimeSlot[] = defaultAttendantTimings) => {
   for (let i=0; i< attendantTimings.length; i++){
     if (!attendantTimings[i].name) attendantTimings[i].name = String(i+1)
     attendantTimings[i].id = generateRandomId()
@@ -49,32 +52,3 @@ export const resetAttendantTimings = async (attendantTimings: AttendantTimeSlot[
   // apply new attendant timings
   return updateDoc(APP_CONFIG_DOC_REF, { attendantTimings })
 } 
-
-// fixme
-export const hardcodeTimings = async () => {
-  const playerTimings = [
-    {start: "10h09", stop: "10h24" },
-    {start: "10h27", stop: "10h42" },
-    {start: "10h45", stop: "11h00" },
-    {start: "11h03", stop: "11h18" },
-    {start: "11h23", stop: "11h36" },
-    {start: "11h39", stop: "11h54" },
-    {start: "11h57", stop: "12h12" },
-    {start: "13h15", stop: "13h30" },
-    {start: "13h33", stop: "13h48" },
-    {start: "13h51", stop: "14h06" },
-    {start: "14h09", stop: "14h24" },
-    {start: "14h27", stop: "14h42" },
-    {start: "14h45", stop: "15h00" },
-    {start: "15h15", stop: "15h30" },
-    {start: "15h33", stop: "15h48" },
-    {start: "15h51", stop: "16h06" },
-    {start: "16h09", stop: "16h24" },
-  ]
-  const attendantTimings :AttendantTimeSlot[] = [
-    {start: "08h30", stop: "12h00", id: "", name: "Matin"},
-    {start: "13h00", stop: "17h00", id: "", name: "Après-midi"}
-  ]
-  // resetPlayerTimings(playerTimings)
-  resetAttendantTimings(attendantTimings)
-}

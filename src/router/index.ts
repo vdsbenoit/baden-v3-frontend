@@ -144,7 +144,7 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach(async (to, from) => {
+router.beforeEach(async (to) => {
   if (!to.meta.minimumRole) return true
   if (to.meta.minimumRole === ROLES.Anonyme) return true
   const currentUser = await getCurrentUser()
@@ -173,7 +173,7 @@ router.beforeEach(async (to, from) => {
   }
   const userProfile = await getUserProfile(currentUser.uid)
   if (!userProfile) {
-    toastPopup("Nous n'avons pas retrouvé ton profile dans la base de données")
+    toastPopup("Nous n'avons pas retrouvé ton profil dans la base de données")
     console.error("Could not find user profile in the db")
     return false
   }
