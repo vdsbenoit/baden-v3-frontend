@@ -41,7 +41,7 @@ export async function processSignInLink(href: string) {
   try {
     const response = await fbSignInWithEmailLink(email, href)
     if (response.user) {
-      const userProfile = getUserProfile(response.user.uid as string)
+      const userProfile = await getUserProfile(response.user.uid as string)
       if (userProfile == undefined) createUserProfile(response.user.uid as string, response.user.email as string)
       window.localStorage.removeItem("emailForSignIn")
       loading.dismiss()

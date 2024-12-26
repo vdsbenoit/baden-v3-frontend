@@ -99,7 +99,6 @@ const signIn = async (href: string) => {
       router.replace("/onboarding")
     } else router.replace("/home");
   }
-  else errorPopup("Impossible de se connecter");
 }
 
 function sanitizeClipboardContent(input: string): string | null {
