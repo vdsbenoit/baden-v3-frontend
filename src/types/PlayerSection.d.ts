@@ -14,6 +14,7 @@ export interface PlayerSection extends Section {
   nbTeams: number
   playersPerTeam: number
   meanScore: number
+  number: number
 }
 
 export interface VueFirePlayerSection extends PlayerSection {
