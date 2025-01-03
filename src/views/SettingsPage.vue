@@ -62,7 +62,7 @@
             </ion-item>
             <ion-item>
               <ion-label>Afficher la disponibilités des épreuves</ion-label>
-              <ion-toggle @IonChange="setGameAvailabilites" :checked="appSettings.isGameAvailabilitiesDiplayed"></ion-toggle>
+              <ion-toggle @IonChange="setGameAvailabilites" :checked="appSettings.isGameAvailabilitiesDisplayed"></ion-toggle>
             </ion-item>
             <ion-item>
               <ion-label class="ion-text-wrap">
@@ -145,7 +145,7 @@ const setAttendantRegistration = async (event: any) => {
 };
 const setGameAvailabilites = async (event: any) => {
   const loading = await loadingPopup()
-  await updateAppSettings({ isGameAvailabilitiesDiplayed: event.detail.checked });
+  await updateAppSettings({ isGameAvailabilitiesDisplayed: event.detail.checked });
   loading.dismiss()
 };
 const setCanSetAnyScores = async (event: any) => {
