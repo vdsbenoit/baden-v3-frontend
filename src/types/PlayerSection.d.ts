@@ -3,18 +3,17 @@ import { VueFirestoreDocumentData } from "vuefire"
 import { Section } from "./Section"
 
 export interface PlayerSection extends Section {
-  isAttendant: false
-  isStaff: false
+  number: number
   sectionTypeId: string
-  scores: number[]
-  score: number
   teams: string[]
+  nbTeams: number
   nbPlayers: number
   nbLeaders: number
-  nbTeams: number
   playersPerTeam: number
   meanScore: number
-  number: number
+  score: number
+  isAttendant: false
+  isStaff: false
 }
 
 export interface VueFirePlayerSection extends PlayerSection {
