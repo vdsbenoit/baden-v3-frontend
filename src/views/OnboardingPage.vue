@@ -82,7 +82,7 @@ import { getAttendantSection, getStaffSection } from "@/utils/attendantSection";
 import { sanitizeInput } from "@/utils/form";
 import { getPlayerSection } from "@/utils/playerSection";
 import { updateUserProfile } from "@/utils/userProfile";
-import { IonButton, IonCard, IonCardHeader, IonCardTitle, IonContent, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonSelect, IonSelectOption } from "@ionic/vue";
+import { IonSpinner, IonButton, IonCard, IonCardHeader, IonCardTitle, IonContent, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonSelect, IonSelectOption } from "@ionic/vue";
 import { computed, ref } from "vue";
 import { useRouter } from 'vue-router';
 
@@ -175,7 +175,7 @@ const submitForm = async () => {
   // Check if all required fields are filled
   if (!name.value) return errorPopup('Mentionne au minium ton totem ou ton nom');
   if (selectedRole.value < ROLES.Participant) return errorPopup('Choisis un role');
-  if (!selectedAttendantSectionId.value) return errorPopup('Choisis une section');
+  if (!selectedAttendantSectionId.value && selectedRole.value < ROLES.Organisateur) return errorPopup('Choisis une section');
 
   try{
     // If the user is a participant
