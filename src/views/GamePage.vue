@@ -135,42 +135,24 @@
 </template>
 
 <script setup lang="ts">
+// prettier-ignore
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import MyActionSheetButton from "@/components/MyActionSheetButton.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
-import { useGame } from "@/composables/game";
+import { useAppConfig, useAppSettings } from "@/composables/app";
 import { useAttendantSections } from "@/composables/attendantSection";
+import { useGame } from "@/composables/game";
 import { useGameMatches } from "@/composables/match";
 import { useCanEditGames, useCanRegister } from "@/composables/rights";
-import { useAppConfig, useAppSettings } from "@/composables/app";
 import { useCurrentUserProfile, useMembersOfSection } from "@/composables/userProfile";
-import { DEFAULT_GAME_ID, DEFAULT_ATTENDANT_SECTION_ID, ROLES } from "@/constants";
-import { confirmPopup, toastPopup } from "@/utils/popup";
+import { DEFAULT_ATTENDANT_SECTION_ID, DEFAULT_GAME_ID, ROLES } from "@/constants";
 import { AttendantTimeSlot, VueFireUserProfile } from "@/types";
 import { addAttendant, removeAttendant, setGameNoScores } from "@/utils/game";
 import { setMatchNoScores } from "@/utils/match";
+import { confirmPopup, toastPopup } from "@/utils/popup";
 import { canBeRegistered } from "@/utils/rights";
 import { getRoleByValue, getUserName } from "@/utils/userProfile";
-import {
-  IonBadge,
-  IonButton,
-  IonCard, IonCardContent, IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonCol,
-  IonContent,
-  IonGrid,
-  IonIcon,
-  IonItem, IonLabel,
-  IonList,
-  IonListHeader,
-  IonPage,
-  IonRow,
-  IonSelect, IonSelectOption,
-  IonSpinner,
-  IonText,
-  useIonRouter
-} from "@ionic/vue";
+import { IonBadge, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner, IonText, useIonRouter } from "@ionic/vue";
 import { computed, reactive, ref, toRef } from "@vue/reactivity";
 import { useRouteParams } from "@vueuse/router";
 import { closeOutline, closeSharp } from "ionicons/icons";
