@@ -23,7 +23,7 @@ export function usePlayerSections(rSectionTypeId: MaybeRefOrGetter<string>) {
     return query(
       PLAYER_SECTIONS_COLLECTION_REF, 
       where("sectionType", "==", sectionTypeId), 
-      orderBy("id")
+      orderBy("number")
     )
   })
   return useCollection<PlayerSection>(dbRef)
