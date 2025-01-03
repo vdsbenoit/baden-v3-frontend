@@ -8,7 +8,7 @@
           <ion-grid class="">
             <ion-row>
               <ion-col size="12" size-sm="6">
-                  <ion-select v-if="sections" v-model="sectionId" placeholder="Section" interface="popover">
+                  <ion-select v-if="sections" v-model="selectedSectionId" placeholder="Section" interface="popover">
                     <ion-select-option color="dark" v-for="section in sections.values()" :value="section.id" :key="section.id"> {{ section.name }} ({{ section.city }}) </ion-select-option>
                   </ion-select>
                   <ion-spinner v-else-if="isLoadingSections"></ion-spinner>
@@ -19,19 +19,19 @@
           </ion-grid>
         </ion-card-content>
       </ion-card>
-      <ion-grid class="ion-no-padding" v-if="sectionId">
+      <ion-grid class="ion-no-padding" v-if="selectedSectionId">
         <ion-row>
           <ion-col size="12" size-sm="6">
             <ion-card>
               <ion-card-header>
                 <ion-card-title>Détails</ion-card-title>
-                <ion-badge v-if="section?.isStaff" color="danger">Staff</ion-badge>
+                <ion-badge v-if="selectedSection?.isStaff" color="danger">Staff</ion-badge>
               </ion-card-header>
               <ion-card-content>
-                <ion-list v-if="section">
-                  <ion-item> <ion-label>Nom</ion-label>{{ section.name }} </ion-item>
-                  <ion-item> <ion-label>Ville</ion-label>{{ section.city }} </ion-item>
-                  <ion-item> <ion-label>Unité</ion-label>{{ section.unit }} </ion-item>
+                <ion-list v-if="selectedSection">
+                  <ion-item> <ion-label>Nom</ion-label>{{ selectedSection.name }} </ion-item>
+                  <ion-item> <ion-label>Ville</ion-label>{{ selectedSection.city }} </ion-item>
+                  <ion-item> <ion-label>Unité</ion-label>{{ selectedSection.unit }} </ion-item>
                 </ion-list>
                 <div v-else-if="isLoadingSection" class="ion-text-center ion-align-items-center">
                   <ion-spinner></ion-spinner>
@@ -83,7 +83,7 @@
           <ion-col  size="12" size-sm="6">
             <ion-card>
               <ion-card-header>
-                <ion-card-title v-if="section?.isStaff">Administrateur</ion-card-title>
+                <ion-card-title v-if="selectedSection?.isStaff">Administrateur</ion-card-title>
                 <ion-card-title v-else>Chefs</ion-card-title>
               </ion-card-header>
               <ion-card-content>
@@ -136,11 +136,11 @@ import { arrowUpOutline, arrowUpSharp } from "ionicons/icons";
 // composables
 
 const appConfig = useAppConfig()
-const sectionId = useRouteParams('sectionId', DEFAULT_ATTENDANT_SECTION_ID)
+const selectedSectionId = useRouteParams('sectionId', DEFAULT_ATTENDANT_SECTION_ID)
+const { data: selectedSection, pending: isLoadingSection, error: errorLoadingSection } = useAttendantSection(selectedSectionId.value);
+const { data: attendants, pending: isLoadingAttendants, error: errorLoadingAttendants } = useMembersOfSection(selectedSectionId.value);
 const { data: sections, pending: isLoadingSections, error: errorLoadingSections } = useAttendantSections(true, true);
-const { data: section, pending: isLoadingSection, error: errorLoadingSection } = useAttendantSection(sectionId.value);
-const { data: attendants, pending: isLoadingAttendants, error: errorLoadingAttendants } = useMembersOfSection(sectionId.value);
-const applicants = useSectionApplicants(50, sectionId.value);
+const applicants = useSectionApplicants(50, selectedSectionId.value);
 
 // Computed data
 
