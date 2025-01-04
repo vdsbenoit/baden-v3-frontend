@@ -1,6 +1,6 @@
 # Configuration
 
-This document describe the step to reset the app a configure a new game.  
+This document describes the steps to reset the app and configure a new game.  
 
 ⚠️ WIP ⚠️ This is a draft. I currently use this document as a specification to define how I am going to implement the setup of the app.
 
