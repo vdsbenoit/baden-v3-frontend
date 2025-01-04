@@ -1,5 +1,5 @@
 <template>
-  <ion-app class="dark">
+  <ion-app>
     <ion-split-pane content-id="main-content">
       <ion-menu content-id="main-content" type="overlay">
         <ion-content style="height: 100%">
@@ -18,7 +18,7 @@
                 <ion-label>
                   Dark Mode
                 </ion-label>
-                <ion-toggle :checked="isDarkModeEnabled"></ion-toggle>
+                <ion-toggle slot="end" v-model="isDarkModeEnabled"></ion-toggle>
               </ion-item>
           </ion-list>
         </ion-content>
@@ -41,9 +41,9 @@
 <script setup lang="ts">
 // prettier-ignore
 import { IonApp, IonContent, IonFooter, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, IonSplitPane, IonText, IonToggle } from "@ionic/vue";
-import { useLocalStorage } from "@vueuse/core";
+import { useDark } from "@vueuse/core";
 import { checkmarkCircleOutline, checkmarkCircleSharp, footballOutline, footballSharp, homeOutline, homeSharp, informationCircleOutline, informationCircleSharp, moonOutline, moonSharp, optionsOutline, optionsSharp, peopleCircleOutline, peopleCircleSharp, peopleOutline, peopleSharp, personAddOutline, personAddSharp, personCircleOutline, personCircleSharp, trophyOutline, trophySharp, } from "ionicons/icons";
-import { computed, watch } from "vue";
+import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAppConfig, useAppSettings } from "./composables/app";
 import { useCurrentUserProfile } from "./composables/userProfile";
@@ -57,12 +57,10 @@ const userProfile = useCurrentUserProfile()
 
 // reactive data
 
-const isDarkModeEnabled = useLocalStorage("darkMode", false)
-
-// Watchers
-watch(isDarkModeEnabled, (shouldEnable: boolean) => {
-  if (shouldEnable) document.body.classList.add('dark');
-  else document.body.classList.remove('dark');
+const isDarkModeEnabled =  useDark({
+  valueLight: '',
+  valueDark: 'dark',
+  selector: 'body',
 })
 
 // Computed
