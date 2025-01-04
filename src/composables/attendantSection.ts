@@ -41,7 +41,7 @@ export function useAttendantSections(
     }
     if (staffSections === "exclude") {
       console.debug(`Excluding staff group in the query`)
-      queryParams.push(where("isStaff", "!=", true))
+      queryParams.push(where("isStaff", "==", false))
     }
     if (staffSections === "only") {
       console.debug(`Returning only staff group in the query`)
