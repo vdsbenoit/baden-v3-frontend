@@ -22,7 +22,7 @@
     "@ionic/vue": "^6.7.5",
     "@ionic/vue-router": "^6.7.5",
     "@vueuse/core": "^11.2.0",
-    "@vueuse/router": "^10.10.0",
+    "@vueuse/router": "^10.11.1",
     "core-js": "^3.36.1",
     "firebase": "^10.12.2",
     "register-service-worker": "^1.7.2",

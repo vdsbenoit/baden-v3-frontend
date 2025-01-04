@@ -2,10 +2,10 @@ import { fbSendSignInEmail, fbSignInWithEmailLink } from "@/services/firebase"
 import { choicePopup, errorPopup, loadingPopup } from "@/utils/popup"
 import { createUserProfile, getUserProfile } from "./userProfile"
 
-export async function sendSignInEmail(email: string) {
+export async function sendSignInEmail(email: string, redirectUrl: string) {
   email = email.trim()
   try {
-    await fbSendSignInEmail(email)
+    await fbSendSignInEmail(email, redirectUrl)
     window.localStorage.setItem("emailForSignIn", email)
   } catch (e: any) {
     console.error(e)

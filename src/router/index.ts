@@ -5,36 +5,25 @@ import OnboardingPage from '@/views/OnboardingPage.vue';
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
 import { getCurrentUser } from 'vuefire';
-import GuestHomePageVue from '../views/GuestHomePage.vue';
 import HomePageVue from '../views/HomePage.vue';
 import { toastPopup } from '../utils/popup';
 
 const routes: Array<RouteRecordRaw> = [
   { 
     path: '', 
-    redirect: '/guest'
+    redirect: '/guest',
   },
   {
     name: 'guest',
     path: '/guest',
-    component: GuestHomePageVue
+    component: () => import ('../views/GuestHomePage.vue'),
+    meta: { notAuthenticated: true }
   },
   {
     name: 'login',
     path: '/login',
     component: () => import ('../views/LoginPage.vue'),
-  },
-  {
-    name: 'redirectLogin',
-    path: '/redirectLogin',
-    component: () => import ('../views/LoginPage.vue'),
-    props: { redirect: true }
-  },
-  {
-    name: 'validation',
-    path: '/validation',
-    component: () => import ('../views/LoginPage.vue'),
-    props: { validation: true }
+    meta: { notAuthenticated: true }
   },
   {
     name: 'home',
@@ -132,10 +121,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'about',
     path: '/about',
     component: () => import ('../views/AboutPage.vue'),
+    meta: { minimumRole: ROLES.Anonyme }
   },
   { 
     path: "/:catchAll(.*)",
-    component: () => import ('../views/NotFoundPage.vue')
+    component: () => import ('../views/NotFoundPage.vue'),
+    meta: { minimumRole: ROLES.Anonyme }
   }
 ]
 
@@ -145,11 +136,14 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
-  if (!to.meta.minimumRole) return true
-  if (to.meta.minimumRole === ROLES.Anonyme) return true
+  if (to.meta.minimumRole && to.meta.minimumRole === ROLES.Anonyme) return true
   const currentUser = await getCurrentUser()
-  // if the user is not connected, redirect to login
+  // if the user is not connected
   if(!currentUser) {
+    // if the pages does not require authentication, let the user access it
+    if (to.meta.notAuthenticated) return true
+    // else, redirect to login
+    console.log("User is not connected, redirecting to login");
     toastPopup("Tu dois être connecté pour accéder à cette page");
     return {
       path: '/login',
@@ -171,7 +165,7 @@ router.beforeEach(async (to) => {
     const _isRankingPublic = await isRankingPublic()
     if (_isRankingPublic) return true
   }
-  const userProfile = await getUserProfile(currentUser.uid)
+  const userProfile = await getUserProfile(currentUser.uid)  // fixme : limit the number of calls to the db
   if (!userProfile) {
     toastPopup("Nous n'avons pas retrouvé ton profil dans la base de données")
     console.error("Could not find user profile in the db")
@@ -187,10 +181,11 @@ router.beforeEach(async (to) => {
     console.log("User is newbie, redirecting to onboarding instead of ", to.name);
     return '/onboarding'
   }
+  if (!to.meta.minimumRole) return true
   if (userProfile.role >= +to.meta.minimumRole) return true
   toastPopup(`Tu n'as pas le droit d'accéder à la page ${to.name?.toString()} avec ton role (${getRoleByValue(userProfile.role)})`);
   console.error(
-    `The user ${userProfile.email} with the role ${userProfile.role} tried to access ${to.name?.toString()} which requires the role ${getRoleByValue(+to.meta.minimumRole)}`
+    `The user ${userProfile.email} with the role ${userProfile.role} tried to access ${to.name?.toString()} which requires the role ${getRoleByValue(+to.meta?.minimumRole)}`
   )
   return false  
 })

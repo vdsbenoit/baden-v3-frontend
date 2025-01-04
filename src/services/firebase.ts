@@ -32,19 +32,8 @@ export function generateRandomId() {
  * @param email
  * @returns
  */
- export const fbSendSignInEmail = async (email: string) => {
-  const actionCodeSettings = {
-    // URL you want to redirect back to.
-    url: `https://${location.host}/profile`,
-    // This must be true.
-    handleCodeInApp: true
-  };
-  try{
-    await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-  } catch (error: any) {
-    console.error(error.message);
-  }
-
+ export const fbSendSignInEmail = async (email: string, redirectUrl: string) => {
+  return sendSignInLinkToEmail(auth, email, { url: redirectUrl, handleCodeInApp: true});
 };
 
 /**

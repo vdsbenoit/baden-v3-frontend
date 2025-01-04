@@ -6,7 +6,7 @@
       <div class="logo">
         <img src="@/assets/img/logo-bb.png" alt="Logo Baden Battle" />
       </div>
-      <ion-text class="ion-text-center" v-if="props.redirect">
+      <ion-text class="ion-text-center" v-if="redirect">
         <p>Connecte-toi pour accéder à ce contenu</p>
       </ion-text>
       <form v-on:submit.prevent="sendEmail">
@@ -39,17 +39,18 @@ import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, Ion
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { errorPopup, infoPopup, toastPopup } from "@/utils/popup";
 import { useRouter } from "vue-router";
-import { onMounted, ref } from "vue";
-import { defineProps } from "vue";
+import { ref, watch } from "vue";
 import { computed } from "@vue/reactivity";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { processSignInLink, sendSignInEmail } from "@/utils/auth";
 import { ROLES } from "@/constants";
 import { useCurrentUserProfile } from "@/composables/userProfile";
+import { useRouteQuery } from "@vueuse/router";
 
-const props = defineProps(["validation", "redirect"]);
 const router = useRouter();
 const userProfile = useCurrentUserProfile();
+const mode = useRouteQuery("mode", "newLogin")
+const redirect = useRouteQuery("redirect", `/home`)
 
 // reactive data
 
@@ -59,13 +60,12 @@ const isEmailSent = ref(false);
 const dgprChecked = ref(false);
 const isValidating = ref(false);
 
-// lifecycle hooks
-
-onMounted(async () => {
-  if (props.validation) {
+// Watcher
+watch(mode, (newValue: string) => {
+  if (newValue === "signIn") {
     signIn(window.location.href);
   }
-});
+})
 
 // computed data
 
@@ -82,7 +82,7 @@ const sendEmail = async () => {
   if (!dgprChecked.value || !email.value) return;
   isSendingEmail.value = true;
   try {
-    await sendSignInEmail(email.value);
+    await sendSignInEmail(email.value, `https://${location.host}${redirect.value}`);
     isEmailSent.value = true;
     toastPopup("On t'a envoyé un email<br/>Clique sur le lien qui s'y trouve pour te connecter", 10000);
   } catch(error: any){
