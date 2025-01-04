@@ -3,17 +3,16 @@ import { VueFirestoreDocumentData} from "vuefire"
 
 export type Team = {
   hash: string
-  number: number
+  number: number // this is used by the distribution script
   sectionTypeId: string
   sectionId: string
   sectionName: string
   section: VueFirePlayerSection
   city: string
-  scores: number[]
-  score: number
-  matches: string[]
   nbPlayers: number
+  matches: string[]
   ignoreScore: boolean
+  score: number
 }
 
 export type VueFireTeam = Team & { readonly id: string }

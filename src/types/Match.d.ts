@@ -12,7 +12,6 @@ export type Match = {
   draw: boolean
   reporter: string
   lastModified: string
-  hasScore: boolean // todo: remove this in next release
   noScores: boolean
 }
 
