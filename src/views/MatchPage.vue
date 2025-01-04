@@ -42,7 +42,7 @@
                     <p>{{ firstPlayer.section.sectionName }}</p>
                   </ion-text>
                   <ion-text color="medium">
-                    <p>{{ firstPlayer.city }}</p>
+                    <p>{{ firstPlayer.section.city }}</p>
                   </ion-text>
                 </ion-col>
                 <ion-col size="1">
@@ -58,7 +58,7 @@
                     <p>{{ secondPlayer.section.sectionName }}</p>
                   </ion-text>
                   <ion-text color="medium">
-                    <p>{{ secondPlayer.city }}</p>
+                    <p>{{ secondPlayer.section.city }}</p>
                   </ion-text>
                 </ion-col>
               </ion-row>

@@ -22,7 +22,7 @@
         <ion-grid class="ion-padding-horizontal ion-padding-top">
           <ion-row class="ion-align-items-center">
             <ion-col class="ion-padding-start" :router-link="`/section/${section?.id}`">
-              <ion-card-subtitle v-if="team.city">{{ team.city }}</ion-card-subtitle>
+              <ion-card-subtitle v-if="team.section.city">{{ team.section.city }}</ion-card-subtitle>
               <h1 v-if="team.section.name" class="ion-no-margin" style="font-weight: bold">{{ team.section.name }}</h1>
               <ion-spinner v-else></ion-spinner>
             </ion-col>

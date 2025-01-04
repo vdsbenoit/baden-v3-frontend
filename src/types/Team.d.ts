@@ -6,9 +6,7 @@ export type Team = {
   number: number // this is used by the distribution script
   sectionTypeId: string
   sectionId: string
-  sectionName: string
   section: VueFirePlayerSection
-  city: string
   nbPlayers: number
   matches: string[]
   ignoreScore: boolean

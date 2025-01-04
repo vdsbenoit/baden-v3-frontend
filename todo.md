@@ -89,7 +89,7 @@
   - Editer les sections depuis l'app
 - [ ] Change `isNewUser` with a check if profile exists. Because, as is, the app bugs when we wipe the users collection in firestore
 - [ ] Rewrite Profile page code
-- [ ] Refactor leaderSections into attendantGroups and sections into playerGroups
+- [ ] Refactor leaderSections into attendantGroups and sections into playerGroups and sectionTypes into playerCategories
 - [ ] Refactor roles (cf users.ts)
 - [ ] Update docs/
 - [ ] Ensure users cannot exists without required UserProfile properties (redirect to onboarding if needed)
