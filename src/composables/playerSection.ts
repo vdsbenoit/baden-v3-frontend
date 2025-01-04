@@ -18,27 +18,27 @@ export function usePlayerSections(rSectionTypeId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
     const sectionTypeId = toValue(rSectionTypeId)
     if (sectionTypeId === DEFAULT_SECTION_TYPE_ID) return null
-    console.debug(`Fetching sections from ${sectionTypeId}`)
+    console.debug(`Fetching player sections from ${sectionTypeId}`)
     // prettier-ignore
     return query(
       PLAYER_SECTIONS_COLLECTION_REF, 
-      where("sectionType", "==", sectionTypeId), 
+      where("sectionTypeId", "==", sectionTypeId), 
       orderBy("number")
     )
   })
   return useCollection<PlayerSection>(dbRef)
 }
 
-export function useTopSections(rSectionType: MaybeRefOrGetter<string>, rLimit: MaybeRefOrGetter<number>) {
+export function useTopSections(rSectionTypeId: MaybeRefOrGetter<string>, rLimit: MaybeRefOrGetter<number>) {
   const dbRef = computed(() => {
-    const sectionType = toValue(rSectionType)
+    const sectionTypeId = toValue(rSectionTypeId)
     const limit = toValue(rLimit)
-    if (!sectionType) return null
-    console.debug(`Fetching the ${limit} top sections from sectionType ${sectionType}`)
+    if (sectionTypeId === DEFAULT_SECTION_TYPE_ID) return null
+    console.debug(`Fetching the ${limit} top sections from sectionTypeId ${sectionTypeId}`)
     // prettier-ignore
     return query(
       PLAYER_SECTIONS_COLLECTION_REF, 
-      where("sectionType", "==", sectionType),
+      where("sectionTypeId", "==", sectionTypeId),
       orderBy("score", "desc"),
       fbLimit(limit),
     )
