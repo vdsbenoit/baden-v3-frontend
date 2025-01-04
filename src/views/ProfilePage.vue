@@ -33,7 +33,7 @@
               @ion-cancel="formData.role.isEditting = false; resetFormData()"
               cancel-text="Annuler" interface="action-sheet"
             >
-              <ion-select-option v-for="(value, role) in roles" :key="value" :value="value">{{ role }}</ion-select-option>
+              <ion-select-option v-for="(value, role) in selectableRoles" :key="value" :value="value">{{ role }}</ion-select-option>
             </ion-select>
             <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="formData.role.isEditting = false; resetFormData()"></ion-icon>
           </ion-item>
@@ -217,7 +217,7 @@ import { useRouter } from "vue-router";
 
 
 // Strip Erreur, Anonyme & Newbie from ROLES
-const roles = Object.fromEntries(Object.entries(ROLES).filter(([, value]) => ![ROLES.Erreur, ROLES.Anonyme, ROLES.Newbie].includes(value)))
+const selectableRoles = Object.fromEntries(Object.entries(ROLES).filter(([, value]) => ![ROLES.Erreur, ROLES.Anonyme, ROLES.Newbie].includes(value)))
 
 // reactive form data
 const formData = reactive({
@@ -322,7 +322,8 @@ const games = useGames(shouldLoadGames)
 // Lazy loading of attendant sections
 // They are only loaded after the user starts editting the field
 const shouldLoadAttendantSections = ref(false)
-const attendantSections = useAttendantSections(false, shouldLoadAttendantSections)
+const loadStaffSections = computed(() => formData.role.value >= ROLES.Organisateur ? "only" : "exclude");
+const attendantSections = useAttendantSections(shouldLoadAttendantSections, loadStaffSections, true)
 
 
 /**

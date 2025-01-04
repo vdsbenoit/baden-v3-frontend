@@ -139,7 +139,7 @@ const appConfig = useAppConfig()
 const selectedSectionId = useRouteParams('sectionId', DEFAULT_ATTENDANT_SECTION_ID)
 const { data: selectedSection, pending: isLoadingSection, error: errorLoadingSection } = useAttendantSection(selectedSectionId.value);
 const { data: attendants, pending: isLoadingAttendants, error: errorLoadingAttendants } = useMembersOfSection(selectedSectionId.value);
-const { data: sections, pending: isLoadingSections, error: errorLoadingSections } = useAttendantSections(true, true);
+const { data: sections, pending: isLoadingSections, error: errorLoadingSections } = useAttendantSections(true, "include", true);
 const applicants = useSectionApplicants(50, selectedSectionId.value);
 
 // Computed data

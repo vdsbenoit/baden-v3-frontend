@@ -143,7 +143,7 @@ import { useAppConfig, useAppSettings } from "@/composables/app";
 import { useAttendantSections } from "@/composables/attendantSection";
 import { useGame } from "@/composables/game";
 import { useGameMatches } from "@/composables/match";
-import { useCanEditGames, useCanRegister } from "@/composables/rights";
+import { useCanEditGames, useCanRegister, useCanSeeModerationStuff } from "@/composables/rights";
 import { useCurrentUserProfile, useMembersOfSection } from "@/composables/userProfile";
 import { DEFAULT_ATTENDANT_SECTION_ID, DEFAULT_GAME_ID, ROLES } from "@/constants";
 import { AttendantTimeSlot, VueFireUserProfile } from "@/types";
@@ -178,9 +178,9 @@ const { data: game, pending: isLoadingGame, error: errorLoadingGame } = useGame(
 const { data: matches, pending: isLoadingMatches, error: errorLoadingMatches } = useGameMatches(gameId)
 const canRegister = useCanRegister()
 const canEditGameSettings = useCanEditGames()
+const canSeeModerationStuff = useCanSeeModerationStuff()
 
-
-const { data: attendantSections, pending: isLoadingAttendantSections } = useAttendantSections(true, toRef(edit, 'isOn'))
+const { data: attendantSections, pending: isLoadingAttendantSections } = useAttendantSections(toRef(edit, 'isOn'), "exclude", canSeeModerationStuff)
 const { data: sectionAttendants, pending: isLoadingAttendants } = useMembersOfSection(edit.selectedSectionId)
 
 // lifecycle hooks

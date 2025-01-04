@@ -84,7 +84,7 @@ const {
   data: attendantSections,
   pending: isLoadingAttendantSections,
   error: errorLoadingAttendantSections
-} = useAttendantSections(false, canSeeModerationStuff)
+} = useAttendantSections(canSeeModerationStuff, "include", true)
 const { data: currentUser, pending: isLoadingCurrentUser, error: errorLoadingCurrentUser } = useCurrentUserProfile()
 const currentUserSectionId = computed(() => {
   if (!currentUser.value || !currentUser.value.sectionId) return DEFAULT_ATTENDANT_SECTION_ID

@@ -1,4 +1,4 @@
-import { DEFAULT_ATTENDANT_SECTION_ID, ATTENDANT_SECTIONS_COLLECTION_REF, ROLES } from "@/constants"
+import { DEFAULT_ATTENDANT_SECTION_ID, ATTENDANT_SECTIONS_COLLECTION_REF } from "@/constants"
 import { AttendantSection } from "@/types"
 import { doc, documentId, orderBy, query, where } from "firebase/firestore"
 import { MaybeRefOrGetter, computed, toValue } from "vue"
@@ -15,24 +15,37 @@ export function useAttendantSection(rAttendantSectionId: MaybeRefOrGetter<string
   return useDocument<AttendantSection>(dbRef)
 }
 
+/**
+ * Fetch the list of attendant sections
+ * @param rShouldLoad To be used to lazy load the collection
+ * @param rStaffSections To define if the staff sections should be included in the query, excluded or only the staff sections should be returned
+ * @param rShowAllSections If false, only the current user section will be returned
+ * @returns 
+ */
 export function useAttendantSections(
-  rExcludeStaff: MaybeRefOrGetter<boolean>,
-  rShouldLoad: MaybeRefOrGetter<boolean> = true
+  rShouldLoad: MaybeRefOrGetter<boolean> = true,
+  rStaffSections: MaybeRefOrGetter<"include" | "exclude" | "only"> = "include",
+  rShowAllSections: MaybeRefOrGetter<boolean> = true
 ) {
-  const currentUser = useCurrentUserProfile()
   const dbRef = computed(() => {
+    const staffSections = toValue(rStaffSections)
     const queryParams = []
     if (!toValue(rShouldLoad)) return null
-    if (!currentUser.value) return null
     console.debug(`Fetching attendant sections`)
-    // Chefs can only see their own sections attendants
-    if (currentUser.value.role <= ROLES.Chef) {
-      console.debug(`Filtering to section ${currentUser.value.sectionId}`)
+    // To be used to return only the current user section
+    if (!toValue(rShowAllSections)) {
+      const currentUser = useCurrentUserProfile()
+      if (!currentUser.value) return null
+      console.debug(`Filtering to current user section : ${currentUser.value.sectionId}`)
       queryParams.push(where(documentId(), "==", currentUser.value.sectionId))
     }
-    if (toValue(rExcludeStaff)) {
+    if (staffSections === "exclude") {
       console.debug(`Excluding staff group in the query`)
       queryParams.push(where("isStaff", "!=", true))
+    }
+    if (staffSections === "only") {
+      console.debug(`Returning only staff group in the query`)
+      queryParams.push(where("isStaff", "==", true))
     }
     queryParams.push(orderBy("name"))
     return query(ATTENDANT_SECTIONS_COLLECTION_REF, ...queryParams)

@@ -28,7 +28,7 @@
           <ion-item>
             <ion-label position="floating" color="primary">Quel sera ton role durant la BB ?</ion-label>
             <ion-select v-model="selectedRole" required interface="popover" @ionChange="handleRoleChange">
-              <ion-select-option v-for="(value, roleName) in roles" :key="value" :value="value">{{ roleName }}</ion-select-option>
+              <ion-select-option v-for="(value, roleName) in selectableRoles" :key="value" :value="value">{{ roleName }}</ion-select-option>
             </ion-select>
           </ion-item>
   
@@ -89,7 +89,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 // Strip Erreur, Anonyme & Newbie from ROLES
-const roles = Object.fromEntries(Object.entries(ROLES).filter(([, value]) => ![ROLES.Erreur, ROLES.Anonyme, ROLES.Newbie].includes(value)))
+const selectableRoles = Object.fromEntries(Object.entries(ROLES).filter(([, value]) => ![ROLES.Erreur, ROLES.Anonyme, ROLES.Newbie].includes(value)))
 
 // reactive data
 
@@ -107,9 +107,10 @@ const currentUser = useCurrentUserProfile();
 const appConfig = useAppConfig();
 const { data: sections, pending: isLoadingSections, error: errorLoadingSections } = usePlayerSections(selectedSectionTypeId);
 
-const isParticipant = computed(() => selectedRole.value === ROLES.Participant && name.value != "");
-const isAttendant = computed(() => (selectedRole.value === ROLES.Animateur || selectedRole.value === ROLES.Chef) && name.value != "");
-const { data: attendantSections, pending: isLoadingAttendantSections, error: errorLoadingAttendantSections } = useAttendantSections(false, isAttendant);
+const isParticipant = computed(() => selectedRole.value === ROLES.Participant);
+const isAttendant = computed(() => (selectedRole.value >= ROLES.Animateur))
+const loadStaffSections = computed(() => selectedRole.value >= ROLES.Organisateur ? "only" : "exclude");
+const { data: attendantSections, pending: isLoadingAttendantSections, error: errorLoadingAttendantSections } = useAttendantSections(isAttendant, loadStaffSections, true);
 
 const canSubmit = computed(() => {
   if (!name.value) return false;
@@ -173,7 +174,7 @@ const submitForm = async () => {
   let sectionData: Section;
 
   // Check if all required fields are filled
-  if (!name.value) return errorPopup('Mentionne au minium ton totem ou ton nom');
+  if (!name.value) return errorPopup('Mentionne ton totem ou ton nom');
   if (selectedRole.value < ROLES.Participant) return errorPopup('Choisis un role');
   if (!selectedAttendantSectionId.value && selectedRole.value < ROLES.Organisateur) return errorPopup('Choisis une section');
 
