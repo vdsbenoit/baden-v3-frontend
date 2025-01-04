@@ -14,7 +14,7 @@
         <ion-item v-for="(team, index) in teams" :key="index" :routerLink="`/team/${team.id}`">
           <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ index + 1 }}</ion-badge>
           <ion-label>
-            <b>{{ team.id }}</b> {{ team.sectionName }} <ion-text color="medium">({{ team.city }})</ion-text>
+            <b>{{ team.id }}</b> {{ team.section.name }} <ion-text color="medium">({{ team.section.city }})</ion-text>
           </ion-label>
           <ion-badge slot="end" class="ion-no-margin" color="primary">{{ team.score }}</ion-badge>
         </ion-item>
@@ -39,7 +39,7 @@
             <tr v-for="(team, index) in teams" :key="index">
               <td>{{ index + 1 }}</td>
               <td>{{ team.id }}</td>
-              <td>{{ team.sectionName }} ({{ team.city }})</td>
+              <td>{{ team.section.name }} ({{ team.section.city }})</td>
               <td>{{ team.score }}</td>
             </tr>
           </tbody>
