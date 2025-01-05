@@ -5,11 +5,11 @@
         <ion-back-button></ion-back-button>
       </ion-buttons>
       <ion-buttons slot="start">
-        <ion-menu-button color="primary"></ion-menu-button>
+        <slot></slot>
       </ion-buttons>
       <ion-title>{{ props.pageTitle }}</ion-title>
       <ion-buttons slot="end">
-        <slot></slot>
+        <ion-menu-button color="primary"></ion-menu-button>
       </ion-buttons>
     </ion-toolbar>
   </ion-header>
