@@ -11,6 +11,13 @@
           N'hésite pas à les contacter pour accélérer ta demande.
       </info-card-component>
       <ion-grid v-if="userProfile" class="home-grid">
+        <!-- animateur -->
+        <ion-row v-if="userProfile.role === ROLES.Animateur || userProfile.role === ROLES.Chef">
+          <ion-col size="6" size-sm="4" size-lg="2" v-for="timeSlot in attendantSchedule" :key="timeSlot.id">
+            <tile-col size="12" v-if="userProfile.games && userProfile.games[timeSlot.id]" :target="`/game/${userProfile.games[timeSlot.id]}`">Mon épreuve ({{ timeSlot.name }})</tile-col>
+            <tile-col size="12" v-else-if="appSettings && appSettings.isAttendantRegistrationOpen" target="/games">Inscris-toi à une épreuve ({{ timeSlot.name }})</tile-col>
+          </ion-col>
+        </ion-row>
         <ion-row>
           <!-- participant -->
           <tile-col v-if="showSelectTeam" :target="`/section/${userProfile.sectionId}`">Choisis une équipe</tile-col>
@@ -26,15 +33,7 @@
           <tile-col v-if="showRegisterAttendants" :target="`/attendant/${userProfile.sectionId}`">Inscris tes animés à des épreuves</tile-col>
 
           <!-- animateur -->
-          <div v-if="userProfile.role >= ROLES.Animateur">
-            <tile-col v-if="userProfile.sectionId" :target="`/attendant/${userProfile.sectionId}`">Ma section</tile-col>
-            <div v-if="userProfile.role === ROLES.Animateur || userProfile.role === ROLES.Chef">
-              <div v-for="timeSlot in attendantSchedule" :key="timeSlot.id">
-                <tile-col v-if="userProfile.games && userProfile.games[timeSlot.id]" :target="`/game/${userProfile.games[timeSlot.id]}`">Mon épreuve ({{ timeSlot.name }})</tile-col>
-                <tile-col v-else-if="appSettings && appSettings.isAttendantRegistrationOpen" target="/games">Inscris-toi à une épreuve ({{ timeSlot.name }})</tile-col>
-              </div>
-            </div>
-          </div>
+          <tile-col v-if="userProfile.role >= ROLES.Animateur && userProfile.sectionId" :target="`/attendant/${userProfile.sectionId}`">Ma section</tile-col>
           <!-- organisateur -->
           <tile-col v-if="userProfile.role >= ROLES.Organisateur" target="/attendant">Animateurs</tile-col>
         </ion-row>
@@ -63,6 +62,12 @@ const applicants = useApplicants(15)
 
 // Computed vars
 const attendantSchedule = computed(() => (appConfig.value?.attendantSchedule ?? []))
+const showGameTiles = computed(() => {
+  if (!userProfile.value) return false;
+  if (![ROLES.Animateur, ROLES.Chef].includes(userProfile.value.role)) return false;
+  if (!attendantSchedule.value) return false;
+  return attendantSchedule.value.length > 0
+});
 const showPendingRequestInfo = computed(() => {
   if (!userProfile.value) return false;
   return (userProfile.value.role === ROLES.Newbie && userProfile.value.hasDoneOnboarding);
