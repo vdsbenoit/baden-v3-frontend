@@ -62,12 +62,6 @@ const applicants = useApplicants(15)
 
 // Computed vars
 const attendantSchedule = computed(() => (appConfig.value?.attendantSchedule ?? []))
-const showGameTiles = computed(() => {
-  if (!userProfile.value) return false;
-  if (![ROLES.Animateur, ROLES.Chef].includes(userProfile.value.role)) return false;
-  if (!attendantSchedule.value) return false;
-  return attendantSchedule.value.length > 0
-});
 const showPendingRequestInfo = computed(() => {
   if (!userProfile.value) return false;
   return (userProfile.value.role === ROLES.Newbie && userProfile.value.hasDoneOnboarding);
