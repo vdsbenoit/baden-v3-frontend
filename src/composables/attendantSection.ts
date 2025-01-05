@@ -9,7 +9,7 @@ export function useAttendantSection(rAttendantSectionId: MaybeRefOrGetter<string
   const dbRef = computed(() => {
     const id = toValue(rAttendantSectionId)
     if (id === DEFAULT_ATTENDANT_SECTION_ID) return null
-    console.debug(`Fetching attendant section ${id}`)
+    console.log(`Fetching attendant section ${id}`)
     return doc(ATTENDANT_SECTIONS_COLLECTION_REF, id)
   })
   return useDocument<AttendantSection>(dbRef)
@@ -31,20 +31,20 @@ export function useAttendantSections(
     const staffSections = toValue(rStaffSections)
     const queryParams = []
     if (!toValue(rShouldLoad)) return null
-    console.debug(`Fetching attendant sections`)
+    console.log(`Fetching attendant sections`)
     // To be used to return only the current user section
     if (!toValue(rShowAllSections)) {
       const currentUser = useCurrentUserProfile()
       if (!currentUser.value) return null
-      console.debug(`Filtering to current user section : ${currentUser.value.sectionId}`)
+      console.log(`Filtering to current user section : ${currentUser.value.sectionId}`)
       queryParams.push(where(documentId(), "==", currentUser.value.sectionId))
     }
     if (staffSections === "exclude") {
-      console.debug(`Excluding staff group in the query`)
+      console.log(`Excluding staff group in the query`)
       queryParams.push(where("isStaff", "==", false))
     }
     if (staffSections === "only") {
-      console.debug(`Returning only staff group in the query`)
+      console.log(`Returning only staff group in the query`)
       queryParams.push(where("isStaff", "==", true))
     }
     queryParams.push(orderBy("name"))

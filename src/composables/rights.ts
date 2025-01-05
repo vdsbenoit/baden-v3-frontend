@@ -125,7 +125,7 @@ export function useCanRegister() {
       return
     }
     if (currentUserProfile.value.role < ROLES.Animateur) {
-      console.debug(`User  ${currentUserProfile.value.id} cannot register to a game. Insufficient role`)
+      console.debug(`User ${currentUserProfile.value.id} cannot register to a game. Insufficient role`)
       return
     }
     if (currentUserProfile.value.role == ROLES.Animateur) {

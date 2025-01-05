@@ -27,7 +27,7 @@ export const updateSectionMeanScore = async (section: VueFirePlayerSection) => {
   const meanScore = +(section.score / section.nbTeams || 0).toFixed(2)
   const dbRef = doc(PLAYER_SECTIONS_COLLECTION_REF, section.id)
   return updateDoc(dbRef, { meanScore }).then(() =>
-    console.debug(`Updating the mean score of section ${section.id} to ${meanScore}`)
+    console.log(`The mean score of section ${section.id} has been set to ${meanScore}`)
   )
 }
 export const addSectionWin = async (rSection: RefPlayerSection) => {

@@ -10,7 +10,7 @@ export function useTeam(rId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
     const id = toValue(rId)
     if (id === DEFAULT_TEAM_ID) return null
-    console.debug(`Fetching team ${id}`)
+    console.log(`Fetching team ${id}`)
     return doc(TEAMS_COLLECTION_REF, id)
   })
   return useDocument<Team>(dbRef)
@@ -21,7 +21,7 @@ export function useTopTeams(rSectionTypeId: MaybeRefOrGetter<string>, rLimit: Ma
     const sectionType = toValue(rSectionTypeId)
     const limit = toValue(rLimit)
     if (sectionType === DEFAULT_SECTION_TYPE_ID) return null
-    console.debug(`Fetching the ${limit} top teams from sectionType ${sectionType}`)
+    console.log(`Fetching the ${limit} top teams from sectionType ${sectionType}`)
     // prettier-ignore
     return query(
       TEAMS_COLLECTION_REF, 

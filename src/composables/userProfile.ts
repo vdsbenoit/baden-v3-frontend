@@ -10,10 +10,9 @@ export function useUserProfile(rUid: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
     const uid = toValue(rUid)
     if (uid === DEFAULT_USER_ID) {
-      console.debug(`User profile not fetched because the provided uid is the default one (uid is ${uid})`)
+      console.log(`User profile not fetched because the provided uid is the default one`)
       return null
-    }
-    console.debug(`Fetching user profile ${uid}`)
+    } else console.log(`Fetching user profile ${uid}`)
     return doc(USER_PROFILES_COLLECTION_REF, uid)
   })
   return useDocument<UserProfile>(dbRef)
@@ -23,11 +22,11 @@ export function useCurrentUserProfile() {
   const currentUser = useCurrentUser()
   const uid = computed(() => {
     if (currentUser.value === undefined) {
-      console.debug(`Cannot fetch current user profile because the Auth module is still loading`)
+      console.log(`Cannot fetch current user profile because the Auth module is still loading`)
       return DEFAULT_USER_ID
     }
     if (currentUser.value === null) {
-      console.debug(`Cannot fetch current user profile because it does not exist in the Auth db`)
+      console.error(`Cannot fetch current user profile because it does not exist in the Auth db`)
       return DEFAULT_USER_ID
     }
     return currentUser.value.uid
@@ -40,7 +39,7 @@ export function useMembersOfSection(rSectionId: MaybeRefOrGetter<string>, rShoul
     const sectionId = toValue(rSectionId)
     if (!toValue(rShouldLoad)) return null
     if (sectionId === DEFAULT_PLAYER_SECTION_ID) return null
-    console.debug(`Fetching users from section ${sectionId}`)
+    console.log(`Fetching users from section ${sectionId}`)
     // prettier-ignore
     return query(
       USER_PROFILES_COLLECTION_REF, 
@@ -62,7 +61,7 @@ export function useSectionApplicants(rLimit: MaybeRefOrGetter<number>, rSectionI
     const sectionId = toValue(rSectionId)
     if (sectionId === DEFAULT_PLAYER_SECTION_ID) return null
     const limit = toValue(rLimit)
-    console.debug(`Fetching pending applicants for section ${sectionId}`)
+    console.log(`Fetching pending applicants for section ${sectionId}`)
     const queryParams = []
     queryParams.push(where("requestedSectionId", "==", toValue(rSectionId)))
     queryParams.push(orderBy("requestedRole", "asc"))
@@ -82,7 +81,7 @@ export function useApplicants(rLimit: MaybeRefOrGetter<number>) {
   const dbRef = computed(() => {
     if (!canAcceptApplicants.value) return null
     const limit = toValue(rLimit)
-    console.debug(`Fetching pending applicants for a ${getRoleByValue(maxApplicantRole.value)}`)
+    console.log(`Fetching pending applicants for a ${getRoleByValue(maxApplicantRole.value)}`)
     const queryParams = []
     queryParams.push(orderBy("requestedSectionId", "asc"))
     if (applicantSectionIdFilter.value != DEFAULT_PLAYER_SECTION_ID) {
@@ -99,7 +98,7 @@ export function useApplicants(rLimit: MaybeRefOrGetter<number>) {
 export function useLatestUsers(rLimit: MaybeRefOrGetter<number>) {
   const dbRef = computed(() => {
     const limit = toValue(rLimit)
-    console.debug(`Fetching latest registered users`)
+    console.log(`Fetching latest registered users`)
     // prettier-ignore
     return query(
       USER_PROFILES_COLLECTION_REF, 

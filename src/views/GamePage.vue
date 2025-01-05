@@ -349,7 +349,7 @@ const toggleNoScores = async () => {
   }))
   game.value.matches.forEach(matchId => promises.push(setMatchNoScores(matchId, newValue)))
   await Promise.all(promises).then(() =>
-    console.debug(`Les scores des matchs de l'épreuve ${gameId} ont été ${newValue ? "activés" : "désactivés"}`)
+    console.log(`Les scores des matchs de l'épreuve ${gameId} ont été ${newValue ? "activés" : "désactivés"}`)
   )
   isTogglingNoScores.value = false;
 };

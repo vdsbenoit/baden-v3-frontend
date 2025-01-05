@@ -8,7 +8,7 @@ export function usePlayerSection(rSectionId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
     const id = toValue(rSectionId)
     if (id === DEFAULT_PLAYER_SECTION_ID) return null
-    console.debug(`Fetching section ${id}`)
+    console.log(`Fetching section ${id}`)
     return doc(PLAYER_SECTIONS_COLLECTION_REF, id)
   })
   return useDocument<PlayerSection>(dbRef)
@@ -18,7 +18,7 @@ export function usePlayerSections(rSectionTypeId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
     const sectionTypeId = toValue(rSectionTypeId)
     if (sectionTypeId === DEFAULT_SECTION_TYPE_ID) return null
-    console.debug(`Fetching player sections from ${sectionTypeId}`)
+    console.log(`Fetching player sections from ${sectionTypeId}`)
     // prettier-ignore
     return query(
       PLAYER_SECTIONS_COLLECTION_REF, 
@@ -34,7 +34,7 @@ export function useTopSections(rSectionTypeId: MaybeRefOrGetter<string>, rLimit:
     const sectionTypeId = toValue(rSectionTypeId)
     const limit = toValue(rLimit)
     if (sectionTypeId === DEFAULT_SECTION_TYPE_ID) return null
-    console.debug(`Fetching the ${limit} top sections from sectionTypeId ${sectionTypeId}`)
+    console.log(`Fetching the ${limit} top sections from sectionTypeId ${sectionTypeId}`)
     // prettier-ignore
     return query(
       PLAYER_SECTIONS_COLLECTION_REF, 
