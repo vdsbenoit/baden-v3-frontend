@@ -1,5 +1,5 @@
 // prettier-ignore
-import { DEFAULT_PLAYER_SECTION_ID, DEFAULT_USER_ID, ROLES, USER_PROFILES_COLLECTION_NAME, USER_PROFILES_COLLECTION_REF } from "@/constants";
+import { DEFAULT_PLAYER_SECTION_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID, ROLES, USER_PROFILES_COLLECTION_NAME, USER_PROFILES_COLLECTION_REF } from "@/constants";
 import { db, fbSignOut } from "@/services/firebase";
 import { UserProfile } from "@/types";
 import { Timestamp } from "@firebase/firestore";
@@ -36,9 +36,11 @@ export async function createUserProfile(uid: string, email: string) {
     creationDate: Timestamp.now(),
     email,
     name: "",
-    sectionId: DEFAULT_PLAYER_SECTION_ID,
     role: ROLES.Newbie,
-    hasDoneOnboarding: false
+    hasDoneOnboarding: false,
+    sectionId: DEFAULT_PLAYER_SECTION_ID,
+    sectionName: "",
+    team: DEFAULT_TEAM_ID,
   }
   const docRef = doc(USER_PROFILES_COLLECTION_REF, uid)
   return setDoc(docRef, newProfile).then(() => console.log(`Created new user profile : ${uid}`))
