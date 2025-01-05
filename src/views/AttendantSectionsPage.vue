@@ -24,8 +24,10 @@
           <ion-col size="12" size-sm="6">
             <ion-card>
               <ion-card-header>
-                <ion-card-title>Détails</ion-card-title>
-                <ion-badge v-if="selectedSection?.isStaff" color="danger">Staff</ion-badge>
+                <ion-card-title>
+                  <span>Détails </span>
+                  <ion-badge v-if="selectedSection?.isStaff" color="danger">Staff</ion-badge>
+                </ion-card-title>
               </ion-card-header>
               <ion-card-content>
                 <ion-list v-if="selectedSection">
@@ -137,8 +139,8 @@ import { arrowUpOutline, arrowUpSharp } from "ionicons/icons";
 
 const appConfig = useAppConfig()
 const selectedSectionId = useRouteParams('sectionId', DEFAULT_ATTENDANT_SECTION_ID)
-const { data: selectedSection, pending: isLoadingSection, error: errorLoadingSection } = useAttendantSection(selectedSectionId.value);
-const { data: attendants, pending: isLoadingAttendants, error: errorLoadingAttendants } = useMembersOfSection(selectedSectionId.value);
+const { data: selectedSection, pending: isLoadingSection, error: errorLoadingSection } = useAttendantSection(selectedSectionId);
+const { data: attendants, pending: isLoadingAttendants, error: errorLoadingAttendants } = useMembersOfSection(selectedSectionId);
 const { data: sections, pending: isLoadingSections, error: errorLoadingSections } = useAttendantSections(true, "include", true);
 const applicants = useSectionApplicants(50, selectedSectionId.value);
 
