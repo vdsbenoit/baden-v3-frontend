@@ -1,6 +1,6 @@
-import { PLAYER_SECTIONS_COLLECTION_NAME, PLAYER_SECTIONS_COLLECTION_REF } from "@/constants"
+import { PLAYER_SECTIONS_COLLECTION_NAME, PLAYER_SECTIONS_COLLECTION_REF, USER_PROFILES_COLLECTION_REF } from "@/constants"
 import { incrementDocField } from "@/services/firebase"
-import { RefPlayerSection, VueFirePlayerSection } from "@/types"
+import { RefPlayerSection, UserProfile, VueFirePlayerSection } from "@/types"
 import { Section } from "@/types/Section"
 import { doc, getDocs, query, updateDoc, where } from "firebase/firestore"
 import { toValue } from "vue"
@@ -21,6 +21,18 @@ export const getPlayerSection = async (sectionId: string): Promise<Section> => {
 }
 
 // Setters
+
+export const setSectionName = async (sectionId: string, sectionName: string) => {
+  const promises = []
+  const dbRefSection = doc(PLAYER_SECTIONS_COLLECTION_REF, sectionId)
+  promises.push(updateDoc(dbRefSection, { name: sectionName } as Partial<Section>))
+  const dbRefUsers = query(USER_PROFILES_COLLECTION_REF, where("sectionId", "==", sectionId))
+  const querySnapshot = await getDocs(dbRefUsers)
+  querySnapshot.forEach((doc) => {
+    promises.push(updateDoc(doc.ref, { sectionName } as Partial<UserProfile>))
+  })
+  return Promise.all(promises).then(() => console.log(`Section ${sectionId} name has been set to ${sectionName}`))
+}
 
 // fixme: move this to cloud function
 export const updateSectionMeanScore = async (section: VueFirePlayerSection) => {
