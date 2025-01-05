@@ -175,7 +175,7 @@ const shouldLoadMembers = ref(false); // true after clicking on the show button
 
 const currentUserProfile = useCurrentUserProfile();
 const selectedSectionId = useRouteParams("sectionId", DEFAULT_PLAYER_SECTION_ID)
-const { data: selectedSection, pending: isLoadingSection, error: errorLoadingSection } = usePlayerSection(selectedSectionId.value);
+const { data: selectedSection, pending: isLoadingSection, error: errorLoadingSection } = usePlayerSection(selectedSectionId);
 const { data: appConfig, pending: isLoadingAppConfig, error: errorLoadingAppConfig } = useAppConfig();
 const { data: sections, pending: isLoadingSections, error: errorLoadingSections } = usePlayerSections(selectedSectionTypeId);
 const {data: sectionMembers, pending: isLoadingMembers, error: errorLoadingMembers} = useMembersOfSection(selectedSectionId, shouldLoadMembers)

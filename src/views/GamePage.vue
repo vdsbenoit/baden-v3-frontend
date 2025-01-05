@@ -128,7 +128,8 @@
             <ion-list v-else-if="matches && matches.length > 0">
               <ion-item v-for="[i, match] in matches.entries()" :key="match.id" :routerLink="`/match/${match.id}`" class="item-no-padding">
                 <ion-label>
-                  <ion-text>⌚ {{ playerSchedule[i].start }} - {{ playerSchedule[i].stop }} : </ion-text>
+                  <ion-icon :ios="timeOutline" :md="timeSharp" style="vertical-align: middle;"></ion-icon>
+                  <ion-text>&nbsp;{{ playerSchedule[i].start }} - {{ playerSchedule[i].stop }} : </ion-text>
                   <ion-text color="primary" style="font-weight: bold">{{ match.playerIds[0] }}</ion-text>
                   <ion-text> vs </ion-text>
                   <ion-text color="primary" style="font-weight: bold">{{ match.playerIds[1] }}</ion-text>
@@ -165,7 +166,7 @@ import { getRoleByValue, getUserName } from "@/utils/userProfile";
 import { IonBadge, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner, IonText, useIonRouter } from "@ionic/vue";
 import { computed, reactive, ref, toRef } from "@vue/reactivity";
 import { useRouteParams } from "@vueuse/router";
-import { closeOutline, closeSharp } from "ionicons/icons";
+import { closeOutline, closeSharp, timeOutline, timeSharp } from "ionicons/icons";
 import { onMounted, toValue } from "vue";
 
 // reactive data

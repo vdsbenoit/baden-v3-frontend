@@ -86,9 +86,9 @@
                 <ion-label>
                   <span>{{ match.gameName }}</span>
                   <p>
-                    <ion-icon :ios="locationOutline" :md="locationSharp"></ion-icon><span>{{ playerSchedule[i].start }} - {{ playerSchedule[i].stop }}</span>
+                    <ion-icon :ios="locationOutline" :md="locationSharp" style="vertical-align: middle;"></ion-icon><span>{{ playerSchedule[i].start }} - {{ playerSchedule[i].stop }}</span>
                     <span> | </span>
-                    <ion-icon :ios="timeOutline" :md="timeSharp"></ion-icon><span>Jeu n° {{ match.gameId }}</span>
+                    <ion-icon :ios="timeOutline" :md="timeSharp" style="vertical-align: middle;"></ion-icon><span>&nbsp;Jeu n° {{ match.gameId }}</span>
                   </p>
                 </ion-label>
                 <ion-icon :ios="statusIcon(match).ios" :md="statusIcon(match).md" :color="statusIcon(match).color" slot="end"></ion-icon>
@@ -103,34 +103,18 @@
 </template>
 
 <script setup lang="ts">
+// prettier-ignore
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
+import { useAppConfig, useAppSettings } from "@/composables/app";
 import { useTeamMatches } from "@/composables/match";
 import { usePlayerSection } from "@/composables/playerSection";
-import { useAppConfig, useAppSettings } from "@/composables/app";
 import { useTeam } from "@/composables/team";
 import { useCurrentUserProfile } from "@/composables/userProfile";
 import { DEFAULT_PLAYER_SECTION_ID, DEFAULT_TEAM_ID, ROLES } from "@/constants";
 import { errorPopup, toastPopup } from "@/utils/popup";
 import { updateUserProfile } from "@/utils/userProfile";
-import {
-  IonButton,
-  IonCard, IonCardContent, IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonCol,
-  IonContent,
-  IonGrid,
-  IonIcon,
-  IonItem, IonLabel,
-  IonList,
-  IonListHeader,
-  IonNote,
-  IonPage,
-  IonRow,
-  IonSpinner,
-  useIonRouter
-} from "@ionic/vue";
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonNote, IonPage, IonRow, IonSpinner, useIonRouter } from "@ionic/vue";
 import { computed, ref } from "@vue/reactivity";
 import { useRouteParams } from "@vueuse/router";
 import { closeOutline, closeSharp, locationOutline, locationSharp, reorderTwoOutline, reorderTwoSharp, star, starOutline, timeOutline, timeSharp, trophyOutline, trophySharp } from "ionicons/icons";
