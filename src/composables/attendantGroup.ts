@@ -1,13 +1,13 @@
-import { DEFAULT_GROUP_ID, GROUPS_COLLECTION_REF } from "@/constants"
+import { DEFAULT_GROUP_ID, GROUP_ROLES, GROUPS_COLLECTION_REF } from "@/constants"
 import { AttendantGroup } from "@/types"
 import { doc, documentId, orderBy, query, where } from "firebase/firestore"
 import { MaybeRefOrGetter, computed, toValue } from "vue"
 import { useCollection, useDocument } from "vuefire"
 import { useCurrentUserProfile } from "./userProfile"
 
-export function useAttendantGroup(rAttendantGroupId: MaybeRefOrGetter<string>) {
+export function useAttendantGroup(rGroupId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
-    const groupId = toValue(rAttendantGroupId)
+    const groupId = toValue(rGroupId)
     if (groupId === DEFAULT_GROUP_ID) return null
     console.log(`Fetching attendant group ${groupId}`)
     return doc(GROUPS_COLLECTION_REF, groupId)
@@ -32,20 +32,22 @@ export function useAttendantGroups(
     const queryParams = []
     if (!toValue(rShouldLoad)) return null
     console.log(`Fetching attendant groups`)
+    if (staffGroups === "exclude") {
+      console.log(`Excluding staff group in the query`)
+      queryParams.push(where("role", "<", GROUP_ROLES.Staff))
+    }
+    if (staffGroups === "only") {
+      console.log(`Returning only staff group in the query`)
+      queryParams.push(where("role", ">=", GROUP_ROLES.Staff))
+    } else {
+      queryParams.push(where("role", ">=", GROUP_ROLES.Attendant))
+    }
     // To be used to return only the current user group
     if (!toValue(rShowAllAttendantGroups)) {
       const currentUser = useCurrentUserProfile()
       if (!currentUser.value) return null
       console.log(`Filtering to current user group : ${currentUser.value.groupId}`)
       queryParams.push(where(documentId(), "==", currentUser.value.groupId))
-    }
-    if (staffGroups === "exclude") {
-      console.log(`Excluding staff group in the query`)
-      queryParams.push(where("isStaff", "==", false))
-    }
-    if (staffGroups === "only") {
-      console.log(`Returning only staff group in the query`)
-      queryParams.push(where("isStaff", "==", true))
     }
     queryParams.push(orderBy("name"))
     return query(GROUPS_COLLECTION_REF, ...queryParams)

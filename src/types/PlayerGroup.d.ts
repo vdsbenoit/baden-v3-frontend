@@ -14,8 +14,6 @@ export interface PlayerGroup extends Group {
   meanScore: number
   score: number
   role: GROUP_ROLES.Player
-  isAttendant: false
-  isStaff: false
 }
 
 export interface VueFirePlayerGroup extends PlayerGroup {

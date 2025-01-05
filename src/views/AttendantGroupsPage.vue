@@ -26,7 +26,7 @@
               <ion-card-header>
                 <ion-card-title>
                   <span>Détails </span>
-                  <ion-badge v-if="selectedGroup?.isStaff" color="danger">Staff</ion-badge>
+                  <ion-badge v-if="selectedGroup && selectedGroup.role >= GROUP_ROLES.Staff" color="danger">Staff</ion-badge>
                 </ion-card-title>
               </ion-card-header>
               <ion-card-content>
@@ -85,7 +85,7 @@
           <ion-col  size="12" size-sm="6">
             <ion-card>
               <ion-card-header>
-                <ion-card-title v-if="selectedGroup?.isStaff">Administrateur</ion-card-title>
+                <ion-card-title v-if="selectedGroup && selectedGroup.role >= GROUP_ROLES.Staff">Administrateur</ion-card-title>
                 <ion-card-title v-else>Chefs</ion-card-title>
               </ion-card-header>
               <ion-card-content>
@@ -128,7 +128,7 @@ import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useAppConfig } from "@/composables/app";
 import { useAttendantGroup, useAttendantGroups } from "@/composables/attendantGroup";
 import { useMembersOfGroup, useGroupApplicants } from "@/composables/userProfile";
-import { DEFAULT_GROUP_ID, USER_ROLES } from "@/constants";
+import { DEFAULT_GROUP_ID, GROUP_ROLES, USER_ROLES } from "@/constants";
 import { UserProfile } from "@/types";
 import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue";
 import { computed } from "@vue/reactivity";

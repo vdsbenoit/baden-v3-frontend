@@ -3,6 +3,4 @@ export abstract interface Group {
   city: string
   unit: string
   role: number
-  isAttendant: boolean
-  isStaff: boolean
 }
