@@ -105,7 +105,7 @@
                 Modifié à : {{formatedDate}}
               </ion-label></ion-item>
             </ion-list>
-            <ion-list-header v-else><h2>Le score n'a pas encore été enregsitré</h2></ion-list-header>
+            <ion-list-header v-else><h2>Le score n'a pas encore été enregistré</h2></ion-list-header>
           </ion-card-content>
         </ion-card>
         <div class="ion-margin-top" style="max-width: 600px; margin: 0 auto" v-if="canEditScores">
@@ -157,9 +157,12 @@ import { onMounted, watch } from "vue";
 const router = useIonRouter();
 const matchId = useRouteParams("matchId", DEFAULT_MATCH_ID)
 const { data: match, pending: isLoadingMatch, error: errorLoadingMatch } = useMatch(matchId)
-const { data: game, pending: isLoadingGame, error: errorLoadingGame } = useGame(match.value?.gameId ?? DEFAULT_GAME_ID)
-const { data: firstPlayer, pending: isLoadingFirstPlayer, error: errorLoadingFirstPlayer } = useTeam(match.value?.playerIds[0] ?? DEFAULT_TEAM_ID)
-const { data: secondPlayer, pending: isLoadingSecondPlayer, error: errorLoadingSecondPlayer } = useTeam(match.value?.playerIds[0] ?? DEFAULT_TEAM_ID)
+const gameId = computed(() => match.value?.gameId ?? DEFAULT_GAME_ID)
+const { data: game, pending: isLoadingGame, error: errorLoadingGame } = useGame(gameId)
+const playerId0 = computed(() => match.value?.playerIds[0] ?? DEFAULT_TEAM_ID)
+const playerId1 = computed(() => match.value?.playerIds[1] ?? DEFAULT_TEAM_ID)
+const { data: firstPlayer, pending: isLoadingFirstPlayer, error: errorLoadingFirstPlayer } = useTeam(playerId0)
+const { data: secondPlayer, pending: isLoadingSecondPlayer, error: errorLoadingSecondPlayer } = useTeam(playerId1)
 const { canEditScores } = useEditScoreRights(game)
 const appSettings = useAppSettings()
 const appConfig = useAppConfig()
