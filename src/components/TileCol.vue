@@ -34,10 +34,4 @@ const router = useRouter();
 .tile span {
   color: var(--ion-color-light)
 }
-body.dark .tile {
-  background-color: var(--ion-color-light);
-}
-body.dark .tile span {
-  color: var(--ion-color-primary);
-}
 </style>

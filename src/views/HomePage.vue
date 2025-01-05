@@ -116,6 +116,9 @@ const requestValidator = computed(() => {
   max-width: 100%;
   max-height: 100%;
 }
+body.dark .logo img{
+  filter: invert(1);
+}
 .container{
   text-align: center;
 }
