@@ -10,7 +10,7 @@
         <ion-spinner></ion-spinner>
       </div>
       <div v-else-if="errorLoadingTeam" class="not-found">
-        <strong class="capitalize">Houston, nous avons une erreur</strong>
+        <strong class="capitalize">Erreur</strong>
         <ion-text color="error">{{ errorLoadingTeam.message }}</ion-text>
         <p>Retour à <a @click="router.back()">la page précédente</a></p>
       </div>
@@ -78,7 +78,7 @@
               <ion-spinner></ion-spinner>
             </div>
             <ion-list-header v-else-if="errorLoadingMatches">
-              <strong class="capitalize">Houston, nous avons une erreur</strong>
+              <strong class="capitalize">Erreur</strong>
               <ion-text color="error">{{ errorLoadingMatches.message }}</ion-text>
             </ion-list-header>
             <ion-list v-else-if="matches && matches.length > 0">

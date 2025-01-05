@@ -37,7 +37,7 @@
                   <ion-spinner></ion-spinner>
                 </div>
                 <div v-else-if="errorLoadingSection" class="not-found">
-                  <strong class="capitalize">Houston, nous avons une erreur</strong>
+                  <strong class="capitalize">Erreur</strong>
                   <ion-text color="error">{{ errorLoadingSection.message }}</ion-text>
                 </div>
                 <ion-list-header v-else>
@@ -60,7 +60,7 @@
                   <ion-spinner></ion-spinner>
                 </div>
                 <div v-else-if="errorLoadingAttendants" class="not-found">
-                  <strong class="capitalize">Houston, nous avons une erreur</strong>
+                  <strong class="capitalize">Erreur</strong>
                   <ion-text color="error">{{ errorLoadingAttendants.message }}</ion-text>
                 </div>
                 <ion-list v-else-if="sectionMembers && sectionMembers.length > 0">
@@ -91,7 +91,7 @@
                   <ion-spinner></ion-spinner>
                 </div>
                 <div v-else-if="errorLoadingAttendants" class="not-found">
-                  <strong class="capitalize">Houston, nous avons une erreur</strong>
+                  <strong class="capitalize">Erreur</strong>
                   <ion-text color="error">{{ errorLoadingAttendants.message }}</ion-text>
                 </div>
                 <ion-list v-else-if="sectionLeaders && sectionLeaders.length > 0">

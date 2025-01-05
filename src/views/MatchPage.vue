@@ -4,7 +4,7 @@
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
       <div v-if="errorLoadingMatch" class="not-found">
-        <strong class="capitalize">Houston, nous avons une erreur</strong>
+        <strong class="capitalize">Erreur</strong>
         <ion-text color="error">{{ errorLoadingMatch.message }}</ion-text>
         <p>Retour à <a @click="router.back()">la page précédente</a></p>
       </div>

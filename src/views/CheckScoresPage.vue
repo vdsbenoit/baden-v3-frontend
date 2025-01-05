@@ -20,7 +20,7 @@
           <ion-spinner></ion-spinner>
         </div>
         <div v-else-if="errorLoadingMatches" class="not-found">
-          <strong class="capitalize">Houston, nous avons une erreur</strong>
+          <strong class="capitalize">Erreur</strong>
           <ion-text color="error">{{ errorLoadingMatches.message }}</ion-text>
         </div>
         <div v-if="matches && matches.length > 0">

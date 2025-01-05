@@ -7,7 +7,7 @@
         <ion-spinner></ion-spinner>
       </div>
       <div v-else-if="errorLoadingGame" class="not-found">
-        <strong class="capitalize">Houston, nous avons une erreur</strong>
+        <strong class="capitalize">Erreur</strong>
         <ion-text color="error">{{ errorLoadingGame.message }}</ion-text>
         <p>Retour à <a @click="router.back()">la page précédente</a></p>
       </div>
@@ -82,7 +82,7 @@
                 <ion-col size="12" size-sm="6">
                   <ion-spinner v-if="isLoadingAttendantSections"></ion-spinner>
                   <div v-if="errorLoadingAttendantsSections" class="ion-text-center">
-                    <strong class="capitalize ion-text-center">Houston, nous avons une erreur</strong>
+                    <strong class="capitalize ion-text-center">Erreur</strong>
                     <ion-text color="error">{{ errorLoadingAttendantsSections.message }}</ion-text>
                   </div>
                   <ion-select v-else-if="attendantSections && attendantSections.length > 0" v-model="edit.selectedSectionId" placeholder="Choisir section" interface="alert">
@@ -93,7 +93,7 @@
                 <ion-col size="12" size-sm="6" v-if="edit.selectedSectionId != DEFAULT_ATTENDANT_SECTION_ID">
                     <ion-spinner v-if="isLoadingAttendants"></ion-spinner>
                     <div v-if="errorLoadingAttendants" class="ion-text-center">
-                      <strong class="capitalize ion-text-center">Houston, nous avons une erreur</strong>
+                      <strong class="capitalize ion-text-center">Erreur</strong>
                       <ion-text color="error">{{ errorLoadingAttendants.message }}</ion-text>
                     </div>
                     <ion-select v-else-if="attendants && attendants.length > 0" v-model="edit.selectedAttendant" placeholder="Choisir animateur" interface="alert">
@@ -122,7 +122,7 @@
               <ion-spinner></ion-spinner>
             </div>
             <div v-else-if="errorLoadingMatches" class="ion-text-center">
-              <strong class="capitalize">Houston, nous avons une erreur</strong>
+              <strong class="capitalize">Erreur</strong>
               <ion-text color="error">{{ errorLoadingMatches.message }}</ion-text>
             </div>
             <ion-list v-else-if="matches && matches.length > 0">

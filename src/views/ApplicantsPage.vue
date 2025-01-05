@@ -13,7 +13,7 @@
           <ion-spinner></ion-spinner>
         </div>
         <div v-else-if="errorLoadingAttendantSections" class="not-found">
-          <strong class="capitalize">Houston, nous avons une erreur</strong>
+          <strong class="capitalize">Erreur</strong>
           <ion-text color="error">{{ errorLoadingAttendantSections.message }}</ion-text>
         </div>
         <applicant-card
@@ -33,7 +33,7 @@
           <ion-spinner></ion-spinner>
         </div>
         <div v-else-if="errorCurrentUserData" class="not-found">
-          <strong class="capitalize">Houston, nous avons une erreur</strong>
+          <strong class="capitalize">Erreur</strong>
           <ion-text color="error">{{ errorCurrentUserData.message }}</ion-text>
         </div>
         <applicant-card

@@ -8,7 +8,7 @@
           <ion-spinner></ion-spinner>
         </div>
         <div v-else-if="errorLoadingApplicants" class="not-found">
-          <strong class="capitalize">Houston, nous avons une erreur</strong>
+          <strong class="capitalize">Erreur</strong>
           <ion-text color="error">{{ errorLoadingApplicants.message }}</ion-text>
         </div>
         <ion-list lines="full">

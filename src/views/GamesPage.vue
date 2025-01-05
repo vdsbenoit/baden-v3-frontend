@@ -26,7 +26,7 @@
           <ion-spinner></ion-spinner>
         </div>
         <div v-else-if="errorLoadingGames" class="not-found">
-          <strong class="capitalize">Houston, nous avons une erreur</strong>
+          <strong class="capitalize">Erreur</strong>
           <ion-text color="error">{{ errorLoadingGames.message }}</ion-text>
         </div>
         <ion-list v-else-if="games && games.length > 0" lines="full">
