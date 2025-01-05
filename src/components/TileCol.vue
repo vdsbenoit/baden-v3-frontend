@@ -17,8 +17,7 @@ const router = useRouter();
 <style scoped>
 .tile {
   border-radius: 15px;
-  /* background-color: var(--ion-color-primary); */
-  background-color: #ff2c2c;
+  background-color: var(--ion-color-primary);
   aspect-ratio: 1;
   display: flex;
   align-items: center;
@@ -33,14 +32,12 @@ const router = useRouter();
   border-radius: 15px;
 }
 .tile span {
-  /* color: var(--ion-color-light) */
-  color: var(--ion-color-dark)
+  color: var(--ion-color-light)
 }
 body.dark .tile {
-  /* background-color: var(--ion-color-light); */
+  background-color: var(--ion-color-light);
 }
 body.dark .tile span {
-  /* color: var(--ion-color-primary); */
-  color: var(--ion-color-light);
+  color: var(--ion-color-primary);
 }
 </style>
