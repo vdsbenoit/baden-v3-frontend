@@ -10,18 +10,18 @@
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
       <div v-if="appConfig" >
-        <ion-card v-for="(sectionType, sectionTypeId) in appConfig.sectionTypes" :key="sectionTypeId">
+        <ion-card v-for="(groupCategory, groupCategoryId) in appConfig.groupCategories" :key="groupCategoryId">
           <ion-card-header>
-            <ion-card-title>{{ sectionType.name }}</ion-card-title>
+            <ion-card-title>{{ groupCategory.name }}</ion-card-title>
           </ion-card-header>
           <ion-card-content class="ion-no-padding">
             <ion-grid class="ion-no-padding">
               <ion-row>
                 <ion-col size="12" size-sm="6">
-                  <ranking-section :sectionTypeId="String(sectionTypeId)" :limit="limit" :printable-scores="showPrintableScores"/>
+                  <ranking-section :groupCategoryId="String(groupCategoryId)" :limit="limit" :printable-scores="showPrintableScores"/>
                 </ion-col>
                 <ion-col size="12" size-sm="6">
-                  <ranking-team :sectionTypeId="String(sectionTypeId)" :limit="limit" :printable-scores="showPrintableScores"/>
+                  <ranking-team :groupCategoryId="String(groupCategoryId)" :limit="limit" :printable-scores="showPrintableScores"/>
                 </ion-col>
               </ion-row>
             </ion-grid>

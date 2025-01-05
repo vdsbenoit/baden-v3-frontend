@@ -9,7 +9,7 @@
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
       <ion-item color="primary">
-        <ion-label v-if="sectionTypeName" class="ion-text-center">{{ sectionTypeName }}</ion-label>
+        <ion-label v-if="groupCategoryName" class="ion-text-center">{{ groupCategoryName }}</ion-label>
         <ion-label v-else class="ion-text-center">Sélectionne un circuit</ion-label>
         <ion-spinner v-if="isLoadingAppConfig"></ion-spinner>
         <ion-select v-else-if="circuits" v-model="selectedCircuit" interface="popover">
@@ -103,11 +103,11 @@ const circuits = computed(() => {
   if (!appConfig.value) return undefined
   return appConfig.value.circuits
 });
-const sectionTypeName = computed(() => {
+const groupCategoryName = computed(() => {
   if (!appConfig.value) return undefined
   if (!selectedCircuit.value) return undefined
-  const selectedSectionTypeId = appConfig.value.circuits[selectedCircuit.value]
-  return appConfig.value.sectionTypes[selectedSectionTypeId].name
+  const selectedgroupCategoryId = appConfig.value.circuits[selectedCircuit.value]
+  return appConfig.value.groupCategories[selectedgroupCategoryId].name
 })
 const pageTitle = computed(() => {
   if (editMode.value) return `Modification des épreuves`;

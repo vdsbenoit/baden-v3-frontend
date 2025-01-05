@@ -4,7 +4,7 @@ import { VueFirestoreDocumentData} from "vuefire"
 export type Team = {
   hash: string
   number: number // this is used by the distribution script
-  sectionTypeId: string
+  groupCategoryId: string
   sectionId: string
   section: VueFirePlayerSection
   nbPlayers: number

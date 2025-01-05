@@ -10,12 +10,12 @@
               <ion-col size="12" size-sm="6">
                 <ion-spinner v-if="isLoadingAppConfig"></ion-spinner>
                 <div v-else-if="errorLoadingAppConfig"> Erreur au chargement des types de sections : {{ errorLoadingAppConfig.message }} </div>
-                <ion-select v-else-if="appConfig && appConfig.sectionTypes" v-model="selectedSectionTypeId" interface="popover" placeholder="Type de section">
-                  <ion-select-option v-for="sectionType, sectionTypeId in appConfig.sectionTypes" :value="sectionTypeId" :key="sectionTypeId">{{ sectionType.name }}</ion-select-option>
+                <ion-select v-else-if="appConfig && appConfig.groupCategories" v-model="selectedgroupCategoryId" interface="popover" placeholder="Type de section">
+                  <ion-select-option v-for="groupCategory, groupCategoryId in appConfig.groupCategories" :value="groupCategoryId" :key="groupCategoryId">{{ groupCategory.name }}</ion-select-option>
                 </ion-select>
                 <div v-else  class="ion-text-center">Pas de type de section configuré</div>
               </ion-col>
-              <ion-col size="12" size-sm="6" v-if="selectedSectionTypeId">
+              <ion-col size="12" size-sm="6" v-if="selectedgroupCategoryId">
                 <ion-spinner v-if="isLoadingSections"></ion-spinner>
                 <div v-else-if="errorLoadingSections"> Erreur au chargement des sections : {{ errorLoadingSections.message }} </div>
                 <ion-select v-else-if="sections && sections.length > 0" v-model="selectedSectionId" placeholder="Section" interface="popover">
@@ -100,7 +100,7 @@
                   <ion-list v-if="selectedSection.teams.length > 0">
                     <ion-item v-for="teamId in selectedSection.teams" :key="teamId" :routerLink="`/team/${teamId}`">
                       <ion-label>{{ teamId }}</ion-label>
-                      <ion-badge v-if="currentUserProfile && teamId === currentUserProfile.team" slot="end" color="primary" class="ion-padding-horizontal">Ton équipe</ion-badge>
+                      <ion-badge v-if="currentUserProfile && teamId === currentUserProfile.teamId" slot="end" color="primary" class="ion-padding-horizontal">Ton équipe</ion-badge>
                     </ion-item>
                   </ion-list>
                   <ion-list-header v-else><h2> Aucune équipe trouvée </h2></ion-list-header>
@@ -141,7 +141,7 @@
         </ion-row>
       </ion-grid>
       <div v-else class="not-found">
-        <h2 v-if="!selectedSectionTypeId" class="ion-text-center ion-align-items-center" >Sélectionne un type de section<ion-icon :ios="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
+        <h2 v-if="!selectedgroupCategoryId" class="ion-text-center ion-align-items-center" >Sélectionne un type de section<ion-icon :ios="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
         <h2 v-else class="ion-text-center ion-align-items-center" >Sélectionne une section <ion-icon :ios="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
       </div>
     </ion-content>
@@ -168,7 +168,7 @@ import { watch, watchEffect } from "vue";
 
 // reactive data
 
-const selectedSectionTypeId = ref(DEFAULT_SECTION_TYPE_ID);
+const selectedgroupCategoryId = ref(DEFAULT_SECTION_TYPE_ID);
 const shouldLoadMembers = ref(false); // true after clicking on the show button
 
 // Composables
@@ -177,7 +177,7 @@ const currentUserProfile = useCurrentUserProfile();
 const selectedSectionId = useRouteParams("sectionId", DEFAULT_PLAYER_SECTION_ID)
 const { data: selectedSection, pending: isLoadingSection, error: errorLoadingSection } = usePlayerSection(selectedSectionId);
 const { data: appConfig, pending: isLoadingAppConfig, error: errorLoadingAppConfig } = useAppConfig();
-const { data: sections, pending: isLoadingSections, error: errorLoadingSections } = usePlayerSections(selectedSectionTypeId);
+const { data: sections, pending: isLoadingSections, error: errorLoadingSections } = usePlayerSections(selectedgroupCategoryId);
 const {data: sectionMembers, pending: isLoadingMembers, error: errorLoadingMembers} = useMembersOfSection(selectedSectionId, shouldLoadMembers)
 const canSeeRanking = useCanSeeRanking()
 const canSeeModerationStuff = useCanSeeModerationStuff()
@@ -185,15 +185,15 @@ const canSeeModerationStuff = useCanSeeModerationStuff()
 
 // Watchers
 
-// If the sectionId is provided in the URL, this watcher sets the selectedSectionTypeId
+// If the sectionId is provided in the URL, this watcher sets the selectedgroupCategoryId
 watchEffect(() => {
     if(
       selectedSectionId.value &&
       selectedSection.value && 
-      selectedSection.value.sectionTypeId && 
-      selectedSectionTypeId.value === DEFAULT_SECTION_TYPE_ID
+      selectedSection.value.groupCategoryId && 
+      selectedgroupCategoryId.value === DEFAULT_SECTION_TYPE_ID
       ){
-      selectedSectionTypeId.value = selectedSection.value.sectionTypeId;
+      selectedgroupCategoryId.value = selectedSection.value.groupCategoryId;
     }
   }
 );
@@ -207,7 +207,7 @@ watch(selectedSectionId, () => {
 const canSelectTeam = computed(() => {
   if (!selectedSectionId.value) return false
   if (!currentUserProfile.value) return false
-  return currentUserProfile.value.role === ROLES.Participant && !currentUserProfile.value.team
+  return currentUserProfile.value.role === ROLES.Participant && !currentUserProfile.value.teamId
 });
 
 // Methods

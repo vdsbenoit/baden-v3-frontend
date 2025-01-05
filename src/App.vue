@@ -72,9 +72,9 @@ const name = computed(() => {
 const appPages = computed(() => {
   if (!userProfile.value) return [guestHomePage, loginPage, aboutPage];
   let pages = [homePage];
-  if (userProfile.value.team) pages = [...pages,  {
+  if (userProfile.value.teamId) pages = [...pages,  {
       title: "Mon Equipe",
-      url: `/team/${userProfile.value.team}`,
+      url: `/team/${userProfile.value.teamId}`,
       iosIcon: peopleCircleOutline,
       mdIcon: peopleCircleSharp,
   }]

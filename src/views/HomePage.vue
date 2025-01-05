@@ -22,7 +22,7 @@
           <!-- participant -->
           <tile-col v-if="showSelectTeam" :target="`/section/${userProfile.sectionId}`">Choisis une équipe</tile-col>
           <tile-col v-if="showSectionButton" :target="`/section/${userProfile.sectionId}`">Ma section</tile-col>
-          <tile-col v-if="userProfile.team" :target="`/team/${userProfile.team}`">Mon équipe</tile-col>
+          <tile-col v-if="userProfile.teamId" :target="`/team/${userProfile.teamId}`">Mon équipe</tile-col>
 
           <!-- >= chef -->
           <tile-col v-if="nbApplicants" target="/applicants">
@@ -68,7 +68,7 @@ const showPendingRequestInfo = computed(() => {
 });
 const showSelectTeam = computed(() => {
   if (!userProfile.value) return false;
-  return (userProfile.value.role === ROLES.Participant && !userProfile.value.team);
+  return (userProfile.value.role === ROLES.Participant && !userProfile.value.teamId);
 });
 const showSectionButton = computed(() => {
   if (!userProfile.value) return false;

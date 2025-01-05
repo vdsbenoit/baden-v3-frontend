@@ -7,7 +7,7 @@ export type Game = {
   number: number
   name: string
   circuit: string
-  sectionTypeId: string
+  groupCategoryId: string
   attendants:  { [timingId: string]: VueFireUserProfile[] }
   matches: string[]
   noScores: boolean

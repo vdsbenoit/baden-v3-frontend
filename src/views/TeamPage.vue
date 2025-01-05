@@ -162,8 +162,8 @@ const showRanking = computed(() => {
   return (user.value.role >= ROLES.Organisateur)
 });
 const isCurrentUserTeam = computed(() => {
-  if (!user.value?.team) return false;
-  return (user.value.team === teamId.value)
+  if (!user.value?.teamId) return false;
+  return (user.value.teamId === teamId.value)
 })
 const showRegisterButton = computed(() => {
   if (!user.value) return false
@@ -200,7 +200,7 @@ const registerPlayer = async () => {
   }
 
   try {
-    await updateUserProfile(user.value.id, { team: team.value.id })
+    await updateUserProfile(user.value.id, { teamId: team.value.id })
     toastPopup(`L'équipe ${team.value.id} a été enregistrée comme ton équipe`)
   } catch(e) {
     errorPopup(`Une erreur s'est produite lors de la modification de ton profil`)
@@ -221,7 +221,7 @@ const unRegisterPlayer = async () => {
     return
   }
   try {
-    updateUserProfile(user.value.id, {team: DEFAULT_TEAM_ID})
+    updateUserProfile(user.value.id, {teamId: DEFAULT_TEAM_ID})
     toastPopup(`Tu es désincrit.e de cette équipe`);
   } catch(e) {
     errorPopup(`Une erreur s'est produite lors de la modification de ton profil`); 

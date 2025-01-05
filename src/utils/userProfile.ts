@@ -40,7 +40,7 @@ export async function createUserProfile(uid: string, email: string) {
     hasDoneOnboarding: false,
     sectionId: DEFAULT_PLAYER_SECTION_ID,
     sectionName: "",
-    team: DEFAULT_TEAM_ID,
+    teamId: DEFAULT_TEAM_ID,
   }
   const docRef = doc(USER_PROFILES_COLLECTION_REF, uid)
   return setDoc(docRef, newProfile).then(() => console.log(`Created new user profile : ${uid}`))

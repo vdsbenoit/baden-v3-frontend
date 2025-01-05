@@ -14,31 +14,31 @@ export function usePlayerSection(rSectionId: MaybeRefOrGetter<string>) {
   return useDocument<PlayerSection>(dbRef)
 }
 
-export function usePlayerSections(rSectionTypeId: MaybeRefOrGetter<string>) {
+export function usePlayerSections(rgroupCategoryId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
-    const sectionTypeId = toValue(rSectionTypeId)
-    if (sectionTypeId === DEFAULT_SECTION_TYPE_ID) return null
-    console.log(`Fetching player sections from ${sectionTypeId}`)
+    const groupCategoryId = toValue(rgroupCategoryId)
+    if (groupCategoryId === DEFAULT_SECTION_TYPE_ID) return null
+    console.log(`Fetching player sections from ${groupCategoryId}`)
     // prettier-ignore
     return query(
       PLAYER_SECTIONS_COLLECTION_REF, 
-      where("sectionTypeId", "==", sectionTypeId), 
+      where("groupCategoryId", "==", groupCategoryId), 
       orderBy("number")
     )
   })
   return useCollection<PlayerSection>(dbRef)
 }
 
-export function useTopSections(rSectionTypeId: MaybeRefOrGetter<string>, rLimit: MaybeRefOrGetter<number>) {
+export function useTopSections(rgroupCategoryId: MaybeRefOrGetter<string>, rLimit: MaybeRefOrGetter<number>) {
   const dbRef = computed(() => {
-    const sectionTypeId = toValue(rSectionTypeId)
+    const groupCategoryId = toValue(rgroupCategoryId)
     const limit = toValue(rLimit)
-    if (sectionTypeId === DEFAULT_SECTION_TYPE_ID) return null
-    console.log(`Fetching the ${limit} top sections from sectionTypeId ${sectionTypeId}`)
+    if (groupCategoryId === DEFAULT_SECTION_TYPE_ID) return null
+    console.log(`Fetching the ${limit} top sections from groupCategoryId ${groupCategoryId}`)
     // prettier-ignore
     return query(
       PLAYER_SECTIONS_COLLECTION_REF, 
-      where("sectionTypeId", "==", sectionTypeId),
+      where("groupCategoryId", "==", groupCategoryId),
       orderBy("score", "desc"),
       fbLimit(limit),
     )

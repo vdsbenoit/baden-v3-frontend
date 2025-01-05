@@ -13,7 +13,7 @@ export type UserProfile = {
   rejectionReason?: string
   sectionId?: string
   sectionName?: string
-  team?: string // if it's a player
+  teamId?: string // if it's a player
   games?: { [timingId: string]: string }  // if it's an attendant
   settings?: any
 }

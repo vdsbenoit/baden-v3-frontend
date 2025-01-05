@@ -34,11 +34,11 @@
   
           <ion-item v-if="isParticipant">
             <ion-label position="floating" color="primary">Type de section</ion-label>
-            <ion-select v-model="selectedSectionTypeId" interface="popover" required>
-              <ion-select-option v-for="(sectionType, id) in appConfig?.sectionTypes" :key="id" :value="id">{{ sectionType.name }}</ion-select-option>
+            <ion-select v-model="selectedgroupCategoryId" interface="popover" required>
+              <ion-select-option v-for="(groupCategory, id) in appConfig?.groupCategories" :key="id" :value="id">{{ groupCategory.name }}</ion-select-option>
             </ion-select>
           </ion-item>
-          <ion-item v-if="isParticipant && selectedSectionTypeId">
+          <ion-item v-if="isParticipant && selectedgroupCategoryId">
             <ion-label position="floating" color="primary">Section</ion-label>
             <ion-spinner v-if="isLoadingSections"></ion-spinner>
             <div v-else-if="errorLoadingSections">Erreur : {{ errorLoadingSections.message }}</div>
@@ -95,7 +95,7 @@ const selectableRoles = Object.fromEntries(Object.entries(ROLES).filter(([, valu
 
 const name = ref('');
 const selectedRole = ref(DEFAULT_ROLE_VALUE);
-const selectedSectionTypeId = ref(DEFAULT_SECTION_TYPE_ID);
+const selectedgroupCategoryId = ref(DEFAULT_SECTION_TYPE_ID);
 const selectedSectionId = ref(DEFAULT_PLAYER_SECTION_ID);
 const selectedAttendantSectionId = ref(DEFAULT_ATTENDANT_SECTION_ID);
 const nameError = ref(false);
@@ -105,7 +105,7 @@ const isUpdatingProfile = ref(false);
 
 const currentUser = useCurrentUserProfile();
 const appConfig = useAppConfig();
-const { data: sections, pending: isLoadingSections, error: errorLoadingSections } = usePlayerSections(selectedSectionTypeId);
+const { data: sections, pending: isLoadingSections, error: errorLoadingSections } = usePlayerSections(selectedgroupCategoryId);
 
 const isParticipant = computed(() => selectedRole.value === ROLES.Participant);
 const isAttendant = computed(() => (selectedRole.value >= ROLES.Animateur))
@@ -114,7 +114,7 @@ const { data: attendantSections, pending: isLoadingAttendantSections, error: err
 
 const canSubmit = computed(() => {
   if (!name.value) return false;
-  if (isParticipant.value && selectedSectionTypeId.value != DEFAULT_SECTION_TYPE_ID && selectedSectionId.value != DEFAULT_PLAYER_SECTION_ID) return true
+  if (isParticipant.value && selectedgroupCategoryId.value != DEFAULT_SECTION_TYPE_ID && selectedSectionId.value != DEFAULT_PLAYER_SECTION_ID) return true
   if (isAttendant.value && selectedAttendantSectionId.value != DEFAULT_ATTENDANT_SECTION_ID) return true
   if (selectedRole.value >= ROLES.Organisateur) return true
   return false;
@@ -124,7 +124,7 @@ const canSubmit = computed(() => {
 
 const handleRoleChange = () => {
     // Reset section and leaderSection values when changing the role
-    selectedSectionTypeId.value = DEFAULT_SECTION_TYPE_ID
+    selectedgroupCategoryId.value = DEFAULT_SECTION_TYPE_ID
     selectedSectionId.value = DEFAULT_PLAYER_SECTION_ID
     selectedAttendantSectionId.value = DEFAULT_ATTENDANT_SECTION_ID
     if (!name.value) nameError.value = true;

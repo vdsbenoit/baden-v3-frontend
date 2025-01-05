@@ -56,12 +56,12 @@ import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonItem
 
 import { defineProps } from "vue";
 const props = defineProps<{
-  sectionTypeId: string;
+  groupCategoryId: string;
   limit: number
   printableScores: boolean;
 }>();
 
 // composable
-const { data: teams, pending: isLoading, error: errorLoading } = useTopTeams(props.sectionTypeId, props.limit);
+const { data: teams, pending: isLoading, error: errorLoading } = useTopTeams(props.groupCategoryId, props.limit);
 
 </script>

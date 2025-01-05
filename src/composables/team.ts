@@ -16,16 +16,16 @@ export function useTeam(rId: MaybeRefOrGetter<string>) {
   return useDocument<Team>(dbRef)
 }
 
-export function useTopTeams(rSectionTypeId: MaybeRefOrGetter<string>, rLimit: MaybeRefOrGetter<number>) {
+export function useTopTeams(rGroupCategoryId: MaybeRefOrGetter<string>, rLimit: MaybeRefOrGetter<number>) {
   const dbRef = computed(() => {
-    const sectionType = toValue(rSectionTypeId)
+    const groupCategory = toValue(rGroupCategoryId)
     const limit = toValue(rLimit)
-    if (sectionType === DEFAULT_SECTION_TYPE_ID) return null
-    console.log(`Fetching the ${limit} top teams from sectionType ${sectionType}`)
+    if (groupCategory === DEFAULT_SECTION_TYPE_ID) return null
+    console.log(`Fetching the ${limit} top teams from groupCategory ${groupCategory}`)
     // prettier-ignore
     return query(
       TEAMS_COLLECTION_REF, 
-      where("sectionType", "==", sectionType),
+      where("groupCategory", "==", groupCategory),
       orderBy("score", "desc"),
       fbLimit(limit),
     )

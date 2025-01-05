@@ -58,7 +58,7 @@
                 cancel-text="Annuler" 
                 interface="action-sheet"
               >
-                <ion-select-option v-for="sectionType, sectionTypeId in appConfig.sectionTypes" :key="sectionTypeId" :value="sectionTypeId">{{ sectionType.name }}</ion-select-option>
+                <ion-select-option v-for="groupCategory, groupCategoryId in appConfig.groupCategories" :key="groupCategoryId" :value="groupCategoryId">{{ groupCategory.name }}</ion-select-option>
               </ion-select>
               <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="formData.playerSection.isEditting = false; resetFormData()"></ion-icon>
             </ion-item>
@@ -66,7 +66,7 @@
             <ion-item lines="full" v-else>
               <ion-label position="stacked" color="primary">Type de section</ion-label>
               <p v-if="!appConfig" class="field-error">Error: cannot load section types (i.e. appConfig)</p>
-              <ion-input v-else type="text" readonly>{{ appConfig?.sectionTypes[formData.playerSection.typeId] }}</ion-input>
+              <ion-input v-else type="text" readonly>{{ appConfig?.groupCategories[formData.playerSection.typeId] }}</ion-input>
               <ion-spinner v-if="formData.playerSection.isUpdating"></ion-spinner>
               <ion-icon v-else-if="canEditProfile" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="formData.playerSection.isEditting = true"></ion-icon>
             </ion-item>
@@ -303,10 +303,10 @@ const pageTitle = computed(() => {
 
 // Lazy loading of all player sections
 // They are only loaded after the user starts editting the player section
-const selectedPlayerSectionTypeId = computed(() => {
+const selectedPlayergroupCategoryId = computed(() => {
   return formData.playerSection.isEditting ? formData.playerSection.typeId : DEFAULT_SECTION_TYPE_ID
 })
-const playerSections = usePlayerSections(selectedPlayerSectionTypeId)
+const playerSections = usePlayerSections(selectedPlayergroupCategoryId)
 
 // This computed variable is necessary in order to keep the reactivity
 const selectedPlayerSectionId = computed(() => {
@@ -339,10 +339,10 @@ const resetFormData = () => {
   
   // players
   if (userProfile.value.role == ROLES.Participant){
-    if (!formData.team.isEditting) formData.team.value = userProfile.value.team ?? DEFAULT_TEAM_ID;
+    if (!formData.team.isEditting) formData.team.value = userProfile.value.teamId ?? DEFAULT_TEAM_ID;
     if (!formData.playerSection.isEditting) {
       formData.playerSection.id = userProfile.value.sectionId ?? DEFAULT_PLAYER_SECTION_ID;
-      formData.playerSection.typeId = selectedPlayerSection.value?.sectionTypeId ?? DEFAULT_SECTION_TYPE_ID;
+      formData.playerSection.typeId = selectedPlayerSection.value?.groupCategoryId ?? DEFAULT_SECTION_TYPE_ID;
     }
   }
   
@@ -505,7 +505,7 @@ const setPlayerSection = async () => {
     await updateUserProfile(userId.value, { 
       sectionId: formData.playerSection.id,
       sectionName: selectedSection.name,
-      team: DEFAULT_TEAM_ID,
+      teamId: DEFAULT_TEAM_ID,
     })
   } catch (error: any) {
     errorPopup(`La section n'a pas pu être mise à jour : ${error.message}`)
@@ -531,7 +531,7 @@ const setTeam = async () => {
   formData.team.isEditting = false
   formData.team.isUpdating = true
   try {
-    await updateUserProfile(userId.value, { team: formData.team.value })
+    await updateUserProfile(userId.value, { teamId: formData.team.value })
   } catch (error: any) {
     errorPopup(`L'équipe n'a pas pu être mise à jour : ${error.message}`)
     formData.team.isUpdating = false
