@@ -1,10 +1,8 @@
 <template>
   <div>
-    <div v-for="(availability, i) in availabilities" :key="i">
-      <ion-badge slot="end" class="ion-no-margin" :color="availability.color">
-        {{ availability.nbAttendants }}
-      </ion-badge>
-    </div>
+    <ion-badge v-for="(availability, i) in availabilities" :key="i" slot="end" :color="availability.color">
+      {{ availability.nbAttendants }}
+    </ion-badge>
   </div>
 </template>
 
@@ -35,7 +33,7 @@ const attendantSchedule = computed(() => appConfig.value?.attendantSchedule ?? [
 const availabilities = computed(() => {
   const data = []
   for (const timeSlot of attendantSchedule.value) {
-    const nbAttendants = props.game.attendants[timeSlot.id].length
+    const nbAttendants = props.game.attendants[timeSlot.id] ? props.game.attendants[timeSlot.id].length : 0
     let color = "success"
     if (nbAttendants === 0) color = "danger"
     if (nbAttendants < maxGameAttendants.value) color = "warning"

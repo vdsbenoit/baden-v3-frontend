@@ -36,7 +36,7 @@
           <ion-card-content>
             <ion-list v-for="timeSlot in attendantSchedule" :key="timeSlot.id" lines="none" class="ion-no-margin ion-no-padding">
               <ion-text color="primary"><h2>{{ timeSlot.name }}</h2></ion-text>
-              <span v-if="game.attendants[timeSlot.id].length < 1" class="ion-padding-start">Pas encore de responsable inscrit</span>
+              <span v-if="!game.attendants[timeSlot.id] || game.attendants[timeSlot.id].length < 1" class="ion-padding-start">Pas encore de responsable inscrit</span>
               <ion-item v-else v-for="attendant in game.attendants[timeSlot.id]" :key="attendant.id">
                 <ion-label class="ion-text-wrap" @click="goToProfile(attendant.id)">
                   <ion-text style="font-weight: bold">{{ attendant.name }}</ion-text>
@@ -47,13 +47,13 @@
             </ion-list>
             <ion-grid class="ion-margin-top">
               <ion-row>
-                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister">
+                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister.itself">
                   <MyActionSheetButton expand="block" color="primary" action-sheet-header="M'inscrire" 
                   :buttons="attendantSchedule.map(timeSlot => ({ text: timeSlot.name, data: timeSlot}))" :callback="register" :payload="{ targetUser: currentUser}">
                     M'inscrire
                   </MyActionSheetButton>
                 </ion-col>
-                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister && isUserRegisteredHere">
+                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister.itself && isUserRegisteredHere">
                   <ion-button @click="unregister" expand="block" color="danger" action-sheet-header="Se désinscrire">
                     Se désinscrire
                   </ion-button>
@@ -81,15 +81,25 @@
               <ion-row>
                 <ion-col size="12" size-sm="6">
                   <ion-spinner v-if="isLoadingAttendantSections"></ion-spinner>
-                  <ion-select v-else v-model="edit.selectedSectionId" placeholder="Choisir section" interface="alert">
+                  <div v-if="errorLoadingAttendantsSections" class="ion-text-center">
+                    <strong class="capitalize ion-text-center">Houston, nous avons une erreur</strong>
+                    <ion-text color="error">{{ errorLoadingAttendantsSections.message }}</ion-text>
+                  </div>
+                  <ion-select v-else-if="attendantSections && attendantSections.length > 0" v-model="edit.selectedSectionId" placeholder="Choisir section" interface="alert">
                     <ion-select-option v-for="section in attendantSections" :value="section.id" :key="section.id"> {{ section.name }} ({{ section.city }}) </ion-select-option>
                   </ion-select>
+                  <div v-else class="ion-text-center ion-padding-top">Aucune section trouvée</div>
                 </ion-col>
                 <ion-col size="12" size-sm="6" v-if="edit.selectedSectionId != DEFAULT_ATTENDANT_SECTION_ID">
                     <ion-spinner v-if="isLoadingAttendants"></ion-spinner>
-                    <ion-select v-else v-model="edit.selectedAttendant" placeholder="Choisir animateur" interface="alert">
-                      <ion-select-option color="dark" v-for="attendant in sectionAttendants" :value="attendant" :key="attendant.id"> {{ getUserName(attendant) }} </ion-select-option>
+                    <div v-if="errorLoadingAttendants" class="ion-text-center">
+                      <strong class="capitalize ion-text-center">Houston, nous avons une erreur</strong>
+                      <ion-text color="error">{{ errorLoadingAttendants.message }}</ion-text>
+                    </div>
+                    <ion-select v-else-if="attendants && attendants.length > 0" v-model="edit.selectedAttendant" placeholder="Choisir animateur" interface="alert">
+                      <ion-select-option color="dark" v-for="attendant in attendants" :value="attendant" :key="attendant.id"> {{ getUserName(attendant) }} </ion-select-option>
                     </ion-select>
+                    <p v-else class="ion-text-center ion-padding-top">Aucun animateur trouvé</p>
                 </ion-col>
               </ion-row>
               <ion-row>
@@ -180,8 +190,8 @@ const canRegister = useCanRegister()
 const canEditGameSettings = useCanEditGames()
 const canSeeModerationStuff = useCanSeeModerationStuff()
 
-const { data: attendantSections, pending: isLoadingAttendantSections } = useAttendantSections(toRef(edit, 'isOn'), "exclude", canSeeModerationStuff)
-const { data: sectionAttendants, pending: isLoadingAttendants } = useMembersOfSection(edit.selectedSectionId)
+const { data: attendantSections, pending: isLoadingAttendantSections, error: errorLoadingAttendantsSections } = useAttendantSections(toRef(edit, 'isOn'), "exclude", canSeeModerationStuff)
+const { data: attendants, pending: isLoadingAttendants, error: errorLoadingAttendants } = useMembersOfSection(edit.selectedSectionId)
 
 // lifecycle hooks
 

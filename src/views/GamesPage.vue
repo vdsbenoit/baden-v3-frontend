@@ -9,19 +9,27 @@
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
       <ion-item color="primary">
-        <ion-label class="ion-text-center">Sélectionne un circuit</ion-label>
+        <ion-label v-if="sectionTypeName" class="ion-text-center">{{ sectionTypeName }}</ion-label>
+        <ion-label v-else class="ion-text-center">Sélectionne un circuit</ion-label>
         <ion-spinner v-if="isLoadingAppConfig"></ion-spinner>
         <ion-select v-else-if="circuits" v-model="selectedCircuit" interface="popover">
-          <ion-select-option v-for="letter in Object.keys(circuits).sort()" :value="letter" :key="letter"> {{ letter }} ({{ circuits[letter] }})</ion-select-option>
+          <ion-select-option v-for="letter in Object.keys(circuits).sort()" :value="letter" :key="letter"> {{ letter }}</ion-select-option>
         </ion-select>
         <div v-else-if="errorLoadingConfig">Erreur</div>
         <div v-else>Pas de circuit</div>
       </ion-item>
-      <ion-list v-if="selectedCircuit" lines="full">
+      <div v-if="!selectedCircuit" class="not-found">
+        <h2 class="ion-text-center ion-align-items-center" >Sélectionne un circuit <ion-icon :ios="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
+      </div>
+      <div v-else>
         <div v-if="isLoadingGames" class="ion-text-center" style="background: transparent">
           <ion-spinner></ion-spinner>
         </div>
-        <div v-else-if="games && games.length > 0">
+        <div v-else-if="errorLoadingGames" class="not-found">
+          <strong class="capitalize">Houston, nous avons une erreur</strong>
+          <ion-text color="error">{{ errorLoadingGames.message }}</ion-text>
+        </div>
+        <ion-list v-else-if="games && games.length > 0" lines="full">
           <div v-for="game in games" :key="game.id">
             <div v-if="editMode">
               <div v-if="game.id === editedGameId && !isUpdating">
@@ -47,18 +55,14 @@
                 <ion-label>
                   <ion-text>{{ game.name }}</ion-text>
                 </ion-label>
-                <game-availabilities v-if="showGameAvailabilities" :game="game">
-                </game-availabilities>
+                <game-availabilities v-if="showGameAvailabilities" :game="game"/>
               </ion-item>
             </div>
           </div>
+        </ion-list>
+        <div v-else class="not-found">
+          <h2 class="ion-text-center ion-align-items-center">Pas d'épreuves</h2>
         </div>
-      </ion-list>
-      <div v-else class="not-found">
-        <h2 class="ion-text-center ion-align-items-center" >Sélectionne un circuit <ion-icon :ios="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
-      </div>
-      <div v-if="gamesNotFound" class="not-found">
-        <h2 class="ion-text-center ion-align-items-center">Pas d'épreuves</h2>
       </div>
     </ion-content>
   </ion-page>
@@ -99,14 +103,16 @@ const circuits = computed(() => {
   if (!appConfig.value) return undefined
   return appConfig.value.circuits
 });
+const sectionTypeName = computed(() => {
+  if (!appConfig.value) return undefined
+  if (!selectedCircuit.value) return undefined
+  const selectedSectionTypeId = appConfig.value.circuits[selectedCircuit.value]
+  return appConfig.value.sectionTypes[selectedSectionTypeId].name
+})
 const pageTitle = computed(() => {
   if (editMode.value) return `Modification des épreuves`;
   return "Épreuves";
 });
-const gamesNotFound = computed(() => {
-  if (errorLoadingGames) return true
-  return selectedCircuit.value && !isLoadingGames.value && (!games.value || games.value.length === 0);
-})
 const showGameAvailabilities = computed(() => {
   if (!appSettings.value) return false
   return appSettings.value.isGameAvailabilitiesDisplayed
