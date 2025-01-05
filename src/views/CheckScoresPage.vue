@@ -69,7 +69,7 @@ const isFilled = computed(() => {
   if (!matches.value || matches.value.length === 0) return false;
   for (const match of matches.value) {
     if (match.noScores) continue
-    if (match.winner) continue
+    if (match.winnerTeamId) continue
     if (match.draw) continue
     return false;
   }
@@ -83,7 +83,7 @@ const iconColor = (match: Match) => {
   return 'success'
 };
 const isScoreRecorded = (match: Match) => {
-  return (match.winner || match.draw || match.noScores)
+  return (match.winnerTeamId || match.draw || match.noScores)
 }
 
 </script>

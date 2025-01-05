@@ -43,7 +43,7 @@ import { ref, watch } from "vue";
 import { computed } from "@vue/reactivity";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { processSignInLink, sendSignInEmail } from "@/utils/auth";
-import { ROLES } from "@/constants";
+import { USER_ROLES } from "@/constants";
 import { useCurrentUserProfile } from "@/composables/userProfile";
 import { useRouteQuery } from "@vueuse/router";
 
@@ -95,7 +95,7 @@ const signIn = async (href: string) => {
   const success = await processSignInLink(href);
   if (success) {
     if (!userProfile.value || 
-    (userProfile.value.role === ROLES.Newbie && ! userProfile.value.hasDoneOnboarding)) {
+    (userProfile.value.role === USER_ROLES.Newbie && ! userProfile.value.hasDoneOnboarding)) {
       router.replace("/onboarding")
     } else router.replace("/home");
   }

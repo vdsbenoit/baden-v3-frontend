@@ -7,27 +7,27 @@
     </header-template>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
-      <!-- Show applicants from all sections to moderators -->
+      <!-- Show applicants from all attendant groups to moderators -->
       <div v-if="canSeeModerationStuff">
-        <div v-if="isLoadingAttendantSections" class="not-found" style="background: transparent">
+        <div v-if="isLoadingAttendantGroups" class="not-found" style="background: transparent">
           <ion-spinner></ion-spinner>
         </div>
-        <div v-else-if="errorLoadingAttendantSections" class="not-found">
+        <div v-else-if="errorLoadingAttendantGroups" class="not-found">
           <strong class="capitalize">Erreur</strong>
-          <ion-text color="error">{{ errorLoadingAttendantSections.message }}</ion-text>
+          <ion-text color="error">{{ errorLoadingAttendantGroups.message }}</ion-text>
         </div>
         <applicant-card
           v-else
-          v-for="attendantSection in attendantSections"
-          :key="attendantSection.id"
-          :attendant-section-id="attendantSection.id"
-          :attendant-section-name="attendantSection.name"
-          :attendant-section-city="attendantSection.city"
+          v-for="attendantgroup in attendantGroups"
+          :key="attendantgroup.id"
+          :attendantGroupId="attendantgroup.id"
+          :attendantGroupName="attendantgroup.name"
+          :attendantGroupCity="attendantgroup.city"
           :limit="limit"
           @has-applicants="(hasApplicants: boolean) => countCardsWithApplicants += hasApplicants ? 1 : -1"
         />
       </div>
-      <!-- Show applicants from the current user section to leaders -->
+      <!-- Show applicants from the current user group to leaders -->
       <div v-else>
         <div v-if="isLoadingCurrentUserData" class="not-found" style="background: transparent">
           <ion-spinner></ion-spinner>
@@ -37,12 +37,12 @@
           <ion-text color="error">{{ errorCurrentUserData.message }}</ion-text>
         </div>
         <applicant-card
-          v-else-if="currentUserAttendantSection"
-          :attendant-section-id="currentUserSectionId"
-          :attendant-section-name="currentUserAttendantSection.name"
-          :attendant-section-city="currentUserAttendantSection.city"
+          v-else-if="currentUserAttendantGroup"
+          :attendantGroupId="currentUserGroupId"
+          :attendantGroupName="currentUserAttendantGroup.name"
+          :attendantGroupCity="currentUserAttendantGroup.city"
           :limit="limit"
-          @has-applicants="(v:boolean) => hasApplicantsCurrentUserSection = v"
+          @has-applicants="(v:boolean) => hasApplicantsCurrentUserGroup = v"
         />
         <div v-else class="not-found">
           <h2 class="ion-text-center ion-align-items-center">Erreur lors de chargement de ta section</h2>
@@ -59,10 +59,10 @@
 import HeaderTemplate from "@/components/HeaderTemplate.vue"
 import RefresherComponent from "@/components/RefresherComponent.vue"
 import ApplicantCard from "@/components/ApplicantCard.vue"
-import { useAttendantSection, useAttendantSections } from "@/composables/attendantSection"
+import { useAttendantGroup, useAttendantGroups } from "@/composables/attendantGroup"
 import { useCanSeeModerationStuff } from "@/composables/rights"
 import { useCurrentUserProfile } from "@/composables/userProfile"
-import { DEFAULT_ATTENDANT_SECTION_ID } from "@/constants"
+import { DEFAULT_GROUP_ID } from "@/constants"
 // prettier-ignore
 import { alertController, AlertInput, IonButton, IonContent, IonIcon, IonPage, IonSpinner, IonText } from "@ionic/vue";
 import { computed, ref } from "@vue/reactivity"
@@ -72,35 +72,35 @@ import { settingsOutline, settingsSharp } from "ionicons/icons"
 
 const limit = ref(5)
 const countCardsWithApplicants = ref(0)
-const hasApplicantsCurrentUserSection = ref(true)
+const hasApplicantsCurrentUserGroup = ref(true)
 const isNoApplicants = computed(() => {
-  return countCardsWithApplicants.value === 0 && !hasApplicantsCurrentUserSection.value
+  return countCardsWithApplicants.value === 0 && !hasApplicantsCurrentUserGroup.value
 })
 
 // composables
 
 const canSeeModerationStuff = useCanSeeModerationStuff()
 const {
-  data: attendantSections,
-  pending: isLoadingAttendantSections,
-  error: errorLoadingAttendantSections
-} = useAttendantSections(canSeeModerationStuff, "include", true)
+  data: attendantGroups,
+  pending: isLoadingAttendantGroups,
+  error: errorLoadingAttendantGroups
+} = useAttendantGroups(canSeeModerationStuff, "include", true)
 const { data: currentUser, pending: isLoadingCurrentUser, error: errorLoadingCurrentUser } = useCurrentUserProfile()
-const currentUserSectionId = computed(() => {
-  if (!currentUser.value || !currentUser.value.sectionId) return DEFAULT_ATTENDANT_SECTION_ID
-  return currentUser.value.sectionId
+const currentUserGroupId = computed(() => {
+  if (!currentUser.value || !currentUser.value.groupId) return DEFAULT_GROUP_ID
+  return currentUser.value.groupId
 })
 const {
-  data: currentUserAttendantSection,
-  pending: isLoadingCurrentUserAttendantSection,
-  error: errorLoadingCurrentUserAttendantSection
-} = useAttendantSection(currentUserSectionId)
+  data: currentUserAttendantGroup,
+  pending: isLoadingCurrentUserAttendantGroup,
+  error: errorLoadingCurrentUserAttendantGroup
+} = useAttendantGroup(currentUserGroupId)
 
 // Computed
 
-const isLoadingCurrentUserData = computed(() => isLoadingCurrentUser || isLoadingCurrentUserAttendantSection)
+const isLoadingCurrentUserData = computed(() => isLoadingCurrentUser || isLoadingCurrentUserAttendantGroup)
 const errorCurrentUserData = computed(
-  () => errorLoadingCurrentUser.value ?? errorLoadingCurrentUserAttendantSection.value
+  () => errorLoadingCurrentUser.value ?? errorLoadingCurrentUserAttendantGroup.value
 )
 
 // Methods

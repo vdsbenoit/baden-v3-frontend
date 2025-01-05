@@ -8,39 +8,39 @@
           <ion-grid class="">
             <ion-row>
               <ion-col size="12" size-sm="6">
-                  <ion-select v-if="sections" v-model="selectedSectionId" placeholder="Section" interface="popover">
-                    <ion-select-option color="dark" v-for="section in sections.values()" :value="section.id" :key="section.id"> {{ section.name }} ({{ section.city }}) </ion-select-option>
+                  <ion-select v-if="groups" v-model="selectedGroupId" placeholder="Section" interface="popover">
+                    <ion-select-option color="dark" v-for="group in groups.values()" :value="group.id" :key="group.id"> {{ group.name }} ({{ group.city }}) </ion-select-option>
                   </ion-select>
-                  <ion-spinner v-else-if="isLoadingSections"></ion-spinner>
-                  <div v-else-if="errorLoadingSections"> Erreur au chargement des sections : {{ errorLoadingSections.message }} </div>
+                  <ion-spinner v-else-if="isLoadingGroups"></ion-spinner>
+                  <div v-else-if="errorLoadingGroups"> Erreur au chargement des sections : {{ errorLoadingGroups.message }} </div>
                   <div v-else>Pas de section configurée</div>
               </ion-col>
             </ion-row>
           </ion-grid>
         </ion-card-content>
       </ion-card>
-      <ion-grid class="ion-no-padding" v-if="selectedSectionId">
+      <ion-grid class="ion-no-padding" v-if="selectedGroupId">
         <ion-row>
           <ion-col size="12" size-sm="6">
             <ion-card>
               <ion-card-header>
                 <ion-card-title>
                   <span>Détails </span>
-                  <ion-badge v-if="selectedSection?.isStaff" color="danger">Staff</ion-badge>
+                  <ion-badge v-if="selectedGroup?.isStaff" color="danger">Staff</ion-badge>
                 </ion-card-title>
               </ion-card-header>
               <ion-card-content>
-                <ion-list v-if="selectedSection">
-                  <ion-item> <ion-label>Nom</ion-label>{{ selectedSection.name }} </ion-item>
-                  <ion-item> <ion-label>Ville</ion-label>{{ selectedSection.city }} </ion-item>
-                  <ion-item> <ion-label>Unité</ion-label>{{ selectedSection.unit }} </ion-item>
+                <ion-list v-if="selectedGroup">
+                  <ion-item> <ion-label>Nom</ion-label>{{ selectedGroup.name }} </ion-item>
+                  <ion-item> <ion-label>Ville</ion-label>{{ selectedGroup.city }} </ion-item>
+                  <ion-item> <ion-label>Unité</ion-label>{{ selectedGroup.unit }} </ion-item>
                 </ion-list>
-                <div v-else-if="isLoadingSection" class="ion-text-center ion-align-items-center">
+                <div v-else-if="isLoadingGroup" class="ion-text-center ion-align-items-center">
                   <ion-spinner></ion-spinner>
                 </div>
-                <div v-else-if="errorLoadingSection" class="not-found">
+                <div v-else-if="errorLoadingGroup" class="not-found">
                   <strong class="capitalize">Erreur</strong>
-                  <ion-text color="error">{{ errorLoadingSection.message }}</ion-text>
+                  <ion-text color="error">{{ errorLoadingGroup.message }}</ion-text>
                 </div>
                 <ion-list-header v-else>
                   <h2>Aucune section trouvée</h2>
@@ -65,10 +65,10 @@
                   <strong class="capitalize">Erreur</strong>
                   <ion-text color="error">{{ errorLoadingAttendants.message }}</ion-text>
                 </div>
-                <ion-list v-else-if="sectionMembers && sectionMembers.length > 0">
-                  <ion-item v-for="user in sectionMembers" :key="user.id" :routerLink="`/profile/${user.id}`">
+                <ion-list v-else-if="groupMembers && groupMembers.length > 0">
+                  <ion-item v-for="user in groupMembers" :key="user.id" :routerLink="`/profile/${user.id}`">
                     <ion-label>{{ user.name }}</ion-label>
-                    <div v-if="user.role <= ROLES.Chef">
+                    <div v-if="user.role <= USER_ROLES.Chef">
                       <ion-badge v-if="countGames(user) === 0" slot="end" color="danger">Pas inscrit</ion-badge>
                       <ion-badge v-else slot="end" :color="countGames(user) < maxGames ? 'warning' : 'success'">
                         {{ countGames(user) }}
@@ -85,7 +85,7 @@
           <ion-col  size="12" size-sm="6">
             <ion-card>
               <ion-card-header>
-                <ion-card-title v-if="selectedSection?.isStaff">Administrateur</ion-card-title>
+                <ion-card-title v-if="selectedGroup?.isStaff">Administrateur</ion-card-title>
                 <ion-card-title v-else>Chefs</ion-card-title>
               </ion-card-header>
               <ion-card-content>
@@ -96,10 +96,10 @@
                   <strong class="capitalize">Erreur</strong>
                   <ion-text color="error">{{ errorLoadingAttendants.message }}</ion-text>
                 </div>
-                <ion-list v-else-if="sectionLeaders && sectionLeaders.length > 0">
-                  <ion-item v-for="user in sectionLeaders" :key="user.id" :routerLink="`/profile/${user.id}`">
+                <ion-list v-else-if="groupLeaders && groupLeaders.length > 0">
+                  <ion-item v-for="user in groupLeaders" :key="user.id" :routerLink="`/profile/${user.id}`">
                     <ion-label>{{ user.name }}</ion-label>
-                    <div v-if="user.role <= ROLES.Chef">
+                    <div v-if="user.role <= USER_ROLES.Chef">
                       <ion-badge v-if="countGames(user) === 0" slot="end" color="danger">Pas inscrit</ion-badge>
                       <ion-badge v-else slot="end" :color="countGames(user) < maxGames ? 'warning' : 'success'">
                         {{ countGames(user) }}
@@ -126,9 +126,9 @@
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useAppConfig } from "@/composables/app";
-import { useAttendantSection, useAttendantSections } from "@/composables/attendantSection";
-import { useMembersOfSection, useSectionApplicants } from "@/composables/userProfile";
-import { DEFAULT_ATTENDANT_SECTION_ID, ROLES } from "@/constants";
+import { useAttendantGroup, useAttendantGroups } from "@/composables/attendantGroup";
+import { useMembersOfGroup, useGroupApplicants } from "@/composables/userProfile";
+import { DEFAULT_GROUP_ID, USER_ROLES } from "@/constants";
 import { UserProfile } from "@/types";
 import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue";
 import { computed } from "@vue/reactivity";
@@ -138,21 +138,21 @@ import { arrowUpOutline, arrowUpSharp } from "ionicons/icons";
 // composables
 
 const appConfig = useAppConfig()
-const selectedSectionId = useRouteParams('sectionId', DEFAULT_ATTENDANT_SECTION_ID)
-const { data: selectedSection, pending: isLoadingSection, error: errorLoadingSection } = useAttendantSection(selectedSectionId);
-const { data: attendants, pending: isLoadingAttendants, error: errorLoadingAttendants } = useMembersOfSection(selectedSectionId);
-const { data: sections, pending: isLoadingSections, error: errorLoadingSections } = useAttendantSections(true, "include", true);
-const applicants = useSectionApplicants(50, selectedSectionId.value);
+const selectedGroupId = useRouteParams('groupId', DEFAULT_GROUP_ID)
+const { data: selectedGroup, pending: isLoadingGroup, error: errorLoadingGroup } = useAttendantGroup(selectedGroupId);
+const { data: attendants, pending: isLoadingAttendants, error: errorLoadingAttendants } = useMembersOfGroup(selectedGroupId);
+const { data: groups, pending: isLoadingGroups, error: errorLoadingGroups } = useAttendantGroups(true, "include", true);
+const applicants = useGroupApplicants(50, selectedGroupId.value);
 
 // Computed data
 
-const sectionMembers = computed(() => {
+const groupMembers = computed(() => {
   if(!attendants.value) return [];
-  return Array.from(attendants.value.values()).filter((user) => user.role !== ROLES.Chef && user.role !== ROLES.Administrateur);
+  return Array.from(attendants.value.values()).filter((user) => user.role !== USER_ROLES.Chef && user.role !== USER_ROLES.Administrateur);
 });
-const sectionLeaders = computed(() => {
+const groupLeaders = computed(() => {
   if(!attendants.value) return [];
-  return Array.from(attendants.value.values()).filter((user) => user.role === ROLES.Chef || user.role === ROLES.Administrateur);
+  return Array.from(attendants.value.values()).filter((user) => user.role === USER_ROLES.Chef || user.role === USER_ROLES.Administrateur);
 });
 
 const nbApplicants = computed(():string => {

@@ -6,10 +6,10 @@ export type Match = {
   gameNumber: number
   gameName: string
   time: number
-  playerIds: string[]
+  playerTeamIds: string[]
   playerNumbers: number[]
-  winner: string
-  loser: string
+  winnerTeamId: string
+  loserTeamId: string
   draw: boolean
   reporter: string
   lastModified: string

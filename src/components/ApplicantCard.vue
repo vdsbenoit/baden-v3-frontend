@@ -1,7 +1,7 @@
 <template>
     <ion-card v-if="isLoadingApplicants || errorLoadingApplicants || applicants.length > 0"> 
       <ion-card-header>
-        <ion-card-title>{{ attendantSectionName }} ({{ attendantSectionCity }})</ion-card-title>
+        <ion-card-title>{{ attendantGroupName }} ({{ attendantGroupCity }})</ion-card-title>
       </ion-card-header>
       <ion-card-content class="ion-no-padding ion-padding-vertical">
         <div v-if="isLoadingApplicants" class="not-found" style="background: transparent">
@@ -25,17 +25,17 @@
 </template>
 
 <script lang="ts" setup>
-import { useCurrentUserProfile, useSectionApplicants } from "@/composables/userProfile"
-import { DEFAULT_ROLE_VALUE, ROLES } from "@/constants";
+import { useCurrentUserProfile, useGroupApplicants } from "@/composables/userProfile"
+import { DEFAULT_USER_ROLE_VALUE, USER_ROLES } from "@/constants";
 import { VueFireUserProfile } from "@/types"
 import { defineProps, defineEmits, watch } from "vue"
 import { getRoleByValue, updateUserProfile } from "@/utils/userProfile";
 import { choicePopup, errorPopup, textInputPopup } from "@/utils/popup";
 
 const props = defineProps<{
-  attendantSectionId: string
-  attendantSectionName: string
-  attendantSectionCity: string
+  attendantGroupId: string
+  attendantGroupName: string
+  attendantGroupCity: string
   limit: number
 }>()
 const emit = defineEmits(["hasApplicants"])
@@ -47,7 +47,7 @@ const {
   data: applicants,
   pending: isLoadingApplicants,
   error: errorLoadingApplicants
-} = useSectionApplicants(props.limit, props.attendantSectionId)
+} = useGroupApplicants(props.limit, props.attendantGroupId)
 
 // watchers
 
@@ -67,13 +67,13 @@ watch(applicants, (newApplicants) => {
  */
 const badgeColor = (user: VueFireUserProfile) => {
   switch (user.requestedRole) {
-    case ROLES.Animateur:
+    case USER_ROLES.Animateur:
       return "success";
-    case ROLES.Chef:
+    case USER_ROLES.Chef:
       return "primary";
-    case ROLES.Organisateur:
+    case USER_ROLES.Organisateur:
       return "warning";
-    case ROLES.Administrateur:
+    case USER_ROLES.Administrateur:
       return "danger";
     default:
       return "medium";
@@ -107,11 +107,11 @@ const handleRequest = (applicant: VueFireUserProfile) => {
     return;
   }
   let message = "";
-  if (applicant.requestedRole === ROLES.Animateur || applicant.requestedRole === ROLES.Chef) {
+  if (applicant.requestedRole === USER_ROLES.Animateur || applicant.requestedRole === USER_ROLES.Chef) {
     message = `Tu es sur le point d'ajouter ${applicant.name} (${applicant.email})
-    comme <b>${getRoleByValue(applicant.requestedRole)}</b> de la section ${props.attendantSectionName}.`;
+    comme <b>${getRoleByValue(applicant.requestedRole)}</b> de la section ${props.attendantGroupName}.`;
   }
-  if (applicant.requestedRole >= ROLES.Organisateur){
+  if (applicant.requestedRole >= USER_ROLES.Organisateur){
     message = `Tu es sur le point d'ajouter ${applicant.name} (${applicant.email})
     comme <b>${getRoleByValue(applicant.requestedRole)}</b> de la Baden Battle.`;
   }
@@ -124,17 +124,17 @@ const handleRequest = (applicant: VueFireUserProfile) => {
   const acceptHandler = () => {
     updateUserProfile(applicant.id, { 
           role: applicant.requestedRole,
-          sectionId: applicant.requestedSectionId,
-          sectionName: applicant.requestedSectionName,
-          requestedRole: DEFAULT_ROLE_VALUE,
-          requestedSectionId: "",
+          groupId: applicant.requestedGroupId,
+          groupName: applicant.requestedGroupName,
+          requestedRole: DEFAULT_USER_ROLE_VALUE,
+          requestedGroupId: "",
           rejectionReason: "" 
     });
     
   }
   const rejectHandler = (reason: string) => {
     const fullReason = `${currentUser.value?.name} (${getRoleByValue(currentUser.value?.role ?? -1)}) : "${reason}"`;
-    updateUserProfile(applicant.id, {  requestedRole: -1, requestedSectionId: "", rejectionReason: fullReason, hasDoneOnboarding: false });
+    updateUserProfile(applicant.id, {  requestedRole: -1, requestedGroupId: "", rejectionReason: fullReason, hasDoneOnboarding: false });
   }
   const choicePopupHandler = (choice: string) => {
     switch (choice) {

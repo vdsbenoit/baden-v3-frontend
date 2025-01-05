@@ -1,4 +1,4 @@
-import { DEFAULT_PLAYER_SECTION_ID, DEFAULT_USER_ID, USER_PROFILES_COLLECTION_REF } from "@/constants"
+import { DEFAULT_GROUP_ID, DEFAULT_USER_ID, USER_PROFILES_COLLECTION_REF } from "@/constants"
 import { UserProfile } from "@/types"
 import { getRoleByValue } from "@/utils/userProfile"
 import { doc, limit as fbLimit, orderBy, query, where } from "firebase/firestore"
@@ -34,36 +34,36 @@ export function useCurrentUserProfile() {
   return useUserProfile(uid)
 }
 
-export function useMembersOfSection(rSectionId: MaybeRefOrGetter<string>, rShouldLoad: MaybeRefOrGetter<boolean> = true) {
+export function useMembersOfGroup(rGroupId: MaybeRefOrGetter<string>, rShouldLoad: MaybeRefOrGetter<boolean> = true) {
   const dbRef = computed(() => {
-    const sectionId = toValue(rSectionId)
+    const groupId = toValue(rGroupId)
     if (!toValue(rShouldLoad)) return null
-    if (sectionId === DEFAULT_PLAYER_SECTION_ID) return null
-    console.log(`Fetching users from section ${sectionId}`)
+    if (groupId === DEFAULT_GROUP_ID) return null
+    console.log(`Fetching users from group ${groupId}`)
     // prettier-ignore
     return query(
       USER_PROFILES_COLLECTION_REF, 
-      where("sectionId", "==", sectionId)
+      where("groupId", "==", groupId)
     )
   })
   return useCollection<UserProfile>(dbRef)
 }
 
 /**
- * List the applicants for a specific section
+ * List the applicants for a specific group
  * Note: this function might return applicants that the current user cannot accept
  * @param rLimit The maximum number of applicants to fetch
- * @param rSectionId The section id to fetch applicants from. If the default section id is provided, no applicants will be fetched
+ * @param rGroupId The group id to fetch applicants from. If the default group id is provided, no applicants will be fetched
  * @returns The list of applicants
  */
-export function useSectionApplicants(rLimit: MaybeRefOrGetter<number>, rSectionId: MaybeRefOrGetter<string>) {
+export function useGroupApplicants(rLimit: MaybeRefOrGetter<number>, rGroupId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
-    const sectionId = toValue(rSectionId)
-    if (sectionId === DEFAULT_PLAYER_SECTION_ID) return null
+    const groupId = toValue(rGroupId)
+    if (groupId === DEFAULT_GROUP_ID) return null
     const limit = toValue(rLimit)
-    console.log(`Fetching pending applicants for section ${sectionId}`)
+    console.log(`Fetching pending applicants for group ${groupId}`)
     const queryParams = []
-    queryParams.push(where("requestedSectionId", "==", toValue(rSectionId)))
+    queryParams.push(where("requestedGroupId", "==", toValue(rGroupId)))
     queryParams.push(orderBy("requestedRole", "asc"))
     queryParams.push(fbLimit(limit))
     return query(USER_PROFILES_COLLECTION_REF, ...queryParams)
@@ -77,15 +77,15 @@ export function useSectionApplicants(rLimit: MaybeRefOrGetter<number>, rSectionI
  * @returns The list of applicants
  */
 export function useApplicants(rLimit: MaybeRefOrGetter<number>) {
-  const { canAcceptApplicants, maxApplicantRole, applicantSectionIdFilter } = useAcceptApplicantRights()
+  const { canAcceptApplicants, maxApplicantRole, applicantGroupIdFilter } = useAcceptApplicantRights()
   const dbRef = computed(() => {
     if (!canAcceptApplicants.value) return null
     const limit = toValue(rLimit)
     console.log(`Fetching pending applicants for a ${getRoleByValue(maxApplicantRole.value)}`)
     const queryParams = []
-    queryParams.push(orderBy("requestedSectionId", "asc"))
-    if (applicantSectionIdFilter.value != DEFAULT_PLAYER_SECTION_ID) {
-      queryParams.push(where("requestedSectionId", "==", applicantSectionIdFilter.value))
+    queryParams.push(orderBy("requestedGroupId", "asc"))
+    if (applicantGroupIdFilter.value != DEFAULT_GROUP_ID) {
+      queryParams.push(where("requestedGroupId", "==", applicantGroupIdFilter.value))
     }
     queryParams.push(orderBy("requestedRole", "asc"))
     queryParams.push(where("requestedRole", "<=", maxApplicantRole.value))

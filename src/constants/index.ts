@@ -7,8 +7,9 @@ export const DEFAULT_USER_ID = ""
 export const USER_PROFILES_COLLECTION_NAME = "userProfiles"
 export const USER_PROFILES_COLLECTION_REF = collection(db, USER_PROFILES_COLLECTION_NAME)
 export const USER_PROFILES_GAMES_KEY = "games"
+
 // prettier-ignore
-export const ROLES = {
+export const USER_ROLES = {
   Erreur:        -1,  // Error
   Anonyme:        0,  // Anonymous
   Newbie:         1,  // Newbie
@@ -18,26 +19,29 @@ export const ROLES = {
   Organisateur:   6,  // Staff
   Administrateur: 8,  // AppAdmin
 }
-export const DEFAULT_ROLE_VALUE = -1
+export const DEFAULT_USER_ROLE_VALUE = USER_ROLES.Erreur
 
-// teams
+// groups
+
+export const DEFAULT_GROUP_CATEGORY_ID = ""
+export const DEFAULT_GROUP_ID = ""
+export const GROUPS_COLLECTION_NAME = "groups"
+export const GROUPS_COLLECTION_REF = collection(db, GROUPS_COLLECTION_NAME)
+
+// prettier-ignore
+export const GROUP_ROLES = {
+  Erreur:    -1,  // Error
+  Player:     2,  // Player
+  Attendant:  4,  // Attendant
+  Staff:      6,  // Staff
+}
+export const DEFAULT_GROUP_ROLE_VALUE = GROUP_ROLES.Erreur
+
+// player teams
 
 export const DEFAULT_TEAM_ID = ""
-export const TEAMS_COLLECTION_NAME = "teams"
+export const TEAMS_COLLECTION_NAME = "playerTeams"
 export const TEAMS_COLLECTION_REF = collection(db, TEAMS_COLLECTION_NAME)
-
-// player sections
-
-export const DEFAULT_SECTION_TYPE_ID = ""
-export const DEFAULT_PLAYER_SECTION_ID = ""
-export const PLAYER_SECTIONS_COLLECTION_NAME = "playerSections"
-export const PLAYER_SECTIONS_COLLECTION_REF = collection(db, PLAYER_SECTIONS_COLLECTION_NAME)
-
-// attendant sections
-
-export const DEFAULT_ATTENDANT_SECTION_ID = DEFAULT_PLAYER_SECTION_ID
-export const ATTENDANT_SECTIONS_COLLECTION_NAME = "attendantSections"
-export const ATTENDANT_SECTIONS_COLLECTION_REF = collection(db, ATTENDANT_SECTIONS_COLLECTION_NAME)
 
 // games
 

@@ -1,8 +1,9 @@
+import { GROUP_ROLES } from '@/constants';
 import { Ref } from "vue"
 import { VueFirestoreDocumentData } from "vuefire"
-import { Section } from "./Section"
+import { Group } from "./Group"
 
-export interface PlayerSection extends Section {
+export interface PlayerGroup extends Group {
   number: number
   groupCategoryId: string
   teams: string[]
@@ -12,11 +13,12 @@ export interface PlayerSection extends Section {
   playersPerTeam: number
   meanScore: number
   score: number
+  role: GROUP_ROLES.Player
   isAttendant: false
   isStaff: false
 }
 
-export interface VueFirePlayerSection extends PlayerSection {
+export interface VueFirePlayerGroup extends PlayerGroup {
   readonly id: string
 }
-export type RefPlayerSection = Ref<VueFirestoreDocumentData<PlayerSection> | undefined>
+export type RefPlayerGroup = Ref<VueFirestoreDocumentData<PlayerGroup> | undefined>

@@ -1,4 +1,4 @@
-import { ROLES } from '@/constants';
+import { USER_ROLES } from '@/constants';
 import { isRankingPublic } from '@/utils/app';
 import { getRoleByValue, getUserProfile } from '@/utils/userProfile';
 import OnboardingPage from '@/views/OnboardingPage.vue';
@@ -29,104 +29,104 @@ const routes: Array<RouteRecordRaw> = [
     name: 'home',
     path: '/home',
     component: HomePageVue,
-    meta: { minimumRole: ROLES.Newbie }
+    meta: { minimumRole: USER_ROLES.Newbie }
   },
   {
     name: 'onboarding',
     path: '/onboarding',
     component: OnboardingPage,
-    meta: { minimumRole: ROLES.Newbie }
+    meta: { minimumRole: USER_ROLES.Newbie }
   },
   {
     name: 'myProfile',
     path: '/profile',
     component: () => import ('../views/ProfilePage.vue'),
-    meta: { minimumRole: ROLES.Newbie }
+    meta: { minimumRole: USER_ROLES.Newbie }
   },
   {
     name: 'profile',
     path: '/profile/:userId',
     component: () => import ('../views/ProfilePage.vue'),
-    meta: { minimumRole: ROLES.Participant }
+    meta: { minimumRole: USER_ROLES.Participant }
   },
   {
     name: 'teams',
     path: '/team/:teamId',
     component: () => import ('../views/TeamPage.vue'),
-    meta: { minimumRole: ROLES.Participant }
+    meta: { minimumRole: USER_ROLES.Participant }
   },
   {
     name: 'game',
     path: '/game/:gameId',
     component: () => import ('../views/GamePage.vue'),
-    meta: { minimumRole: ROLES.Participant }
+    meta: { minimumRole: USER_ROLES.Participant }
   },
   {
     name: 'games',
     path: '/games',
     component: () => import ('../views/GamesPage.vue'),
-    meta: { minimumRole: ROLES.Participant }
+    meta: { minimumRole: USER_ROLES.Participant }
   },
   {
     name: 'match',
     path: '/match/:matchId',
     component: () => import ('../views/MatchPage.vue'),
-    meta: { minimumRole: ROLES.Participant }
+    meta: { minimumRole: USER_ROLES.Participant }
   },
   {
-    name: 'section',
-    path: '/section/:sectionId?',
-    component: () => import ('../views/PlayerSectionsPage.vue'),
-    meta: { minimumRole: ROLES.Participant }
+    name: 'player-group',
+    path: '/player-group/:groupId?',
+    component: () => import ('../views/PlayerGroupsPage.vue'),
+    meta: { minimumRole: USER_ROLES.Participant }
   },
   {
-    name: 'attendant',
-    path: '/attendant/:sectionId?',
-    component: () => import ('../views/AttendantSectionsPage.vue'),
-    meta: { minimumRole: ROLES.Animateur }
+    name: 'attendant-group',
+    path: '/attendant-group/:groupId?',
+    component: () => import ('../views/AttendantGroupsPage.vue'),
+    meta: { minimumRole: USER_ROLES.Animateur }
   },
   {
     name: 'applicants',
     path: '/applicants',
     props: true,
     component: () => import ('../views/ApplicantsPage.vue'),
-    meta: { minimumRole: ROLES.Chef }
+    meta: { minimumRole: USER_ROLES.Chef }
   },
   {
     name: 'checkScores',
     path: '/check-scores',
     component: () => import ('../views/CheckScoresPage.vue'),
-    meta: { minimumRole: ROLES.Organisateur }
+    meta: { minimumRole: USER_ROLES.Organisateur }
   },
   {
     name: 'ranking',
     path: '/ranking',
     component: () => import ('../views/RankingPage.vue'),
-    meta: { minimumRole: ROLES.Organisateur }
+    meta: { minimumRole: USER_ROLES.Organisateur }
   },
   {
     name: 'settings',
     path: '/settings',
     component: () => import ('../views/SettingsPage.vue'),
-    meta: { minimumRole: ROLES.Administrateur }
+    meta: { minimumRole: USER_ROLES.Administrateur }
   },
   {
     name: 'users',
     path: '/users',
     props: true,
     component: () => import ('../views/LatestUsersPage.vue'),
-    meta: { minimumRole: ROLES.Administrateur }
+    meta: { minimumRole: USER_ROLES.Administrateur }
   },
   {
     name: 'about',
     path: '/about',
     component: () => import ('../views/AboutPage.vue'),
-    meta: { minimumRole: ROLES.Anonyme }
+    meta: { minimumRole: USER_ROLES.Anonyme }
   },
   { 
     path: "/:catchAll(.*)",
     component: () => import ('../views/NotFoundPage.vue'),
-    meta: { minimumRole: ROLES.Anonyme }
+    meta: { minimumRole: USER_ROLES.Anonyme }
   }
 ]
 
@@ -136,7 +136,7 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
-  if (to.meta.minimumRole && to.meta.minimumRole === ROLES.Anonyme) return true
+  if (to.meta.minimumRole && to.meta.minimumRole === USER_ROLES.Anonyme) return true
   const currentUser = await getCurrentUser()
   // if the user is not connected
   if(!currentUser) {

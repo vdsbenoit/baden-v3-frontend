@@ -18,10 +18,10 @@
             <ion-grid class="ion-no-padding">
               <ion-row>
                 <ion-col size="12" size-sm="6">
-                  <ranking-section :groupCategoryId="String(groupCategoryId)" :limit="limit" :printable-scores="showPrintableScores"/>
+                  <ranking-player-group :groupCategoryId="String(groupCategoryId)" :limit="limit" :printable-scores="showPrintableScores"/>
                 </ion-col>
                 <ion-col size="12" size-sm="6">
-                  <ranking-team :groupCategoryId="String(groupCategoryId)" :limit="limit" :printable-scores="showPrintableScores"/>
+                  <ranking-player-team :groupCategoryId="String(groupCategoryId)" :limit="limit" :printable-scores="showPrintableScores"/>
                 </ion-col>
               </ion-row>
             </ion-grid>
@@ -35,12 +35,12 @@
 <script setup lang="ts">
 // prettier-ignore
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import RankingSection from "@/components/RankingSection.vue";
-import RankingTeam from "@/components/RankingTeam.vue";
+import RankingPlayerGroup from "@/components/RankingPlayerGroup.vue";
+import RankingPlayerTeam from "@/components/RankingPlayerTeam.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useAppConfig } from "@/composables/app";
 import { useCurrentUserProfile } from "@/composables/userProfile";
-import { ROLES } from "@/constants";
+import { USER_ROLES } from "@/constants";
 import { alertController, AlertInput, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonLabel, IonPage, IonRow, IonToggle } from "@ionic/vue";
 import { settingsOutline, settingsSharp } from "ionicons/icons";
 import { computed, ref } from "vue";
@@ -58,7 +58,7 @@ const appConfig = useAppConfig();
 // Computed
 
 const canPrint = computed(() => {
-  return currentUserProfile.value && currentUserProfile.value.role >= ROLES.Organisateur
+  return currentUserProfile.value && currentUserProfile.value.role >= USER_ROLES.Organisateur
 });
 
 // Methods

@@ -46,64 +46,64 @@
           </ion-item>
           <!-- PLAYER FIELDS -->
           <div v-if="isPlayer">
-            <!-- Player Section Type (edit mode) -->
-            <ion-item lines="full" v-if="formData.playerSection.isEditting">
-              <ion-label position="stacked" color="primary">Type de section</ion-label>
-              <ion-input v-if="!appConfig" type="text" readonly>Error: cannot load section types (i.e. appConfig)</ion-input>
+            <!-- Player Group Category (edit mode) -->
+            <ion-item lines="full" v-if="formData.playerGroup.isEditting">
+              <ion-label position="stacked" color="primary">Catégorie de section</ion-label>
+              <ion-input v-if="!appConfig" type="text" readonly>Error: cannot load group categories (i.e. appConfig)</ion-input>
               <ion-select 
                 v-else 
-                v-model="formData.playerSection.typeId"
-                @ion-change="formData.playerSection.id = DEFAULT_PLAYER_SECTION_ID; formData.playerSection.name = ''"
-                @ion-cancel="formData.playerSection.isEditting = false; resetFormData()"
+                v-model="formData.playerGroup.typeId"
+                @ion-change="formData.playerGroup.id = DEFAULT_GROUP_ID; formData.playerGroup.name = ''"
+                @ion-cancel="formData.playerGroup.isEditting = false; resetFormData()"
                 cancel-text="Annuler" 
                 interface="action-sheet"
               >
                 <ion-select-option v-for="groupCategory, groupCategoryId in appConfig.groupCategories" :key="groupCategoryId" :value="groupCategoryId">{{ groupCategory.name }}</ion-select-option>
               </ion-select>
-              <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="formData.playerSection.isEditting = false; resetFormData()"></ion-icon>
+              <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="formData.playerGroup.isEditting = false; resetFormData()"></ion-icon>
             </ion-item>
-            <!-- Player Section Type (read mode) -->
+            <!-- Player Group Category (read mode) -->
             <ion-item lines="full" v-else>
-              <ion-label position="stacked" color="primary">Type de section</ion-label>
-              <p v-if="!appConfig" class="field-error">Error: cannot load section types (i.e. appConfig)</p>
-              <ion-input v-else type="text" readonly>{{ appConfig?.groupCategories[formData.playerSection.typeId] }}</ion-input>
-              <ion-spinner v-if="formData.playerSection.isUpdating"></ion-spinner>
-              <ion-icon v-else-if="canEditProfile" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="formData.playerSection.isEditting = true"></ion-icon>
+              <ion-label position="stacked" color="primary">Catégorie de section</ion-label>
+              <p v-if="!appConfig" class="field-error">Error: cannot load group categories (i.e. appConfig)</p>
+              <ion-input v-else type="text" readonly>{{ appConfig?.groupCategories[formData.playerGroup.typeId] }}</ion-input>
+              <ion-spinner v-if="formData.playerGroup.isUpdating"></ion-spinner>
+              <ion-icon v-else-if="canEditProfile" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="formData.playerGroup.isEditting = true"></ion-icon>
             </ion-item>
-            <!-- Player Section (edit mode) -->
-            <ion-item lines="full" v-if="formData.playerSection.isEditting">
+            <!-- Player Group (edit mode) -->
+            <ion-item lines="full" v-if="formData.playerGroup.isEditting">
               <ion-label position="stacked" color="primary">Section</ion-label>
-              <p v-if="formData.playerSection.typeId === DEFAULT_SECTION_TYPE_ID" class="field-error">Selectionne d'abord un type de section</p>
+              <p v-if="formData.playerGroup.typeId === DEFAULT_GROUP_CATEGORY_ID" class="field-error">Selectionne d'abord un type de section</p>
               <ion-select 
-                v-else-if="playerSections.length > 0" 
-                v-model="formData.playerSection.id"
-                @ion-change="setPlayerSection"
-                @ion-cancel="formData.playerSection.isEditting = false; resetFormData()"
+                v-else-if="playerGroups.length > 0" 
+                v-model="formData.playerGroup.id"
+                @ion-change="setPlayerGroup"
+                @ion-cancel="formData.playerGroup.isEditting = false; resetFormData()"
                 cancel-text="Annuler" interface="action-sheet"
               >
-                <ion-select-option v-for="section in playerSections" :key="section.id" :value="section.id">{{ section.name }}</ion-select-option>
+                <ion-select-option v-for="playerGroup in playerGroups" :key="playerGroup.id" :value="playerGroup.id">{{ playerGroup.name }}</ion-select-option>
               </ion-select>
               <p v-else class="field-error">Pas de section pour ce type de section</p>
-              <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="formData.playerSection.isEditting = false; resetFormData()"></ion-icon>
+              <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="formData.playerGroup.isEditting = false; resetFormData()"></ion-icon>
             </ion-item>
-            <!-- Player Section (read mode) -->
+            <!-- Player Group (read mode) -->
             <ion-item lines="full" v-else>
               <ion-label position="stacked" color="primary">Section</ion-label>
-              <ion-input name="section" type="text" :readonly="true" inputmode="none" @click="goToPlayerSectionPage(formData.playerSection.id)">{{ formData.playerSection.name }}</ion-input>
-              <ion-spinner v-if="formData.playerSection.isUpdating"></ion-spinner>
-              <ion-icon v-else-if="canEditProfile" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="formData.playerSection.isEditting = true"></ion-icon>
+              <ion-input name="playerGroup" type="text" :readonly="true" inputmode="none" @click="goToPlayerGroupPage(formData.playerGroup.id)">{{ formData.playerGroup.name }}</ion-input>
+              <ion-spinner v-if="formData.playerGroup.isUpdating"></ion-spinner>
+              <ion-icon v-else-if="canEditProfile" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="formData.playerGroup.isEditting = true"></ion-icon>
             </ion-item>
               <!-- Team (edit mode)-->
-            <ion-item lines="full" v-if="formData.playerSection.isEditting">
+            <ion-item lines="full" v-if="formData.playerGroup.isEditting">
               <ion-label position="stacked" color="primary">Équipe</ion-label>
               <ion-select 
-                v-if="selectedPlayerSection && selectedPlayerSection.teams.length > 0" 
+                v-if="selectedPlayerGroup && selectedPlayerGroup.teams.length > 0" 
                 v-model="formData.team.value" 
                 @ion-change="setTeam"
                 @ion-cancel="formData.team.isEditting = false; resetFormData()"
                 cancel-text="Annuler" interface="action-sheet"
               >
-                <ion-select-option v-for="team in selectedPlayerSection.teams" :key="team" :value="team">{{ team }}</ion-select-option>
+                <ion-select-option v-for="team in selectedPlayerGroup.teams" :key="team" :value="team">{{ team }}</ion-select-option>
               </ion-select>
               <p v-else class="field-error">Pas de team pour cette section</p>
               <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="formData.team.isEditting = false; resetFormData()"></ion-icon>
@@ -117,27 +117,27 @@
             </ion-item>
           </div>
           <div v-if="isAttendant || isStaff">
-            <!-- Attendant Section (edit mode) -->
-            <ion-item lines="full" v-if="formData.attendantSection.isEditting">
+            <!-- Attendant Group (edit mode) -->
+            <ion-item lines="full" v-if="formData.attendantGroup.isEditting">
               <ion-label position="stacked" color="primary">Section</ion-label>
               <ion-select 
-                v-if="attendantSections.length > 0" 
-                v-model="formData.attendantSection.id"
-                @ion-change="setAttendantSection"
-                @ion-cancel="formData.attendantSection.isEditting = false; resetFormData()"
+                v-if="attendantGroups.length > 0" 
+                v-model="formData.attendantGroup.id"
+                @ion-change="setAttendantGroup"
+                @ion-cancel="formData.attendantGroup.isEditting = false; resetFormData()"
                 cancel-text="Annuler" interface="action-sheet"
               >
-                <ion-select-option v-for="section in attendantSections" :key="section.id" :value="section.id">{{ section.name }}</ion-select-option>
+                <ion-select-option v-for="attenantGroup in attendantGroups" :key="attenantGroup.id" :value="attenantGroup.id">{{ attenantGroup.name }}</ion-select-option>
               </ion-select>
               <p v-else class="field-error">Pas de section</p>
-              <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="formData.attendantSection.isEditting = false; resetFormData()"></ion-icon>
+              <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="formData.attendantGroup.isEditting = false; resetFormData()"></ion-icon>
             </ion-item>
-            <!-- Attendant Section (read mode) -->
+            <!-- Attendant Group (read mode) -->
             <ion-item lines="full" v-else>
               <ion-label position="stacked" color="primary">Section</ion-label>
-              <ion-input name="section" type="text" :readonly="true" inputmode="none" @click="goToAttendantSectionPage(formData.attendantSection.id)">{{ formData.attendantSection.name }}</ion-input>
-              <ion-spinner v-if="formData.attendantSection.isUpdating"></ion-spinner>
-              <ion-icon v-else-if="canEditAttendantSection" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="shouldLoadAttendantSections = true; formData.attendantSection.isEditting = true"></ion-icon>
+              <ion-input name="attendantGroup" type="text" :readonly="true" inputmode="none" @click="goToAttendantGroupPage(formData.attendantGroup.id)">{{ formData.attendantGroup.name }}</ion-input>
+              <ion-spinner v-if="formData.attendantGroup.isUpdating"></ion-spinner>
+              <ion-icon v-else-if="canEditAttendantGroup" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="shouldLoadAttendantGroups = true; formData.attendantGroup.isEditting = true"></ion-icon>
             </ion-item>
           </div>
           <div v-if="isAttendant">
@@ -198,12 +198,12 @@
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useAppConfig, useAppSettings } from "@/composables/app";
-import { useAttendantSections } from "@/composables/attendantSection";
+import { useAttendantGroups } from "@/composables/attendantGroup";
 import { useGames } from "@/composables/game";
-import { usePlayerSection, usePlayerSections } from "@/composables/playerSection";
+import { usePlayerGroup, usePlayerGroups } from "@/composables/playerGroup";
 import { useEditProfileRights } from "@/composables/rights";
 import { useCurrentUserProfile, useUserProfile } from "@/composables/userProfile";
-import { DEFAULT_ATTENDANT_SECTION_ID, DEFAULT_GAME_ID, DEFAULT_ROLE_VALUE, DEFAULT_PLAYER_SECTION_ID, DEFAULT_SECTION_TYPE_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID, ROLES } from "@/constants";
+import { DEFAULT_GAME_ID, DEFAULT_USER_ROLE_VALUE, DEFAULT_GROUP_ID, DEFAULT_GROUP_CATEGORY_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID, USER_ROLES } from "@/constants";
 import { confirmPopup, errorPopup, loadingPopup, toastPopup } from "@/utils/popup";
 import { VueFireGame } from "@/types";
 import { sanitizeInput } from "@/utils/form";
@@ -217,7 +217,7 @@ import { useRouter } from "vue-router";
 
 
 // Strip Erreur, Anonyme & Newbie from ROLES
-const selectableRoles = Object.fromEntries(Object.entries(ROLES).filter(([, value]) => ![ROLES.Erreur, ROLES.Anonyme, ROLES.Newbie].includes(value)))
+const selectableRoles = Object.fromEntries(Object.entries(USER_ROLES).filter(([, value]) => ![USER_ROLES.Erreur, USER_ROLES.Anonyme, USER_ROLES.Newbie].includes(value)))
 
 // reactive form data
 const formData = reactive({
@@ -229,13 +229,13 @@ const formData = reactive({
   role: {
     isEditting: false,
     isUpdating: false,
-    value: DEFAULT_ROLE_VALUE
+    value: DEFAULT_USER_ROLE_VALUE
   },
-  playerSection: {
+  playerGroup: {
     isEditting: false,
     isUpdating: false,
-    typeId: DEFAULT_SECTION_TYPE_ID,
-    id: DEFAULT_PLAYER_SECTION_ID,
+    typeId: DEFAULT_GROUP_CATEGORY_ID,
+    id: DEFAULT_GROUP_ID,
     name: ""
   },
   team: {
@@ -243,10 +243,10 @@ const formData = reactive({
     isUpdating: false,
     value: DEFAULT_TEAM_ID
   },
-  attendantSection: {
+  attendantGroup: {
     isEditting: false,
     isUpdating: false,
-    id: DEFAULT_ATTENDANT_SECTION_ID,
+    id: DEFAULT_GROUP_ID,
     name: ""
   },
   attendantGames:{
@@ -276,17 +276,17 @@ const isProfile = computed(() => {
 });
 const isPlayer = computed(() => {
   if (!userProfile.value) return false;
-  return userProfile.value.role == ROLES.Participant;
+  return userProfile.value.role == USER_ROLES.Participant;
 });
 const isAttendant = computed(() => {
   if (!userProfile.value) return false;
-  return userProfile.value.role === ROLES.Animateur || userProfile.value.role === ROLES.Chef; 
+  return userProfile.value.role === USER_ROLES.Animateur || userProfile.value.role === USER_ROLES.Chef; 
 });
 const isStaff = computed(() => {
   if (!userProfile.value) return false;
-  return userProfile.value.role >= ROLES.Organisateur;
+  return userProfile.value.role >= USER_ROLES.Organisateur;
 });
-const { isOwnProfile, canEditProfile, canSeeEmail, canEditGames, canEditAttendantSection, canEditRole, canResetOnboarding, canDeleteProfile } = useEditProfileRights(userProfile)
+const { isOwnProfile, canEditProfile, canSeeEmail, canEditGames, canEditAttendantGroup, canEditRole, canResetOnboarding, canDeleteProfile } = useEditProfileRights(userProfile)
 
 const isTimeSlotFull = (game: VueFireGame, timeSlotId: string) => {
   if (!appSettings.value) return true;
@@ -301,29 +301,29 @@ const pageTitle = computed(() => {
   
 });
 
-// Lazy loading of all player sections
-// They are only loaded after the user starts editting the player section
+// Lazy loading of all player groups
+// They are only loaded after the user starts editting the player group
 const selectedPlayergroupCategoryId = computed(() => {
-  return formData.playerSection.isEditting ? formData.playerSection.typeId : DEFAULT_SECTION_TYPE_ID
+  return formData.playerGroup.isEditting ? formData.playerGroup.typeId : DEFAULT_GROUP_CATEGORY_ID
 })
-const playerSections = usePlayerSections(selectedPlayergroupCategoryId)
+const playerGroups = usePlayerGroups(selectedPlayergroupCategoryId)
 
 // This computed variable is necessary in order to keep the reactivity
-const selectedPlayerSectionId = computed(() => {
-  return formData.playerSection.id
+const selectedPlayerGroupId = computed(() => {
+  return formData.playerGroup.id
 })
-const selectedPlayerSection = usePlayerSection(selectedPlayerSectionId)
+const selectedPlayerGroup = usePlayerGroup(selectedPlayerGroupId)
 
 // Lazy loading of games
 // They are only loaded after the user starts editting the attendantGames
 const shouldLoadGames = ref(false)
 const games = useGames(shouldLoadGames)
 
-// Lazy loading of attendant sections
+// Lazy loading of attendant groups
 // They are only loaded after the user starts editting the field
-const shouldLoadAttendantSections = ref(false)
-const loadStaffSections = computed(() => formData.role.value >= ROLES.Organisateur ? "only" : "exclude");
-const attendantSections = useAttendantSections(shouldLoadAttendantSections, loadStaffSections, true)
+const shouldLoadAttendantGroups = ref(false)
+const loadStaffGroups = computed(() => formData.role.value >= USER_ROLES.Organisateur ? "only" : "exclude");
+const attendantGroups = useAttendantGroups(shouldLoadAttendantGroups, loadStaffGroups, true)
 
 
 /**
@@ -335,25 +335,25 @@ const resetFormData = () => {
 
   // common fields
   if  (!formData.name.isEditting) formData.name.value = userProfile.value.name;    
-  if  (!formData.role.isEditting) formData.role.value = userProfile.value.role ?? DEFAULT_ROLE_VALUE;
+  if  (!formData.role.isEditting) formData.role.value = userProfile.value.role ?? DEFAULT_USER_ROLE_VALUE;
   
   // players
-  if (userProfile.value.role == ROLES.Participant){
+  if (userProfile.value.role == USER_ROLES.Participant){
     if (!formData.team.isEditting) formData.team.value = userProfile.value.teamId ?? DEFAULT_TEAM_ID;
-    if (!formData.playerSection.isEditting) {
-      formData.playerSection.id = userProfile.value.sectionId ?? DEFAULT_PLAYER_SECTION_ID;
-      formData.playerSection.typeId = selectedPlayerSection.value?.groupCategoryId ?? DEFAULT_SECTION_TYPE_ID;
+    if (!formData.playerGroup.isEditting) {
+      formData.playerGroup.id = userProfile.value.groupId ?? DEFAULT_GROUP_ID;
+      formData.playerGroup.typeId = selectedPlayerGroup.value?.groupCategoryId ?? DEFAULT_GROUP_CATEGORY_ID;
     }
   }
   
   // attendants & staff
-  if (userProfile.value.role >= ROLES.Animateur && !formData.attendantSection.isEditting){
-    formData.attendantSection.id = userProfile.value.sectionId ?? DEFAULT_ATTENDANT_SECTION_ID
-    formData.attendantSection.name = userProfile.value.sectionName ?? ""
+  if (userProfile.value.role >= USER_ROLES.Animateur && !formData.attendantGroup.isEditting){
+    formData.attendantGroup.id = userProfile.value.groupId ?? DEFAULT_GROUP_ID
+    formData.attendantGroup.name = userProfile.value.groupName ?? ""
   } 
 
   // attendants
-  if ((userProfile.value.role == ROLES.Animateur || userProfile.value.role == ROLES.Chef) && !formData.attendantGames.isEditting){
+  if ((userProfile.value.role == USER_ROLES.Animateur || userProfile.value.role == USER_ROLES.Chef) && !formData.attendantGames.isEditting){
     formData.attendantGames.value = {} as { [timingId: string]: string }
     if (userProfile.value.games) {
       for (const [timeSlotId, game] of Object.entries(userProfile.value.games)){
@@ -374,11 +374,11 @@ watch(userProfile, (newProfileValue) => {
 
 // Go to pages
 
-const goToPlayerSectionPage = (sectionId: string) => {
-  if (sectionId != DEFAULT_PLAYER_SECTION_ID) router.push(`/section/${sectionId}`);
+const goToPlayerGroupPage = (groupId: string) => {
+  if (groupId != DEFAULT_GROUP_ID) router.push(`/player-group/${groupId}`);
 };
-const goToAttendantSectionPage = (sectionId: string) => {
-  if (sectionId != DEFAULT_ATTENDANT_SECTION_ID) router.push(`/leader/${sectionId}`);
+const goToAttendantGroupPage = (groupId: string) => {
+  if (groupId != DEFAULT_GROUP_ID) router.push(`/attendant-group/${groupId}`);
 };
 const goToTeamPage = (teamId: string) => {
   if (teamId != DEFAULT_TEAM_ID) router.push(`/team/${teamId}`);
@@ -430,7 +430,7 @@ const setName = async () => {
  * Throw an error if trying to downgrade an attendant (or higher) to a participant
  */
 const setRole = async () => {
-  if (!formData.role.value || formData.role.value === DEFAULT_ROLE_VALUE) {
+  if (!formData.role.value || formData.role.value === DEFAULT_USER_ROLE_VALUE) {
     toastPopup("Erreur : aucun rôle n'a été sélectionné");
     formData.role.isEditting = false
     resetFormData()
@@ -442,13 +442,13 @@ const setRole = async () => {
     resetFormData()
     return
   }
-  if (userProfile.value.role < ROLES.Animateur) {
+  if (userProfile.value.role < USER_ROLES.Animateur) {
     errorPopup("Il n'est pas possible de changer le rôle d'un participant. Pour cela, il faut supprimer et recréer l'utilisateur.")
     formData.role.isEditting = false
     resetFormData()
     return
   }
-  if (userProfile.value.role >= ROLES.Animateur && formData.role.value < ROLES.Animateur){
+  if (userProfile.value.role >= USER_ROLES.Animateur && formData.role.value < USER_ROLES.Animateur){
     errorPopup("Il n'est pas possible de rétrograder un utilisateur au role de participant. Pour cela, il faut supprimer et recréer l'utilisateur.")
     formData.role.isEditting = false
     resetFormData()
@@ -457,7 +457,7 @@ const setRole = async () => {
   formData.role.isEditting = false
   formData.role.isUpdating = true
   // if the user was registered to games & that the new roles is not an attendant, remove the games
-  if (userProfile.value.games && Object.values(userProfile.value.games).length > 0 && formData.role.value > ROLES.Chef) {
+  if (userProfile.value.games && Object.values(userProfile.value.games).length > 0 && formData.role.value > USER_ROLES.Chef) {
     for (const [timeSlotId, game] of Object.entries(userProfile.value.games)){
       try {
         await removeAttendant(game, userProfile.value.id, timeSlotId)
@@ -483,38 +483,38 @@ const setRole = async () => {
 };
 
 /**
- * Set a new player section
+ * Set a new player group
  * Side effect: it resets the team value
  */
-const setPlayerSection = async () => {
-  if (formData.playerSection.id === DEFAULT_PLAYER_SECTION_ID) {
+const setPlayerGroup = async () => {
+  if (formData.playerGroup.id === DEFAULT_GROUP_ID) {
     formData.team.isEditting = false
     resetFormData()
     return
   }
-  formData.playerSection.isEditting = false
-  formData.playerSection.isUpdating = true
-  const selectedSection = playerSections.value.find(section => section.id === formData.playerSection.id)
-  if (!selectedSection){
+  formData.playerGroup.isEditting = false
+  formData.playerGroup.isUpdating = true
+  const selectedGroup = playerGroups.value.find(group => group.id === formData.playerGroup.id)
+  if (!selectedGroup){
     errorPopup("La section n'a pas été trouvée")
-    formData.playerSection.isUpdating = false
+    formData.playerGroup.isUpdating = false
     resetFormData()
     return
   }
   try {
     await updateUserProfile(userId.value, { 
-      sectionId: formData.playerSection.id,
-      sectionName: selectedSection.name,
+      groupId: formData.playerGroup.id,
+      groupName: selectedGroup.name,
       teamId: DEFAULT_TEAM_ID,
     })
   } catch (error: any) {
     errorPopup(`La section n'a pas pu être mise à jour : ${error.message}`)
-    formData.playerSection.isUpdating = false
+    formData.playerGroup.isUpdating = false
     resetFormData()
     throw error
   }
   toastPopup("Vu que la section a changé, l'équipe a été effacée du profil")
-  formData.playerSection.isUpdating = false
+  formData.playerGroup.isUpdating = false
   resetFormData()
 };
 
@@ -543,36 +543,36 @@ const setTeam = async () => {
 };
 
 /**
- * Set a new attendant section
+ * Set a new attendant group
  */
-const setAttendantSection = async () => {
-  if (formData.attendantSection.id === DEFAULT_ATTENDANT_SECTION_ID) {
+const setAttendantGroup = async () => {
+  if (formData.attendantGroup.id === DEFAULT_GROUP_ID) {
     toastPopup("Erreur : aucune section n'a été sélectionnée");
-    formData.attendantSection.isEditting = false
+    formData.attendantGroup.isEditting = false
     resetFormData()
     return
   }
-  formData.attendantSection.isEditting = false
-  formData.attendantSection.isUpdating = true
-  const selectedSection = attendantSections.value.find(section => section.id === formData.attendantSection.id)
-  if (!selectedSection){
+  formData.attendantGroup.isEditting = false
+  formData.attendantGroup.isUpdating = true
+  const selectedGroup = attendantGroups.value.find(group => group.id === formData.attendantGroup.id)
+  if (!selectedGroup){
     errorPopup("La section n'a pas été trouvée")
-    formData.attendantSection.isUpdating = false
+    formData.attendantGroup.isUpdating = false
     resetFormData()
     return
   }
   try {
     await updateUserProfile(userId.value, { 
-      sectionId: formData.attendantSection.id,
-      sectionName: selectedSection.name,
+      groupId: formData.attendantGroup.id,
+      groupName: selectedGroup.name,
     })
   } catch (error: any) {
     errorPopup(`La section n'a pas pu être mise à jour : ${error.message}`);
-    formData.attendantSection.isUpdating = false
+    formData.attendantGroup.isUpdating = false
     resetFormData()
     throw error
   }
-  formData.attendantSection.isUpdating = false
+  formData.attendantGroup.isUpdating = false
   resetFormData()
 };
 

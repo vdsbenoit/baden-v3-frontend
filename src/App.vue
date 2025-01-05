@@ -47,7 +47,7 @@ import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAppConfig, useAppSettings } from "./composables/app";
 import { useCurrentUserProfile } from "./composables/userProfile";
-import { ROLES } from "./constants";
+import { USER_ROLES } from "./constants";
 
 const router = useRouter();
 const route = useRoute();
@@ -78,7 +78,7 @@ const appPages = computed(() => {
       iosIcon: peopleCircleOutline,
       mdIcon: peopleCircleSharp,
   }]
-  if (userProfile.value.role >= ROLES.Animateur) {
+  if (userProfile.value.role >= USER_ROLES.Animateur) {
     if (userProfile.value.games && appConfig.value) {
       for (const timeSlot of appConfig.value.attendantSchedule) {
         pages = [...pages, {
@@ -89,25 +89,25 @@ const appPages = computed(() => {
         }]
       }
     }
-    if (userProfile.value.sectionId) pages = [...pages, {
+    if (userProfile.value.groupId) pages = [...pages, {
       title: "Ma section",
-      url: `/attendant/${userProfile.value.sectionId}`,
+      url: `/attendant-group/${userProfile.value.groupId}`,
       iosIcon: peopleSharp,
       mdIcon: peopleSharp,
     }]
-    if (userProfile.value.role >= ROLES.Chef) pages = [...pages, applicantsPage];
-    pages = [...pages, attendantsPage];
+    if (userProfile.value.role >= USER_ROLES.Chef) pages = [...pages, applicantsPage];
+    pages = [...pages, attendantGroupsPage];
   }
-  if (userProfile.value.role == ROLES.Participant) pages = [...pages, {
+  if (userProfile.value.role == USER_ROLES.Participant) pages = [...pages, {
     title: "Ma section",
-    url: `/section/${userProfile.value.sectionId}`,
+    url: `/player-group/${userProfile.value.groupId}`,
     iosIcon: peopleSharp,
     mdIcon: peopleSharp,
   }];
-  if (userProfile.value.role > ROLES.Newbie) pages = [...pages, sectionsPage, gamesPage];
-  if (userProfile.value.role >= ROLES.Organisateur) pages = [...pages, checkScoresPage];
-  if (appSettings.value?.isRankingPublic || userProfile.value.role >= ROLES.Organisateur) pages = [...pages, rankingPage];
-  if (userProfile.value.role >= ROLES.Administrateur) pages = [...pages, settingsPage];
+  if (userProfile.value.role > USER_ROLES.Newbie) pages = [...pages, playerGroupsPage, gamesPage];
+  if (userProfile.value.role >= USER_ROLES.Organisateur) pages = [...pages, checkScoresPage];
+  if (appSettings.value?.isRankingPublic || userProfile.value.role >= USER_ROLES.Organisateur) pages = [...pages, rankingPage];
+  if (userProfile.value.role >= USER_ROLES.Administrateur) pages = [...pages, settingsPage];
   // bottom pages
   pages = [...pages, profilePage,  aboutPage];
   return pages;
@@ -167,15 +167,15 @@ const aboutPage = {
   iosIcon: informationCircleOutline,
   mdIcon: informationCircleSharp,
 }
-const sectionsPage = {
+const playerGroupsPage = {
   title: "Sections",
-  url: "/section",
+  url: "/player-group",
   iosIcon: peopleOutline,
   mdIcon: peopleOutline,
 }
-const attendantsPage = {
+const attendantGroupsPage = {
   title: "Animateurs",
-  url: "/attendant",
+  url: "/attendant-group",
   iosIcon: peopleOutline,
   mdIcon: peopleOutline,
 }

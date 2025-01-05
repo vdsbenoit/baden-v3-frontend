@@ -48,7 +48,7 @@ import { pencilOutline, pencilSharp, checkmarkOutline, checkmarkSharp, settingsO
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useLatestUsers } from "@/composables/userProfile";
-import { ROLES } from "@/constants";
+import { USER_ROLES } from "@/constants";
 import { ref, watch } from "vue";
 import { FirestoreError } from "firebase/firestore";
 import { toastPopup } from "@/utils/popup";
@@ -56,7 +56,7 @@ import { VueFireUserProfile } from "@/types";
 import { getRoleByValue, updateUserProfile } from "@/utils/userProfile";
 
 // Strip Erreur, Anonyme & Newbie from ROLES
-const roles = Object.fromEntries(Object.entries(ROLES).filter(([, value]) => ![ROLES.Erreur, ROLES.Anonyme, ROLES.Newbie].includes(value)))
+const roles = Object.fromEntries(Object.entries(USER_ROLES).filter(([, value]) => ![USER_ROLES.Erreur, USER_ROLES.Anonyme, USER_ROLES.Newbie].includes(value)))
 
 // reactive data
 const limit = ref(15);

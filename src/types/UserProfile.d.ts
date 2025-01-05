@@ -8,11 +8,11 @@ export type UserProfile = {
   role: number
   hasDoneOnboarding: boolean
   requestedRole?: number
-  requestedSectionId?: string
-  requestedSectionName?: string
+  requestedGroupId?: string
+  requestedGroupName?: string
   rejectionReason?: string
-  sectionId?: string
-  sectionName?: string
+  groupId?: string
+  groupName?: string
   teamId?: string // if it's a player
   games?: { [timingId: string]: string }  // if it's an attendant
   settings?: any

@@ -36,7 +36,7 @@ export function useTeamMatches(rTeamId: MaybeRefOrGetter<string>) {
     // prettier-ignore
     return query(
       MATCHES_COLLECTION_REF, 
-      where("playerIds", "array-contains", id),
+      where("playerTeamIds", "array-contains", id),
       orderBy("time", "asc")
     )
   })

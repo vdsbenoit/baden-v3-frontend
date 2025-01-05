@@ -39,10 +39,10 @@
                     <h1>{{ firstPlayer.id }}</h1>
                   </ion-text>
                   <ion-text color="dark">
-                    <p>{{ firstPlayer.section.sectionName }}</p>
+                    <p>{{ firstPlayer.groupName }}</p>
                   </ion-text>
                   <ion-text color="medium">
-                    <p>{{ firstPlayer.section.city }}</p>
+                    <p>{{ firstPlayer.groupCity }}</p>
                   </ion-text>
                 </ion-col>
                 <ion-col size="1">
@@ -55,10 +55,10 @@
                     <h1>{{ secondPlayer.id }}</h1>
                   </ion-text>
                   <ion-text color="dark">
-                    <p>{{ secondPlayer.section.sectionName }}</p>
+                    <p>{{ secondPlayer.groupName }}</p>
                   </ion-text>
                   <ion-text color="medium">
-                    <p>{{ secondPlayer.section.city }}</p>
+                    <p>{{ secondPlayer.groupCity }}</p>
                   </ion-text>
                 </ion-col>
               </ion-row>
@@ -70,7 +70,7 @@
                   </div>
                 </ion-col>
               </ion-row>
-              <ion-row v-if="match.winner && firstPlayer && secondPlayer">
+              <ion-row v-if="match.winnerTeamId && firstPlayer && secondPlayer">
                 <ion-col size="5">
                   <div class="score-div" :class="scoreColor(firstPlayer.id)">
                     <ion-icon class="score-icon" :ios="scoreIcon(firstPlayer.id).ios" :md="scoreIcon(firstPlayer.id).md"></ion-icon>
@@ -98,7 +98,7 @@
               <ion-item class=""><ion-label>
                 <span>Modififé par : </span>
                 <ion-spinner v-if="isLoadingReporter"></ion-spinner>
-                <span v-else-if="reporter">{{reporter.name}} ({{reporter.sectionName}})</span>
+                <span v-else-if="reporter">{{reporter.name}} ({{reporter.groupName}})</span>
                 <ion-text color="error">Impossible de charger le profil</ion-text>
               </ion-label></ion-item>
               <ion-item class=""><ion-label>
@@ -114,13 +114,13 @@
           </ion-button>
           <ion-button v-else class="ion-margin-horizontal ion-margin-top" @click="setScore" expand="block" :disabled="isSettingScore">
             <ion-spinner v-if="isSettingScore"></ion-spinner>
-            <span v-else-if="match.winner || match.draw">Modifier le score</span>
+            <span v-else-if="match.winnerTeamId || match.draw">Modifier le score</span>
             <span v-else>Enregister le score</span>
           </ion-button>
           <ion-button v-if="isResettingScore" color="danger" class="ion-margin-horizontal ion-margin-top" expand="block" disabled>
             <ion-spinner></ion-spinner>
           </ion-button>
-          <ion-button v-else-if="match.winner || match.draw" color="danger" class="ion-margin-horizontal ion-margin-top" @click="resetScore" expand="block">
+          <ion-button v-else-if="match.winnerTeamId || match.draw" color="danger" class="ion-margin-horizontal ion-margin-top" @click="resetScore" expand="block">
             Effacer le score
           </ion-button>
         </div>
@@ -140,9 +140,8 @@ import { useTeam } from "@/composables/team";
 import { useCurrentUserProfile, useUserProfile } from "@/composables/userProfile";
 import { DEFAULT_GAME_ID, DEFAULT_MATCH_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID } from "@/constants";
 import { choicePopup, errorPopup, toastPopup } from "@/utils/popup";
-import { RefPlayerSection } from "@/types";
 import { resetMatchScore, setMatchDraw, setMatchScore } from "@/utils/match";
-import { addSectionDraw, addSectionWin, removeSectionDraw, removeSectionWin } from "@/utils/playerSection";
+import { addGroupDraw, addGroupWin, removeGroupDraw, removeGroupWin } from "@/utils/playerGroup";
 import { addTeamDraw, addTeamWin, removeTeamDraw, removeTeamWin } from "@/utils/team";
 // prettier-ignore
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSpinner, IonText, useIonRouter } from "@ionic/vue";
@@ -159,8 +158,8 @@ const matchId = useRouteParams("matchId", DEFAULT_MATCH_ID)
 const { data: match, pending: isLoadingMatch, error: errorLoadingMatch } = useMatch(matchId)
 const gameId = computed(() => match.value?.gameId ?? DEFAULT_GAME_ID)
 const { data: game, pending: isLoadingGame, error: errorLoadingGame } = useGame(gameId)
-const playerId0 = computed(() => match.value?.playerIds[0] ?? DEFAULT_TEAM_ID)
-const playerId1 = computed(() => match.value?.playerIds[1] ?? DEFAULT_TEAM_ID)
+const playerId0 = computed(() => match.value?.playerTeamIds[0] ?? DEFAULT_TEAM_ID)
+const playerId1 = computed(() => match.value?.playerTeamIds[1] ?? DEFAULT_TEAM_ID)
 const { data: firstPlayer, pending: isLoadingFirstPlayer, error: errorLoadingFirstPlayer } = useTeam(playerId0)
 const { data: secondPlayer, pending: isLoadingSecondPlayer, error: errorLoadingSecondPlayer } = useTeam(playerId1)
 const { canEditScores } = useEditScoreRights(game)
@@ -188,7 +187,7 @@ onMounted(() => {
 
 const pageTitle = computed(() => {
   if (isLoadingMatch.value) return "Chargement...";
-  if (match.value) return `Duel ${match.value.playerIds[0]} vs ${match.value.playerIds[1]}`;
+  if (match.value) return `Duel ${match.value.playerTeamIds[0]} vs ${match.value.playerTeamIds[1]}`;
   return "Duel inconnu";
 });
 
@@ -213,7 +212,7 @@ const formatedDate = computed(() => {
 
 // Methods
 
-const winHandler = async (winner: string) => {
+const winHandler = async (winnerTeamId: string) => {
   if (!userProfile.value) {
     isSettingScore.value = false;
     console.error(`userProfile is undefined`)
@@ -224,43 +223,43 @@ const winHandler = async (winner: string) => {
     console.error(`match is undefined`)
     return errorPopup("Le match n'a pas encore été chargé");
   }
-  if(match.value.winner == winner) {
+  if(match.value.winnerTeamId == winnerTeamId) {
     isSettingScore.value = false;
-    return errorPopup(`L'équipe ${winner} est déjà enregistrée comme gagnante`);
+    return errorPopup(`L'équipe ${winnerTeamId} est déjà enregistrée comme gagnante`);
   }
-  let winningSection: RefPlayerSection;
-  let losingSection: RefPlayerSection;
+  let winningGroupId: string;
+  let losingGroupId: string;
   const promises = [];
-  const loser = match.value.playerIds[0] === winner ? match.value.playerIds[1] : match.value.playerIds[0];
+  const loser = match.value.playerTeamIds[0] === winnerTeamId ? match.value.playerTeamIds[1] : match.value.playerTeamIds[0];
   if (!firstPlayer.value ||  !secondPlayer.value) {
     isSettingScore.value = false;
     console.error(`firstPlayer or secondPlayer is undefined`, firstPlayer.value, secondPlayer.value);
     return errorPopup(`Le match n'a pas encore été chargé`);
   }
-  if(firstPlayer.value.id == winner){
-    winningSection = firstPlayer.value.section;
-    losingSection = secondPlayer.value.section;
+  if(firstPlayer.value.id == winnerTeamId){
+    winningGroupId = firstPlayer.value.groupId;
+    losingGroupId = secondPlayer.value.groupId;
   } else {
-    winningSection = secondPlayer.value.section;
-    losingSection = firstPlayer.value.section;
+    winningGroupId = secondPlayer.value.groupId;
+    losingGroupId = firstPlayer.value.groupId;
   }
   try {
     // if a scores was already set, remove it
-    if(match.value.winner) {
+    if(match.value.winnerTeamId) {
       promises.push(removeTeamWin(loser));
-      promises.push(removeSectionWin(losingSection));
+      promises.push(removeGroupWin(losingGroupId));
     }
     // if a scores was already set, remove it
     if(match.value.draw) {
-      promises.push(removeTeamDraw(winner));
+      promises.push(removeTeamDraw(winnerTeamId));
       promises.push(removeTeamDraw(loser));
-      promises.push(removeSectionDraw(winningSection));
-      promises.push(removeSectionDraw(losingSection));
+      promises.push(removeGroupDraw(winningGroupId));
+      promises.push(removeGroupDraw(losingGroupId));
     }
     // set the new score
-    promises.push(addTeamWin(winner));
-    promises.push(addSectionWin(winningSection));
-    promises.push(setMatchScore(matchId.value, winner, loser, userProfile.value.id));
+    promises.push(addTeamWin(winnerTeamId));
+    promises.push(addGroupWin(winningGroupId));
+    promises.push(setMatchScore(matchId.value, winnerTeamId, loser, userProfile.value.id));
 
     await Promise.all(promises);
     toastPopup("Le score a été enregistré");
@@ -292,15 +291,15 @@ const drawHandler = async () => {
       return errorPopup(`Le match n'a pas encore été chargé`);
   }
   try{
-    if(match.value.winner) {
-      const previousWinningSection = firstPlayer.value.id == match.value.winner ? firstPlayer.value.section : secondPlayer.value.section;
-      promises.push(removeTeamWin(match.value.winner));
-      promises.push(removeSectionWin(previousWinningSection));
+    if(match.value.winnerTeamId) {
+      const previousWinningGroupId = firstPlayer.value.id == match.value.winnerTeamId ? firstPlayer.value.groupId : secondPlayer.value.groupId;
+      promises.push(removeTeamWin(match.value.winnerTeamId));
+      promises.push(removeGroupWin(previousWinningGroupId));
     }
     promises.push(addTeamDraw(firstPlayer.value.id as string));
     promises.push(addTeamDraw(secondPlayer.value.id as string));
-    promises.push(addSectionDraw(firstPlayer.value.section));
-    promises.push(addSectionDraw(secondPlayer.value.section));
+    promises.push(addGroupDraw(firstPlayer.value.groupId));
+    promises.push(addGroupDraw(secondPlayer.value.groupId));
     promises.push(setMatchDraw(matchId.value, userProfile.value.id));
 
     await Promise.all(promises);
@@ -327,7 +326,7 @@ const setScore = () => {
     if (choice === "Égalité") {
       drawHandler();
     } else if (choice === "Victoire") {
-      choicePopup("Qui est l'heureux gagnant ?", [match.value?.playerIds[0] ?? "", match.value?.playerIds[1] ?? ""], winHandler, "score-choice-popup");
+      choicePopup("Qui est l'heureux gagnant ?", [match.value?.playerTeamIds[0] ?? "", match.value?.playerTeamIds[1] ?? ""], winHandler, "score-choice-popup");
     } else {
       console.error(`Unknown choice: ${choice}`);
     }
@@ -351,7 +350,7 @@ const resetScore = async () => {
     errorPopup("Il n'est pas ou plus possible de modifier des scores");
     return;
   }
-  if (!match.value.winner && !match.value.draw) {
+  if (!match.value.winnerTeamId && !match.value.draw) {
     errorPopup("Ce duel n'a pas encore de score");
     return;
   }
@@ -363,16 +362,16 @@ const resetScore = async () => {
   }
   const promises = [];
   try {
-    if(match.value.winner) {
-      const previousWinningSection = firstPlayer.value.id == match.value.winner ? firstPlayer.value.sectionId : secondPlayer.value.section;
-      promises.push(removeTeamWin(match.value.winner));
-      promises.push(removeSectionWin(previousWinningSection));
+    if(match.value.winnerTeamId) {
+      const previousWinningGroupId = firstPlayer.value.id == match.value.winnerTeamId ? firstPlayer.value.groupId : secondPlayer.value.groupId;
+      promises.push(removeTeamWin(match.value.winnerTeamId));
+      promises.push(removeGroupWin(previousWinningGroupId));
     }
     if(match.value.draw) {
       promises.push(removeTeamDraw(firstPlayer.value.id as string));
       promises.push(removeTeamDraw(secondPlayer.value.id as string));
-      promises.push(removeSectionDraw(firstPlayer.value.section));
-      promises.push(removeSectionDraw(secondPlayer.value.section));
+      promises.push(removeGroupDraw(firstPlayer.value.groupId));
+      promises.push(removeGroupDraw(secondPlayer.value.groupId));
     }
     promises.push(resetMatchScore(matchId.value, userProfile.value.id));
     await Promise.all(promises);
@@ -387,15 +386,15 @@ const resetScore = async () => {
 
 const scoreColor = (playerId: string | undefined) => {
   if (match.value) {
-    if (playerId === match.value.winner) return "winner-color";
-    if (playerId === match.value.loser) return "loser-color";
+    if (playerId === match.value.winnerTeamId) return "winner-color";
+    if (playerId === match.value.loserTeamId) return "loser-color";
   }
   return "";
 };
 const scoreIcon = (playerId: string | undefined) => {
   if (match.value) {
-    if (playerId === match.value.winner) return { ios: trophyOutline, md: trophySharp };
-    if (playerId === match.value.loser) return { ios: closeOutline, md: closeSharp };
+    if (playerId === match.value.winnerTeamId) return { ios: trophyOutline, md: trophySharp };
+    if (playerId === match.value.loserTeamId) return { ios: closeOutline, md: closeSharp };
   }
   return { md: undefined, ios: undefined };
 };

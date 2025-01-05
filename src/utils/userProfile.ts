@@ -1,5 +1,5 @@
 // prettier-ignore
-import { DEFAULT_PLAYER_SECTION_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID, ROLES, USER_PROFILES_COLLECTION_NAME, USER_PROFILES_COLLECTION_REF } from "@/constants";
+import { DEFAULT_GROUP_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID, USER_ROLES, USER_PROFILES_COLLECTION_NAME, USER_PROFILES_COLLECTION_REF } from "@/constants";
 import { db, fbSignOut } from "@/services/firebase";
 import { UserProfile } from "@/types";
 import { Timestamp } from "@firebase/firestore";
@@ -11,14 +11,14 @@ import { useFirebaseAuth } from "vuefire";
 // getters
 
 export const getRoleByValue = (roleNumber: number): string => {
-  for (const [key, value] of Object.entries(ROLES)) {
+  for (const [key, value] of Object.entries(USER_ROLES)) {
     if (value === roleNumber) return key
   }
   throw Error(`Unknown role : ${roleNumber}`)
 }
 export function getUserName(rProfile: MaybeRefOrGetter<UserProfile>) {
   const profile = toValue(rProfile)
-  if (!profile) return getRoleByValue(ROLES.Anonyme)
+  if (!profile) return getRoleByValue(USER_ROLES.Anonyme)
   if (profile.name) return profile.name
   return profile.email
 }
@@ -36,10 +36,10 @@ export async function createUserProfile(uid: string, email: string) {
     creationDate: Timestamp.now(),
     email,
     name: "",
-    role: ROLES.Newbie,
+    role: USER_ROLES.Newbie,
     hasDoneOnboarding: false,
-    sectionId: DEFAULT_PLAYER_SECTION_ID,
-    sectionName: "",
+    groupId: DEFAULT_GROUP_ID,
+    groupName: "",
     teamId: DEFAULT_TEAM_ID,
   }
   const docRef = doc(USER_PROFILES_COLLECTION_REF, uid)

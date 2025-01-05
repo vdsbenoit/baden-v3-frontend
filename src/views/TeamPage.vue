@@ -21,9 +21,9 @@
       <div v-else>
         <ion-grid class="ion-padding-horizontal ion-padding-top">
           <ion-row class="ion-align-items-center">
-            <ion-col class="ion-padding-start" :router-link="`/section/${section?.id}`">
-              <ion-card-subtitle v-if="team.section.city">{{ team.section.city }}</ion-card-subtitle>
-              <h1 v-if="team.section.name" class="ion-no-margin" style="font-weight: bold">{{ team.section.name }}</h1>
+            <ion-col class="ion-padding-start" :router-link="`/player-group/${playerGroup?.id}`">
+              <ion-card-subtitle v-if="team.groupCity">{{ team.groupCity }}</ion-card-subtitle>
+              <h1 v-if="team.groupName" class="ion-no-margin" style="font-weight: bold">{{ team.groupName }}</h1>
               <ion-spinner v-else></ion-spinner>
             </ion-col>
             <ion-col class="numberCircle ion-padding-end">
@@ -45,22 +45,22 @@
               >
               <ion-item class="ion-no-padding">
                 <ion-label>Score de la section</ion-label>
-                <ion-badge v-if="errorLoadingSection" slot="end" class="ion-no-margin" color="danger">error</ion-badge>
+                <ion-badge v-if="errorLoadingPlayerGroup" slot="end" class="ion-no-margin" color="danger">error</ion-badge>
                 <ion-note v-else slot="end">
-                  <ion-spinner v-if="isLoadingSection"></ion-spinner>
-                  <span v-else>{{ section?.score }}</span>
+                  <ion-spinner v-if="isLoadingPlayerGroup"></ion-spinner>
+                  <span v-else>{{ playerGroup?.score }}</span>
                 </ion-note>
               </ion-item>
               <ion-item class="ion-no-padding">
                 <ion-label>Moyenne de la section</ion-label>
-                <ion-badge v-if="errorLoadingSection" slot="end" class="ion-no-margin" color="danger">error</ion-badge>
+                <ion-badge v-if="errorLoadingPlayerGroup" slot="end" class="ion-no-margin" color="danger">error</ion-badge>
                 <ion-note v-else slot="end">
-                  <ion-spinner v-if="isLoadingSection"></ion-spinner>
-                  <span v-else>{{ sectionMean }}</span>
+                  <ion-spinner v-if="isLoadingPlayerGroup"></ion-spinner>
+                  <span v-else>{{ playerGroupMeanScore }}</span>
                 </ion-note>
               </ion-item>
             </ion-list>
-            <ion-button expand="block" color="medium" :router-link="`/section/${section?.id}`" router-direction="back">
+            <ion-button expand="block" color="medium" :router-link="`/player-group/${playerGroup?.id}`" router-direction="back">
               Voir section
             </ion-button>
           </ion-card-content>
@@ -108,10 +108,11 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useAppConfig, useAppSettings } from "@/composables/app";
 import { useTeamMatches } from "@/composables/match";
-import { usePlayerSection } from "@/composables/playerSection";
+import { usePlayerGroup } from "@/composables/playerGroup";
 import { useTeam } from "@/composables/team";
 import { useCurrentUserProfile } from "@/composables/userProfile";
-import { DEFAULT_PLAYER_SECTION_ID, DEFAULT_TEAM_ID, ROLES } from "@/constants";
+import { DEFAULT_GROUP_ID, DEFAULT_TEAM_ID, USER_ROLES } from "@/constants";
+import { Match } from "@/types";
 import { errorPopup, toastPopup } from "@/utils/popup";
 import { updateUserProfile } from "@/utils/userProfile";
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonNote, IonPage, IonRow, IonSpinner, useIonRouter } from "@ionic/vue";
@@ -132,7 +133,7 @@ const appConfig = useAppConfig()
 const settings = useAppSettings()
 const teamId = useRouteParams('teamId', DEFAULT_TEAM_ID)
 const { data: team, pending: isLoadingTeam, error: errorLoadingTeam } = useTeam(teamId)
-const { data: section, pending: isLoadingSection, error: errorLoadingSection } = usePlayerSection(team.value?.sectionId ?? DEFAULT_PLAYER_SECTION_ID)
+const { data: playerGroup, pending: isLoadingPlayerGroup, error: errorLoadingPlayerGroup } = usePlayerGroup(team.value?.groupId ?? DEFAULT_GROUP_ID)
 const { data: matches, pending: isLoadingMatches, error: errorLoadingMatches } = useTeamMatches(teamId)
 
 // lifecycle hooks
@@ -159,7 +160,7 @@ const playerSchedule = computed(() => {
 const showRanking = computed(() => {
   if (settings.value?.isRankingPublic) return true
   if (!user.value) return false
-  return (user.value.role >= ROLES.Organisateur)
+  return (user.value.role >= USER_ROLES.Organisateur)
 });
 const isCurrentUserTeam = computed(() => {
   if (!user.value?.teamId) return false;
@@ -168,21 +169,21 @@ const isCurrentUserTeam = computed(() => {
 const showRegisterButton = computed(() => {
   if (!user.value) return false
   if (isCurrentUserTeam.value) return false;
-  return (user.value.role == ROLES.Participant)
+  return (user.value.role == USER_ROLES.Participant)
 });
-const sectionMean = computed(() => {
-  if (!section.value) return 0
-  const nbTeams = section.value.nbTeams;
+const playerGroupMeanScore = computed(() => {
+  if (!playerGroup.value) return 0
+  const nbTeams = playerGroup.value.nbTeams;
   if (nbTeams == undefined || nbTeams === 0) return 0;
-  return (section.value.score / nbTeams).toFixed(2); 
+  return (playerGroup.value.score / nbTeams).toFixed(2); 
 })
 
 // Methods
 
-const statusIcon = (match: any) => {
+const statusIcon = (match: Match) => {
   if (match.draw) return { ios: reorderTwoOutline, md: reorderTwoSharp, color: "warning" };
-  if (match.winner === teamId.value) return { ios: trophyOutline, md: trophySharp, color: "success" };
-  if (match.loser === teamId.value) return { ios: closeOutline, md: closeSharp, color: "danger" };
+  if (match.winnerTeamId === teamId.value) return { ios: trophyOutline, md: trophySharp, color: "success" };
+  if (match.loserTeamId === teamId.value) return { ios: closeOutline, md: closeSharp, color: "danger" };
   return { md: undefined, ios: undefined, color: ""};
 };
 const registerPlayer = async () => {

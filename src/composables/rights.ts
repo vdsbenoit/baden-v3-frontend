@@ -1,5 +1,5 @@
 import { useCurrentUserProfile } from "@/composables/userProfile";
-import { DEFAULT_PLAYER_SECTION_ID, ROLES } from "@/constants";
+import { DEFAULT_GROUP_ID, USER_ROLES } from "@/constants";
 import { RefGame, RefUserProfile } from "@/types";
 import { computed, reactive, watchEffect } from "vue";
 import { useAppSettings } from "./app";
@@ -10,7 +10,7 @@ export function useCanSeeRanking() {
   return computed(() => {
     if (appSettings.value?.isRankingPublic) return true
     if (!currentUserProfile.value) return false
-    return currentUserProfile.value.role >= ROLES.Organisateur
+    return currentUserProfile.value.role >= USER_ROLES.Organisateur
   })
 }
 
@@ -28,7 +28,7 @@ export function useEditScoreRights(rGame: RefGame) {
       return false
     }
     // Check if moderator
-    if (currentUserProfile.value.role >= ROLES.Organisateur) {
+    if (currentUserProfile.value.role >= USER_ROLES.Organisateur) {
       return true
     }
     // Check if global setting allow attendants to set any scores
@@ -65,12 +65,12 @@ export function useEditScoreRights(rGame: RefGame) {
       return false
     }
     // Check if not attendant
-    if (currentUserProfile.value.role < ROLES.Animateur) {
+    if (currentUserProfile.value.role < USER_ROLES.Animateur) {
       console.debug(`User ${currentUserProfile.value.id} cannot edit game ${rGame.value.id} score. Insufficient role`)
       return false
     }
     // Check if moderator
-    if (currentUserProfile.value.role >= ROLES.Organisateur) {
+    if (currentUserProfile.value.role >= USER_ROLES.Organisateur) {
       return true
     }
     // Check if global setting allow attendants to set any scores
@@ -101,7 +101,7 @@ export function useEditScoreRights(rGame: RefGame) {
 export function useCanRegister() {
   const canRegister = reactive({
     itself: false,
-    section: false,
+    group: false,
     anyone: false
   })
   const currentUserProfile = useCurrentUserProfile()
@@ -109,14 +109,14 @@ export function useCanRegister() {
 
   watchEffect(() => {
     canRegister.itself = false
-    canRegister.section = false
+    canRegister.group = false
     canRegister.anyone = false
     if (!currentUserProfile.value) {
       console.debug("User cannot register to a game. User is not authenticated")
       return
     }
-    if (currentUserProfile.value.role >= ROLES.Organisateur) {
-      canRegister.section = true
+    if (currentUserProfile.value.role >= USER_ROLES.Organisateur) {
+      canRegister.group = true
       canRegister.anyone = true
       return
     }
@@ -124,16 +124,16 @@ export function useCanRegister() {
       console.debug(`Attendant registration is currently closed`)
       return
     }
-    if (currentUserProfile.value.role < ROLES.Animateur) {
+    if (currentUserProfile.value.role < USER_ROLES.Animateur) {
       console.debug(`User ${currentUserProfile.value.id} cannot register to a game. Insufficient role`)
       return
     }
-    if (currentUserProfile.value.role == ROLES.Animateur) {
+    if (currentUserProfile.value.role == USER_ROLES.Animateur) {
       canRegister.itself = true
     }
-    if (currentUserProfile.value.role == ROLES.Chef) {
+    if (currentUserProfile.value.role == USER_ROLES.Chef) {
       canRegister.itself = true
-      canRegister.section = true
+      canRegister.group = true
     }
   })
 
@@ -144,7 +144,7 @@ export function useCanEditGames() {
   const currentUserProfile = useCurrentUserProfile()
   return computed(() => {
     if (!currentUserProfile.value) return false
-    return currentUserProfile.value.role >= ROLES.Organisateur
+    return currentUserProfile.value.role >= USER_ROLES.Organisateur
   })
 }
 
@@ -152,7 +152,7 @@ export function useCanSeeModerationStuff() {
   const currentUserProfile = useCurrentUserProfile()
   return computed(() => {
     if (!currentUserProfile.value) return false
-    return currentUserProfile.value.role >= ROLES.Organisateur
+    return currentUserProfile.value.role >= USER_ROLES.Organisateur
   })
 }
 
@@ -161,19 +161,19 @@ export function useAcceptApplicantRights() {
   const canAcceptApplicants = computed(() => {
     if (!currentUserProfile.value) return false
     if (currentUserProfile.value.role === undefined) return false
-    return currentUserProfile.value.role >= ROLES.Chef
+    return currentUserProfile.value.role >= USER_ROLES.Chef
   })
   const maxApplicantRole = computed(() => {
-    if (!currentUserProfile.value) return ROLES.Anonyme
+    if (!currentUserProfile.value) return USER_ROLES.Anonyme
     return currentUserProfile.value.role
   })
-  const applicantSectionIdFilter = computed(() => {
-    if (!currentUserProfile.value) return DEFAULT_PLAYER_SECTION_ID // when this is true, canAcceptApplicants is false
-    if (currentUserProfile.value.role > ROLES.Chef) return DEFAULT_PLAYER_SECTION_ID
-    if (!currentUserProfile.value.sectionId) return DEFAULT_PLAYER_SECTION_ID
-    return currentUserProfile.value.sectionId
+  const applicantGroupIdFilter = computed(() => {
+    if (!currentUserProfile.value) return DEFAULT_GROUP_ID // when this is true, canAcceptApplicants is false
+    if (currentUserProfile.value.role > USER_ROLES.Chef) return DEFAULT_GROUP_ID
+    if (!currentUserProfile.value.groupId) return DEFAULT_GROUP_ID
+    return currentUserProfile.value.groupId
   })
-  return { canAcceptApplicants, maxApplicantRole, applicantSectionIdFilter }
+  return { canAcceptApplicants, maxApplicantRole, applicantGroupIdFilter }
 }
 
 export function useEditProfileRights(targetUserProfile: RefUserProfile) {
@@ -189,7 +189,7 @@ export function useEditProfileRights(targetUserProfile: RefUserProfile) {
   // User can edit profile if it is its own profile or if it is an organizer
   const canEditProfile = computed(() => {
     if (!currentUserProfile.value) return false
-    if (currentUserProfile.value.role >= ROLES.Organisateur) return true;
+    if (currentUserProfile.value.role >= USER_ROLES.Organisateur) return true;
     return isOwnProfile.value;
   });
 
@@ -197,46 +197,46 @@ export function useEditProfileRights(targetUserProfile: RefUserProfile) {
   // Only moderators & user itself can see email address (GPDR)
   const canSeeEmail = computed(() => {
     if (!currentUserProfile.value) return false
-    if (currentUserProfile.value.role >= ROLES.Organisateur) return true;
+    if (currentUserProfile.value.role >= USER_ROLES.Organisateur) return true;
     return isOwnProfile.value;
   });
 
   // User can edit games if :
   // - it is its own profile
   // - it is an organizer
-  // - it is a chef and the target user is in the same section
+  // - it is a chef and the target user is in the same attendant group
   const canEditGames = computed(() => {
     if (!currentUserProfile.value) return false
     if (!targetUserProfile.value) return false
     if (canEditProfile.value) return true;
-    if (currentUserProfile.value.role == ROLES.Chef && currentUserProfile.value.sectionId == targetUserProfile.value.sectionId) return true;
+    if (currentUserProfile.value.role == USER_ROLES.Chef && currentUserProfile.value.groupId == targetUserProfile.value.groupId) return true;
     return false;
   });
 
-  // User can edit section if it is an organizer
-  const canEditAttendantSection = computed(() => {
+  // User can edit group if it is an organizer
+  const canEditAttendantGroup = computed(() => {
     if (!currentUserProfile.value) return false
-    return currentUserProfile.value.role >= ROLES.Organisateur;
+    return currentUserProfile.value.role >= USER_ROLES.Organisateur;
   });
 
   // User can set role if it is an organizer
   const canEditRole = computed(() => {
     if (!currentUserProfile.value) return false
-    return currentUserProfile.value.role >= ROLES.Organisateur;
+    return currentUserProfile.value.role >= USER_ROLES.Organisateur;
   });
 
   // User can reset the onboarding if it is an organizer
   const canResetOnboarding = computed(() => {
     if (!currentUserProfile.value) return false
-    return currentUserProfile.value.role >= ROLES.Organisateur;
+    return currentUserProfile.value.role >= USER_ROLES.Organisateur;
   });
 
   // User can delete profile if it is an organizer or if it is its own profile
   const canDeleteProfile = computed(() => {
     if (!currentUserProfile.value) return false
-    if (currentUserProfile.value.role >= ROLES.Administrateur) return true;
+    if (currentUserProfile.value.role >= USER_ROLES.Administrateur) return true;
     return isOwnProfile.value;
   });
 
-  return { isOwnProfile, canEditProfile, canSeeEmail, canEditGames, canEditAttendantSection, canEditRole, canResetOnboarding, canDeleteProfile }
+  return { isOwnProfile, canEditProfile, canSeeEmail, canEditGames, canEditAttendantGroup, canEditRole, canResetOnboarding, canDeleteProfile }
 }

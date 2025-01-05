@@ -1,7 +1,8 @@
-export abstract interface Section {
+export abstract interface Group {
   name: string
   city: string
   unit: string
+  role: number
   isAttendant: boolean
   isStaff: boolean
 }

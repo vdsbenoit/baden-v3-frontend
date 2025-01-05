@@ -40,7 +40,7 @@
               <ion-item v-else v-for="attendant in game.attendants[timeSlot.id]" :key="attendant.id">
                 <ion-label class="ion-text-wrap" @click="goToProfile(attendant.id)">
                   <ion-text style="font-weight: bold">{{ attendant.name }}</ion-text>
-                  <ion-text color="medium">&nbsp;({{ attendant.sectionName ?? "" }})</ion-text>
+                  <ion-text color="medium">&nbsp;({{ attendant.groupName ?? "" }})</ion-text>
                 </ion-label>
                 <ion-icon v-if="edit.isOn" :ios="closeOutline" :md="closeSharp" @click="removeAttendant(gameId, attendant.id, timeSlot.id)"></ion-icon>
               </ion-item>
@@ -58,7 +58,7 @@
                     Se désinscrire
                   </ion-button>
                 </ion-col>
-                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister.section || canRegister.anyone">
+                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister.group || canRegister.anyone">
                   <ion-button @click="toggleEditMode" expand="block" :color="edit.isOn ? 'medium' :  'tertiary'" >
                     {{ edit.isOn ? "Arrêter la modification" : "Modifier les animateurs" }}
                   </ion-button>
@@ -80,17 +80,17 @@
             <ion-grid class="">
               <ion-row>
                 <ion-col size="12" size-sm="6">
-                  <ion-spinner v-if="isLoadingAttendantSections"></ion-spinner>
-                  <div v-if="errorLoadingAttendantsSections" class="ion-text-center">
+                  <ion-spinner v-if="isLoadingAttendantGroups"></ion-spinner>
+                  <div v-if="errorLoadingAttendantGroups" class="ion-text-center">
                     <strong class="capitalize ion-text-center">Erreur</strong>
-                    <ion-text color="error">{{ errorLoadingAttendantsSections.message }}</ion-text>
+                    <ion-text color="error">{{ errorLoadingAttendantGroups.message }}</ion-text>
                   </div>
-                  <ion-select v-else-if="attendantSections && attendantSections.length > 0" v-model="edit.selectedSectionId" placeholder="Choisir section" interface="alert">
-                    <ion-select-option v-for="section in attendantSections" :value="section.id" :key="section.id"> {{ section.name }} ({{ section.city }}) </ion-select-option>
+                  <ion-select v-else-if="attendantGroups && attendantGroups.length > 0" v-model="edit.selectedAttendantGroupId" placeholder="Choisir section" interface="alert">
+                    <ion-select-option v-for="group in attendantGroups" :value="group.id" :key="group.id"> {{ group.name }} ({{ group.city }}) </ion-select-option>
                   </ion-select>
                   <div v-else class="ion-text-center ion-padding-top">Aucune section trouvée</div>
                 </ion-col>
-                <ion-col size="12" size-sm="6" v-if="edit.selectedSectionId != DEFAULT_ATTENDANT_SECTION_ID">
+                <ion-col size="12" size-sm="6" v-if="edit.selectedAttendantGroupId != DEFAULT_GROUP_ID">
                     <ion-spinner v-if="isLoadingAttendants"></ion-spinner>
                     <div v-if="errorLoadingAttendants" class="ion-text-center">
                       <strong class="capitalize ion-text-center">Erreur</strong>
@@ -130,9 +130,9 @@
                 <ion-label>
                   <ion-icon :ios="timeOutline" :md="timeSharp" style="vertical-align: middle;"></ion-icon>
                   <ion-text>&nbsp;{{ playerSchedule[i].start }} - {{ playerSchedule[i].stop }} : </ion-text>
-                  <ion-text color="primary" style="font-weight: bold">{{ match.playerIds[0] }}</ion-text>
+                  <ion-text color="primary" style="font-weight: bold">{{ match.playerTeamIds[0] }}</ion-text>
                   <ion-text> vs </ion-text>
-                  <ion-text color="primary" style="font-weight: bold">{{ match.playerIds[1] }}</ion-text>
+                  <ion-text color="primary" style="font-weight: bold">{{ match.playerTeamIds[1] }}</ion-text>
                 </ion-label>
                 <ion-badge slot="end" class="ion-no-margin" :color="match.draw ? 'warning' : 'success'" v-if="getWinner(match)">{{ getWinner(match) }}</ion-badge>
               </ion-item>
@@ -151,13 +151,13 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import MyActionSheetButton from "@/components/MyActionSheetButton.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useAppConfig, useAppSettings } from "@/composables/app";
-import { useAttendantSections } from "@/composables/attendantSection";
+import { useAttendantGroups } from "@/composables/attendantGroup";
 import { useGame } from "@/composables/game";
 import { useGameMatches } from "@/composables/match";
 import { useCanEditGames, useCanRegister, useCanSeeModerationStuff } from "@/composables/rights";
-import { useCurrentUserProfile, useMembersOfSection } from "@/composables/userProfile";
-import { DEFAULT_ATTENDANT_SECTION_ID, DEFAULT_GAME_ID, ROLES } from "@/constants";
-import { AttendantTimeSlot, VueFireUserProfile } from "@/types";
+import { useCurrentUserProfile, useMembersOfGroup } from "@/composables/userProfile";
+import { DEFAULT_GROUP_ID, DEFAULT_GAME_ID, USER_ROLES } from "@/constants";
+import { AttendantTimeSlot, Match, VueFireUserProfile } from "@/types";
 import { addAttendant, removeAttendant, setGameNoScores } from "@/utils/game";
 import { setMatchNoScores } from "@/utils/match";
 import { confirmPopup, toastPopup } from "@/utils/popup";
@@ -174,7 +174,7 @@ import { onMounted, toValue } from "vue";
 const isTogglingNoScores = ref(false);
 const edit = reactive({
   isOn: false,
-  selectedSectionId: DEFAULT_ATTENDANT_SECTION_ID,
+  selectedAttendantGroupId: DEFAULT_GROUP_ID,
   selectedAttendant: undefined
 })
 
@@ -191,8 +191,8 @@ const canRegister = useCanRegister()
 const canEditGameSettings = useCanEditGames()
 const canSeeModerationStuff = useCanSeeModerationStuff()
 
-const { data: attendantSections, pending: isLoadingAttendantSections, error: errorLoadingAttendantsSections } = useAttendantSections(toRef(edit, 'isOn'), "exclude", canSeeModerationStuff)
-const { data: attendants, pending: isLoadingAttendants, error: errorLoadingAttendants } = useMembersOfSection(edit.selectedSectionId)
+const { data: attendantGroups, pending: isLoadingAttendantGroups, error: errorLoadingAttendantGroups } = useAttendantGroups(toRef(edit, 'isOn'), "exclude", canSeeModerationStuff)
+const { data: attendants, pending: isLoadingAttendants, error: errorLoadingAttendants } = useMembersOfGroup(edit.selectedAttendantGroupId)
 
 // lifecycle hooks
 
@@ -249,13 +249,13 @@ const register = async (result: any, payload: any) => {
     // applicability checks
     if (
       !isCurrentUser &&
-      !canRegister.section
+      !canRegister.group
     ) throw new Error(`
       Tu n'as pas le droit d'inscrire quelqu'un d'autre à une épreuve. 
-      Le rôle minimum pour inscrire quelqu'un est ${getRoleByValue(ROLES.Chef)}
+      Le rôle minimum pour inscrire quelqu'un est ${getRoleByValue(USER_ROLES.Chef)}
     `)
     if (
-      _targetUser.sectionId != _currentUser.sectionId &&
+      _targetUser.groupId != _currentUser.groupId &&
       !canRegister.anyone
     ) throw new Error(`
       L'utilisateur ${getUserName(_targetUser)} ne fait pas partie de ta section. 
@@ -263,7 +263,7 @@ const register = async (result: any, payload: any) => {
     `)
     if (!canBeRegistered(_targetUser)) throw new Error(`
       Le rôle de ${getUserName(_targetUser)} est ${getRoleByValue(_targetUser.role)}. 
-      Seuls les ${getRoleByValue(ROLES.Animateur)} et les ${getRoleByValue(ROLES.Chef)} peuvent être inscrit à une épreuve
+      Seuls les ${getRoleByValue(USER_ROLES.Animateur)} et les ${getRoleByValue(USER_ROLES.Chef)} peuvent être inscrit à une épreuve
     `)
     if (currentAttendants.includes(_targetUser.id)) throw Error(
       isCurrentUser
@@ -322,8 +322,8 @@ const unregister = async (result: any, payload: any) => {
   })
 }
 
-const getWinner = (match: any) => {
-  if (match.winner) return match.winner;
+const getWinner = (match: Match) => {
+  if (match.winnerTeamId) return match.winnerTeamId;
   if (match.draw === true) return "Égalité";
   return "";
 };
