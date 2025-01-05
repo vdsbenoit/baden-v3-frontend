@@ -4,6 +4,7 @@ import { VueFireUserProfile } from "./UserProfile"
 
 export type Game = {
   hash: string
+  number: number
   name: string
   circuit: string
   sectionTypeId: string

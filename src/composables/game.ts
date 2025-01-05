@@ -29,7 +29,7 @@ export function useCircuitGames(rCircuit: MaybeRefOrGetter<string>) {
     return query(
       GAMES_COLLECTION_REF, 
       where("circuit", "==", circuit),
-      orderBy("id")
+      orderBy("number")
     )
   })
   return useCollection<Game>(dbRef)

@@ -3,6 +3,7 @@ import { VueFirestoreDocumentData} from "vuefire"
 
 export type Match = {
   gameId: string
+  gameNumber: number
   gameName: string
   time: number
   playerIds: string[]

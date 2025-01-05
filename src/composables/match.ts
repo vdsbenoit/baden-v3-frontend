@@ -22,7 +22,7 @@ export function useGameMatches(rGameId: MaybeRefOrGetter<string>) {
     // prettier-ignore
     return query(
       MATCHES_COLLECTION_REF, 
-      where("game_id", "==", id),
+      where("gameId", "==", id),
       orderBy("time", "asc")
     )
   })
@@ -36,7 +36,7 @@ export function useTeamMatches(rTeamId: MaybeRefOrGetter<string>) {
     // prettier-ignore
     return query(
       MATCHES_COLLECTION_REF, 
-      where("player_ids", "array-contains", id),
+      where("playerIds", "array-contains", id),
       orderBy("time", "asc")
     )
   })
@@ -51,7 +51,7 @@ export function useTimeMatches(rTime: MaybeRefOrGetter<number>) {
     return query(
       MATCHES_COLLECTION_REF, 
       where("time", "==", time),
-      orderBy("game_id", "asc")
+      orderBy("gameNumber", "asc")
     )
   })
   return useCollection<Match>(dbRef)
