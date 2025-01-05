@@ -1,17 +1,11 @@
-import { firebaseConfig } from './firebaseConfig';
+// prettier-ignore
+import { MATCHES_COLLECTION_REF } from '@/constants';
 import { initializeApp } from "firebase/app";
-import "firebase/firestore";
 import "firebase/auth";
-import { arrayRemove, arrayUnion, collection, doc, getDocs, getFirestore, increment, updateDoc, writeBatch } from "firebase/firestore";
-import {
-  getAuth,
-  signOut,
-  sendSignInLinkToEmail,
-  signInWithEmailLink,
-  isSignInWithEmailLink,
-  onAuthStateChanged,
-  User,
-} from "firebase/auth";
+import { getAuth, isSignInWithEmailLink, onAuthStateChanged, sendSignInLinkToEmail, signInWithEmailLink, signOut, User } from "firebase/auth";
+import "firebase/firestore";
+import { arrayRemove, arrayUnion, collection, doc, getDocs, getFirestore, increment, query, updateDoc, where, writeBatch } from "firebase/firestore";
+import { firebaseConfig } from './firebaseConfig';
 
 export const app = initializeApp(firebaseConfig);
 const dbId = process.env.NODE_ENV === "production" ? "(default)" : "development";
@@ -80,7 +74,6 @@ export const isNewUser = (user: User) => {
   return user.metadata.creationTime === user.metadata.lastSignInTime
 }
 
-
 export const addToDocArray = async (collection: string, docId: string, key: string, arrayValue: any) => {
   const docRef = doc(db, collection, docId);
   return updateDoc(docRef, { [key]: arrayUnion(arrayValue) });
@@ -100,9 +93,20 @@ export const updateFieldInCollection = async (collectionName: string, fieldKey: 
   const batch = writeBatch(db);
 
   snapshot.forEach((document) => {
-    const docRef = doc(db, collectionName, document.id);
-    batch.update(docRef, { [fieldKey]: replacementValue });
+    batch.update(document.ref, { [fieldKey]: replacementValue });
   });
 
-  return await batch.commit()
+  return batch.commit()
+}
+export const updateGameNameInMatches = async (gameId: string, newName: string) => {
+  const matchesQuery = query(MATCHES_COLLECTION_REF, where("gameId", "==", gameId))
+  const matchesSnapshot = await getDocs(matchesQuery);
+
+  const batch = writeBatch(db);
+
+  matchesSnapshot.forEach((match) => {
+    batch.update(match.ref, { gameName: newName });
+  });
+
+  return batch.commit();
 }

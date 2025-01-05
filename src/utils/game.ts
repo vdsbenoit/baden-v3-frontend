@@ -1,5 +1,5 @@
 import { DEFAULT_GAME_ID, GAMES_COLLECTION_NAME, GAMES_COLLECTION_REF, USER_PROFILES_COLLECTION_REF } from "@/constants"
-import { addToDocArray, removeFromDocArray } from "@/services/firebase"
+import { addToDocArray, removeFromDocArray, updateGameNameInMatches } from "@/services/firebase"
 import { updateUserProfile } from "@/utils/userProfile"
 import { doc, getDoc, updateDoc } from "firebase/firestore"
 
@@ -14,10 +14,14 @@ export async function getGame(gameId: string) {
 
 // Setters
 
-export const setGameName = (gameId: string, name: string) => {
+export const setGameName = async (gameId: string, name: string) => {
+  const promises = []
   console.log(`Changing the name of game ${gameId} to ${name}`)
   const dbRef = doc(GAMES_COLLECTION_REF, gameId)
-  return updateDoc(dbRef, { name })
+  promises.push(updateDoc(dbRef, { name }))
+  // update the game name in all the match documents where match.gameId === gameId
+  promises.push(updateGameNameInMatches(gameId, name))
+  return Promise.all(promises)
 }
 
 /**
