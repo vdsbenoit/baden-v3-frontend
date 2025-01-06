@@ -97,7 +97,7 @@ import { useAppSettings } from "@/composables/app"
 import { updateAppSettings } from "@/utils/app"
 import { loadingPopup } from "@/utils/popup"
 // prettier-ignore
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonToggle, useIonRouter } from "@ionic/vue";
+import { IonText, IonSpinner, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonToggle, useIonRouter } from "@ionic/vue";
 import { checkmarkOutline, checkmarkSharp, chevronForwardOutline, chevronForwardSharp } from "ionicons/icons"
 import { reactive, watch } from "vue"
 

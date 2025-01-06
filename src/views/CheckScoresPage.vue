@@ -59,7 +59,7 @@ import { useTimeMatches } from "@/composables/match"
 import { DEFAULT_TIME_VALUE } from "@/constants"
 import { Match } from "@/types"
 // prettier-ignore
-import { IonBadge, IonContent, IonIcon, IonItem, IonLabel, IonList, IonPage, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue";
+import { IonText, IonBadge, IonContent, IonIcon, IonItem, IonLabel, IonList, IonPage, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue";
 import { computed, ref } from "@vue/reactivity"
 // prettier-ignore
 import { arrowUpOutline, arrowUpSharp, checkmarkCircle, checkmarkCircleSharp, closeCircle, closeCircleSharp } from "ionicons/icons";

@@ -37,7 +37,7 @@
                 <ion-text style="font-size: small">{{ parseDate(user.creationDate) }}</ion-text>
                 <ion-text style="font-weight: bold" class="ion-padding-start">{{ getUserName(user) }} </ion-text>
               </ion-label>
-              <ion-input slot="end" type="text" readonly="true">{{ getRoleByValue(user.role) }}</ion-input>
+              <ion-input slot="end" type="text" :readonly="true">{{ getRoleByValue(user.role) }}</ion-input>
               <ion-icon @click="toggleEditRole(user)" slot="end" :ios="pencilOutline" :md="pencilSharp"></ion-icon>
             </ion-item>
           </div>
@@ -56,7 +56,7 @@ import { VueFireUserProfile } from "@/types"
 import { toastPopup } from "@/utils/popup"
 import { getRoleByValue, getUserName, updateUserProfile } from "@/utils/userProfile"
 // prettier-ignore
-import { alertController, AlertInput, IonButton, IonContent, IonIcon, IonItem, IonLabel, IonList, IonPage, IonSelect, IonSelectOption, IonSpinner, IonText } from "@ionic/vue";
+import { IonInput, alertController, AlertInput, IonButton, IonContent, IonIcon, IonItem, IonLabel, IonList, IonPage, IonSelect, IonSelectOption, IonSpinner, IonText } from "@ionic/vue";
 import { FirestoreError } from "firebase/firestore"
 // prettier-ignore
 import { checkmarkOutline, checkmarkSharp, pencilOutline, pencilSharp, settingsOutline, settingsSharp } from "ionicons/icons";

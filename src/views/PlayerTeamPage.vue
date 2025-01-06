@@ -142,7 +142,7 @@ import { Match } from "@/types"
 import { errorPopup, toastPopup } from "@/utils/popup"
 import { updateUserProfile } from "@/utils/userProfile"
 // prettier-ignore
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonNote, IonPage, IonRow, IonSpinner, useIonRouter } from "@ionic/vue";
+import { IonText, IonButton, IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonNote, IonPage, IonRow, IonSpinner, useIonRouter } from "@ionic/vue";
 import { computed, ref } from "@vue/reactivity"
 import { useRouteParams } from "@vueuse/router"
 // prettier-ignore

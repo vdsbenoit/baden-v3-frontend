@@ -63,7 +63,7 @@ import TileCol from "@/components/TileCol.vue"
 import { useAppConfig, useAppSettings } from "@/composables/app"
 import { useApplicants, useCurrentUserProfile } from "@/composables/userProfile"
 import { USER_ROLES } from "@/constants"
-import { IonContent, IonGrid, IonPage, IonRow } from "@ionic/vue"
+import { IonContent, IonGrid, IonPage, IonRow, IonCol } from "@ionic/vue"
 import { computed } from "vue"
 
 // Composables

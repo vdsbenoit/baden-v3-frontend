@@ -30,9 +30,11 @@
 import { useCurrentUserProfile, useGroupApplicants } from "@/composables/userProfile"
 import { DEFAULT_USER_ROLE_VALUE, USER_ROLES } from "@/constants"
 import { VueFireUserProfile } from "@/types"
-import { defineProps, defineEmits, watch } from "vue"
-import { getRoleByValue, getUserName, updateUserProfile } from "@/utils/userProfile"
 import { choicePopup, errorPopup, textInputPopup } from "@/utils/popup"
+import { getRoleByValue, getUserName, updateUserProfile } from "@/utils/userProfile"
+// prettier-ignore
+import { IonBadge, IonItem, IonLabel, IonList, IonSpinner, IonText, IonCard, IonCardContent, IonCardHeader, IonCardTitle } from "@ionic/vue"
+import { defineEmits, defineProps, watch } from "vue"
 
 const props = defineProps<{
   attendantGroupId: string
