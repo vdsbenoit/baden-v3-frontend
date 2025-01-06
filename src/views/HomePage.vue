@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <header-template pageTitle="Accueil"></header-template>
+    <header-component pageTitle="Accueil"></header-component>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
       <div class="logo">
@@ -33,9 +33,9 @@
           <tile-col v-if="showRegisterAttendants" :target="`/attendant/${userProfile.groupId}`">Inscris tes animés à des épreuves</tile-col>
 
           <!-- animateur -->
-          <tile-col v-if="userProfile.role >= USER_ROLES.Animateur && userProfile.groupId" :target="`/attendant/${userProfile.groupId}`">Ma section</tile-col>
+          <tile-col v-if="userProfile.role >= USER_ROLES.Animateur && userProfile.groupId" :target="`/attendant-group/${userProfile.groupId}`">Ma section</tile-col>
           <!-- organisateur -->
-          <tile-col v-if="userProfile.role >= USER_ROLES.Organisateur" target="/attendant">Animateurs</tile-col>
+          <tile-col v-if="userProfile.role >= USER_ROLES.Organisateur" target="/attendant-group">Animateurs</tile-col>
         </ion-row>
       </ion-grid>
     </ion-content>
@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import HeaderComponent from "@/components/HeaderComponent.vue";
 import InfoCardComponent from "@/components/InfoCardComponent.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import TileCol from "@/components/TileCol.vue";

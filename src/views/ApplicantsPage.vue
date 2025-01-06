@@ -1,10 +1,10 @@
 <template>
   <ion-page>
-    <header-template pageTitle="Demandes d'accès">
+    <header-component pageTitle="Demandes d'accès">
       <ion-button @click="setLimit">
         <ion-icon slot="icon-only" :ios="settingsOutline" :md="settingsSharp"></ion-icon>
       </ion-button>
-    </header-template>
+    </header-component>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
       <!-- Show applicants from all attendant groups to moderators -->
@@ -56,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import HeaderTemplate from "@/components/HeaderTemplate.vue"
+import HeaderComponent from "@/components/HeaderComponent.vue"
 import RefresherComponent from "@/components/RefresherComponent.vue"
 import ApplicantCard from "@/components/ApplicantCard.vue"
 import { useAttendantGroup, useAttendantGroups } from "@/composables/attendantGroup"

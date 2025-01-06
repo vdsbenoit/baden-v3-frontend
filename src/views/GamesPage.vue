@@ -1,11 +1,11 @@
 <template>
   <ion-page>
-    <header-template :pageTitle="pageTitle">
+    <header-component :pageTitle="pageTitle">
       <ion-button v-if="canEditGames" @click="toggleEditMode">
         <ion-label v-if="isPlatform('ios')" color="primary">{{ editMode ? "done" : "edit" }}</ion-label>
         <ion-icon v-else slot="icon-only" :icon="editMode ? closeSharp : pencilSharp"></ion-icon>
       </ion-button>
-    </header-template>
+    </header-component>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
       <ion-item color="primary">
@@ -69,7 +69,7 @@
 </template>
 
 <script setup lang="ts">
-import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import HeaderComponent from "@/components/HeaderComponent.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import GameAvailabilities from "@/components/GameAvailabilities.vue";
 import { useCircuitGames } from "@/composables/game";

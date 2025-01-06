@@ -1,9 +1,9 @@
 <template>
   <ion-page>
-    <header-template :pageTitle="pageTitle">
+    <header-component :pageTitle="pageTitle">
       <ion-button v-if="isCurrentUserTeam" @click="unRegisterPlayer"><ion-icon slot="icon-only" :icon="star"></ion-icon></ion-button>
       <ion-button v-if="showRegisterButton" @click="registerPlayer"><ion-icon slot="icon-only" :icon="starOutline"></ion-icon></ion-button>
-    </header-template>
+    </header-component>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
       <div v-if="isLoadingTeam" class="ion-text-center">
@@ -104,7 +104,7 @@
 
 <script setup lang="ts">
 // prettier-ignore
-import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import HeaderComponent from "@/components/HeaderComponent.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useAppConfig, useAppSettings } from "@/composables/app";
 import { useTeamMatches } from "@/composables/match";

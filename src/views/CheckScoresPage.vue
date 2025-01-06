@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <header-template pageTitle="Check scores"> </header-template>
+    <header-component pageTitle="Check scores"> </header-component>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
       <ion-item color="primary">
@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import { IonContent, IonPage, IonList, IonItem, IonLabel, IonBadge, IonSpinner, IonSelect, IonSelectOption, IonIcon } from "@ionic/vue";
 import { arrowUpOutline, arrowUpSharp, checkmarkCircle, checkmarkCircleSharp, closeCircle, closeCircleSharp} from "ionicons/icons";
-import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import HeaderComponent from "@/components/HeaderComponent.vue";
 import { computed, ref } from "@vue/reactivity";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useTimeMatches } from "@/composables/match";

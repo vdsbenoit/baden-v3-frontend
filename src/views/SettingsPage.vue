@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <header-template pageTitle="Paramètres"></header-template>
+    <header-component pageTitle="Paramètres"></header-component>
     <ion-content :fullscreen="true" class="ion-padding">
       <refresher-component></refresher-component>
       <ion-card>
@@ -76,7 +76,7 @@
 
 <script setup lang="ts">
 // prettier-ignore
-import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import HeaderComponent from "@/components/HeaderComponent.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useAppSettings } from "@/composables/app";
 import { loadingPopup } from "@/utils/popup";

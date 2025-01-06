@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <header-template pageTitle="Sections"></header-template>
+    <header-component pageTitle="Sections"></header-component>
     <ion-content :fullscreen="true" class="ion-padding">
       <refresher-component></refresher-component>
       <ion-card>
@@ -150,7 +150,7 @@
 
 <script setup lang="ts">
 // prettier-ignore
-import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import HeaderComponent from "@/components/HeaderComponent.vue";
 import InfoCardComponent from "@/components/InfoCardComponent.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useAppConfig } from "@/composables/app";

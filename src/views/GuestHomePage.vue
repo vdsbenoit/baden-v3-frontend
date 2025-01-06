@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <header-template pageTitle="Accueil"></header-template>
+    <header-component pageTitle="Accueil"></header-component>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
       <div class="logo">
@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { IonContent, IonPage, IonButton,} from "@ionic/vue";
-import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import HeaderComponent from "@/components/HeaderComponent.vue";
 import { useRouter } from "vue-router";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 

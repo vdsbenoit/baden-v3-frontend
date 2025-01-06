@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <header-template pageTitle="Animateurs"></header-template>
+    <header-component pageTitle="Animateurs"></header-component>
     <ion-content :fullscreen="true" class="ion-padding">
       <refresher-component></refresher-component>
       <ion-card>
@@ -123,7 +123,7 @@
 </template>
 
 <script setup lang="ts">
-import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import HeaderComponent from "@/components/HeaderComponent.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useAppConfig } from "@/composables/app";
 import { useAttendantGroup, useAttendantGroups } from "@/composables/attendantGroup";

@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <header-template :pageTitle="pageTitle"></header-template>
+    <header-component :pageTitle="pageTitle"></header-component>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
       <div v-if="errorLoadingMatch" class="not-found">
@@ -130,7 +130,7 @@
 </template>
 
 <script setup lang="ts">
-import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import HeaderComponent from "@/components/HeaderComponent.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useAppConfig, useAppSettings } from "@/composables/app";
 import { useGame } from "@/composables/game";

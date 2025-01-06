@@ -1,8 +1,8 @@
 <template>
   <ion-page>
-    <header-template pageTitle="Derniers utilisateurs">
+    <header-component pageTitle="Derniers utilisateurs">
       <ion-button @click="setLimit"><ion-icon slot="icon-only" :ios="settingsOutline" :md="settingsSharp"></ion-icon></ion-button>
-    </header-template>
+    </header-component>
     <ion-content :fullscreen="true" class="ion-padding">
       <refresher-component></refresher-component>
       <div v-if="isLoadingUsers" class="ion-text-center" style="background: transparent">
@@ -45,7 +45,7 @@
 <script setup lang="ts">
 import { IonContent, IonPage, IonIcon, IonText, IonSelect, IonSelectOption, IonSpinner, IonItem, IonList, IonLabel, IonButton, alertController, AlertInput} from "@ionic/vue";
 import { pencilOutline, pencilSharp, checkmarkOutline, checkmarkSharp, settingsOutline, settingsSharp} from "ionicons/icons";
-import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import HeaderComponent from "@/components/HeaderComponent.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useLatestUsers } from "@/composables/userProfile";
 import { USER_ROLES } from "@/constants";

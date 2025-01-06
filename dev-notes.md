@@ -1,7 +1,7 @@
 # Créer une page
 
 - créer une page : nouveau fichier dans `views/`
-  - importer le component `HeaderTemplate` & set la prop `pageTitle` 
+  - importer le component `HeaderComponent` & set la prop `pageTitle` 
 - ajouter un élément dans le menu: `App.vue`
 - ajouter un élément dans le router:  `router/main.ts`
 

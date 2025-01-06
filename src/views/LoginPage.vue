@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <header-template pageTitle="Connexion"></header-template>
+    <header-component pageTitle="Connexion"></header-component>
     <ion-content :fullscreen="true" class="ion-padding">
       <refresher-component></refresher-component>
       <div class="logo">
@@ -36,7 +36,7 @@
 
 <script setup lang="ts">
 import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton, IonSpinner, IonCheckbox, IonNote } from "@ionic/vue";
-import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import HeaderComponent from "@/components/HeaderComponent.vue";
 import { errorPopup, infoPopup, toastPopup } from "@/utils/popup";
 import { useRouter } from "vue-router";
 import { ref, watch } from "vue";

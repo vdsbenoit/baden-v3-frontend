@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <header-template pageTitle="A propos"></header-template>
+    <header-component pageTitle="A propos"></header-component>
     <ion-content :fullscreen="true" class="ion-padding background-image">
       <div class="about-info">
         <ion-list lines="none" class="ion-padding-vertical" style="border-radius: 5px">
@@ -54,7 +54,7 @@
 <script setup lang="ts">
 import { IonContent, IonPage, IonIcon, IonLabel, IonList, IonItem } from "@ionic/vue";
 import { pin, informationCircleOutline, trophyOutline} from "ionicons/icons";
-import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import HeaderComponent from "@/components/HeaderComponent.vue";
 import { buildInfo } from "@/app/buildinfo";
 
 const buildDate = new Date(buildInfo.buildDate).toLocaleString("fr-BE");

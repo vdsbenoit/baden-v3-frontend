@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <header-template pageTitle="Onboarding"></header-template>
+    <header-component pageTitle="Onboarding"></header-component>
     <ion-content :fullscreen="true" class="ion-padding">
       <refresher-component></refresher-component>
       <ion-card>
@@ -69,7 +69,7 @@
 
 <script setup lang="ts">
 // prettier-ignore
-import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import HeaderComponent from "@/components/HeaderComponent.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { useAppConfig } from "@/composables/app";
 import { useAttendantGroups } from "@/composables/attendantGroup";

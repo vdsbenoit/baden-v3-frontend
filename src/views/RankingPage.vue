@@ -1,12 +1,12 @@
 <template>
   <ion-page>
-    <header-template pageTitle="Classement">
+    <header-component pageTitle="Classement">
       <ion-label v-if="canPrint">
         Printable
       </ion-label>
       <ion-toggle v-if="canPrint" @IonChange="togglePrintable" :checked="showPrintableScores"></ion-toggle>
       <ion-button @click="setLimit"><ion-icon slot="icon-only" :ios="settingsOutline" :md="settingsSharp"></ion-icon></ion-button>
-    </header-template>
+    </header-component>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
       <div v-if="appConfig" >
@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 // prettier-ignore
-import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import HeaderComponent from "@/components/HeaderComponent.vue";
 import RankingPlayerGroup from "@/components/RankingPlayerGroup.vue";
 import RankingPlayerTeam from "@/components/RankingPlayerTeam.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
