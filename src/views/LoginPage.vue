@@ -86,7 +86,7 @@ const sendEmail = async () => {
     isEmailSent.value = true;
     toastPopup("On t'a envoyé un email<br/>Clique sur le lien qui s'y trouve pour te connecter", 10000);
   } catch(error: any){
-    errorPopup(`Impossible de se connecter: ${error.message}`)
+    errorPopup(error.message, `Impossible de se connecter`)
   }
   isSendingEmail.value = false;
 };

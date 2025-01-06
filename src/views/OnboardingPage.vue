@@ -161,7 +161,7 @@ const processForm = (groupData: Group) => {
       isUpdatingProfile.value = false;
     })
     .catch((error: any) => {
-      errorPopup(`Le profile n'a pas pu être mis à jour : ${error.message}`);
+      errorPopup(error.message, `Le profile n'a pas pu être mis à jour`);
       isUpdatingProfile.value = false;
     })
     .finally(() => {
@@ -213,7 +213,7 @@ const submitForm = async () => {
       Cela signifie qu'une autre personne avec le rôle d'administrateur devra <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
     }
   } catch (error: any) {
-    return errorPopup(`Une erreur est survenue : ${error.message}`);
+    return errorPopup(error.message, `Une erreur est survenue`);
   }
   message += ` Veux-tu continuer ?`
   const handler = () => processForm(groupData);

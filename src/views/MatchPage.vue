@@ -264,7 +264,7 @@ const winHandler = async (winnerTeamId: string) => {
     await Promise.all(promises);
     toastPopup("Le score a été enregistré");
   } catch(error: any) {
-    errorPopup(`L'enregistrement du score a échoué : ${error.message}`);
+    errorPopup(error.message, `L'enregistrement du score a échoué`);
     console.log(error);
   }
   isSettingScore.value = false;
@@ -305,7 +305,7 @@ const drawHandler = async () => {
     await Promise.all(promises);
     toastPopup("Le score a été enregistré");
   } catch(error: any) {
-    errorPopup(`L'enregistrement du score a échoué : ${error.message}`);
+    errorPopup(error.message, `L'enregistrement du score a échoué`);
     console.log(error);
   }
   isSettingScore.value = false;
@@ -378,7 +378,7 @@ const resetScore = async () => {
     toastPopup("Le score a été réinitialisé");
     console.log(`Score reset for match ${matchId.value} by ${userProfile.value.id}`);
   } catch(error: any) {
-    errorPopup(`La réinitialisation du score a échoué : ${error.message}`);
+    errorPopup(error.message, `La réinitialisation du score a échoué`);
     console.log(error);
   }
   isResettingScore.value = false;

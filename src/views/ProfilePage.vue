@@ -416,7 +416,7 @@ const setName = async () => {
   formData.name.isEditting = false
   formData.name.isUpdating = true
   await updateUserProfile(userId.value, { name: sanitizeInput(formData.name.value) }).catch((error) => {
-    errorPopup(`Le n'a pas pu être mis à jour : ${error.message}`);
+    errorPopup(error.message, `Le n'a pas pu être mis à jour`);
   });
   formData.name.isUpdating = false;
   resetFormData()
@@ -443,13 +443,13 @@ const setRole = async () => {
     return
   }
   if (userProfile.value.role < USER_ROLES.Animateur) {
-    errorPopup("Il n'est pas possible de changer le rôle d'un participant. Pour cela, il faut supprimer et recréer l'utilisateur.")
+    errorPopup("Pour cela, il faut supprimer et recréer l'utilisateur", "Il n'est pas possible de changer le rôle d'un participant")
     formData.role.isEditting = false
     resetFormData()
     return
   }
   if (userProfile.value.role >= USER_ROLES.Animateur && formData.role.value < USER_ROLES.Animateur){
-    errorPopup("Il n'est pas possible de rétrograder un utilisateur au role de participant. Pour cela, il faut supprimer et recréer l'utilisateur.")
+    errorPopup("Pour cela, il faut supprimer et recréer l'utilisateur", "Il n'est pas possible de rétrograder un utilisateur au role de participant")
     formData.role.isEditting = false
     resetFormData()
     return
@@ -462,7 +462,7 @@ const setRole = async () => {
       try {
         await removeAttendant(game, userProfile.value.id, timeSlotId)
       } catch (error: any){
-        errorPopup(`Erreur lors du désenregistrement de l'utilisateur à l'épreuve ${game} : ${error.message}`);
+        errorPopup(error.message, `Erreur lors du désenregistrement de l'utilisateur à l'épreuve ${game}`);
         formData.role.isUpdating = false
         resetFormData()
         throw error
@@ -473,7 +473,7 @@ const setRole = async () => {
   try {
     await updateUserProfile(userProfile.value.id, { role: formData.role.value })
   } catch(error: any){
-    errorPopup(`Le rôle n'a pas pu être mis à jour : ${error.message}`);
+    errorPopup(error.message, `Le rôle n'a pas pu être mis à jour`);
     formData.role.isUpdating = false
     resetFormData()
     throw error
@@ -508,7 +508,7 @@ const setPlayerGroup = async () => {
       teamId: DEFAULT_TEAM_ID,
     })
   } catch (error: any) {
-    errorPopup(`La section n'a pas pu être mise à jour : ${error.message}`)
+    errorPopup(error.message, `La section n'a pas pu être mise à jour`)
     formData.playerGroup.isUpdating = false
     resetFormData()
     throw error
@@ -533,7 +533,7 @@ const setTeam = async () => {
   try {
     await updateUserProfile(userId.value, { teamId: formData.team.value })
   } catch (error: any) {
-    errorPopup(`L'équipe n'a pas pu être mise à jour : ${error.message}`)
+    errorPopup(error.message, `L'équipe n'a pas pu être mise à jour`)
     formData.team.isUpdating = false
     resetFormData()
     throw error
@@ -567,7 +567,7 @@ const setAttendantGroup = async () => {
       groupName: selectedGroup.name,
     })
   } catch (error: any) {
-    errorPopup(`La section n'a pas pu être mise à jour : ${error.message}`);
+    errorPopup(error.message, `La section n'a pas pu être mise à jour`);
     formData.attendantGroup.isUpdating = false
     resetFormData()
     throw error
@@ -609,7 +609,7 @@ const setGame = async (timeSlotId: string) => {
     try {
       await removeAttendant(userProfile.value.games[timeSlotId], userProfile.value.id, timeSlotId)
     } catch (error: any){
-      errorPopup(`Erreur lors du désenregistrement de l'utilisateur à l'épreuve ${userProfile.value.games[timeSlotId]} : ${error.message}`);
+      errorPopup(error.message, `Erreur lors du désenregistrement de l'utilisateur à l'épreuve ${userProfile.value.games[timeSlotId]}`);
       formData.attendantGames.isUpdating = false
       resetFormData()
       throw error
@@ -619,7 +619,7 @@ const setGame = async (timeSlotId: string) => {
     await addAttendant(formData.attendantGames.value[timeSlotId], userProfile.value.id, timeSlotId)
   }
   catch (error: any){
-    errorPopup(`Erreur lors de l'enregistrement de l'utilisateur à l'épreuve ${formData.attendantGames.value[timeSlotId]} : ${error.message}`);
+    errorPopup(error.message, `Erreur lors de l'enregistrement de l'utilisateur à l'épreuve ${formData.attendantGames.value[timeSlotId]}`);
     formData.attendantGames.isUpdating = false
     resetFormData()
     throw error
@@ -638,7 +638,7 @@ const resetOnboarding = async () => {
   try {
     await updateUserProfile(userId.value, { hasDoneOnboarding: false });
   } catch (error: any) {
-    errorPopup(`L'onboarding n'a pas pu être réinitialisée : ${error.message}`);
+    errorPopup(error.message, `L'onboarding n'a pas pu être réinitialisée`);
   }
   loading.dismiss();
 }
@@ -653,7 +653,7 @@ const logOut = () => {
       await signOut();
       router.replace("/home");
     } catch (error: any) {
-      errorPopup(`Une erreur est survenue durant la déconnexion: ${error.message}`);
+      errorPopup(error.message, `Une erreur est survenue durant la déconnexion`);
     }
     loading.dismiss();
   });
@@ -674,14 +674,14 @@ const removeAccount = async () => {
         try {
           await removeAttendant(game, userProfile.value.id, timeSlotId)
         } catch (error: any){
-          errorPopup(`Erreur lors du désenregistrement de l'utilisateur ${userProfile.value.id} à l'épreuve ${game} : ${error.message}`);
+          errorPopup(error.message, `Erreur lors du désenregistrement de l'utilisateur ${userProfile.value.id} à l'épreuve ${game}`);
         }
       } 
     }
     try {
       await removeFirebaseAccount(userProfile.value.id)
     } catch (error: any) {
-      errorPopup(`Erreur Lors de la suppression de l'utilisateur ${userProfile.value.id} : ${error.message}`);
+      errorPopup(error.message, `Erreur Lors de la suppression de l'utilisateur ${userProfile.value.id}`);
     }
     if (wasOwnProfile) {
       await signOut();
