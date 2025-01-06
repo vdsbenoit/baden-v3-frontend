@@ -82,7 +82,7 @@
  * -------------------------------------------
  */
 
-body.dark .ios{
+body.dark {
   --ion-color-primary: #938576;
   --ion-color-primary-rgb: 147, 133, 118;
   --ion-color-primary-contrast: #000000;
@@ -153,21 +153,24 @@ body.dark .ios {
   --ion-background-color: #1a1614;
   --ion-background-color-rgb: 26, 22, 20;
 
-  --color: #ebe7e5;
-  --label-color: #ebe7e5;
-  --ion-text-color: #ebe7e5;
+  --color: var(--ion-color-dark);
+  --ion-text-color: var(--ion-color-dark);
   --ion-text-color-rgb: 255, 255, 255;
 
   --ion-item-background: #2a2420;
+  --ion-toolbar-background: #2a2420;
+  --ion-tab-bar-background: #2a2420;
   --ion-card-background: #2a2420;
+
+  --button-color: var(--ion-color-dark);
 }
 
 body.dark .md {
   --ion-background-color: #1a1614;
   --ion-background-color-rgb: 26, 22, 20;
 
-  --color: #ebe7e5;
-  --ion-text-color: #ebe7e5;
+  --color: var(--ion-color-dark);
+  --ion-text-color: var(--ion-color-dark);
   --ion-text-color-rgb: 255, 255, 255;
 
   --ion-border-color: #2a2420;
@@ -176,6 +179,8 @@ body.dark .md {
   --ion-toolbar-background: #2a2420;
   --ion-tab-bar-background: #2a2420;
   --ion-card-background: #2a2420;
+
+  --button-color: var(--ion-color-dark);
 }
 
 /* Existing footer and popover styles */
