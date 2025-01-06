@@ -25,6 +25,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import ('../views/LoginPage.vue'),
     meta: { notAuthenticated: true }
   },
+  // todo: remove this once in prod
+  {
+    name: 'validation',
+    path: '/validation',
+    redirect: '/login',
+  },
   {
     name: 'home',
     path: '/home',
