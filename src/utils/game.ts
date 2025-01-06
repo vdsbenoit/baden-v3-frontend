@@ -1,14 +1,15 @@
 import { DEFAULT_GAME_ID, GAMES_COLLECTION_NAME, GAMES_COLLECTION_REF, USER_PROFILES_COLLECTION_REF } from "@/constants"
 import { addToDocArray, removeFromDocArray, updateGameNameInMatches } from "@/services/firebase"
+import { Game } from "@/types"
 import { updateUserProfile } from "@/utils/userProfile"
 import { doc, getDoc, updateDoc } from "firebase/firestore"
 
 // Getters
 
-export async function getGame(gameId: string) {
+export async function getGame(gameId: string): Promise<Game> {
   if (gameId === DEFAULT_GAME_ID) throw Error("Game id is the default value")
   const docSnap = await getDoc(doc(GAMES_COLLECTION_REF, gameId))
-  if (docSnap.exists()) return docSnap.data()
+  if (docSnap.exists()) return docSnap.data() as Game
   else throw Error(`Game not found with id ${gameId}`)
 }
 

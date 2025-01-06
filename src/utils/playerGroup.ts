@@ -1,7 +1,7 @@
-import { GROUPS_COLLECTION_NAME, GROUPS_COLLECTION_REF, TEAMS_COLLECTION_REF, USER_PROFILES_COLLECTION_REF } from "@/constants"
+import { DEFAULT_GROUP_ID, GROUPS_COLLECTION_NAME, GROUPS_COLLECTION_REF, TEAMS_COLLECTION_REF, USER_PROFILES_COLLECTION_REF } from "@/constants"
 import { incrementDocField } from "@/services/firebase"
 import { PlayerGroup, PlayerTeam, UserProfile } from "@/types"
-import { doc, getDocs, query, updateDoc, where } from "firebase/firestore"
+import { doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore"
 
 // Getters
 
@@ -11,11 +11,11 @@ import { doc, getDocs, query, updateDoc, where } from "firebase/firestore"
  * @returns the group data (without the id)
  */
 export const getPlayerGroup = async (playerGroupId: string): Promise<PlayerGroup> => {
-  const dbRef = query(GROUPS_COLLECTION_REF, where("groupId", "==", playerGroupId))
-  const querySnapshot = await getDocs(dbRef)
-  if (querySnapshot.empty) throw Error("Player group not found in DB")
-  if (querySnapshot.size > 1) throw Error(`There is more than one player group with id ${playerGroupId} in the database`)
-  return querySnapshot.docs[0].data() as PlayerGroup
+  if (!playerGroupId) throw Error("Cannot get player group : group is undefined")
+  if (playerGroupId === DEFAULT_GROUP_ID) throw Error("Cannot get player group : groupId is the default value")
+  const docSnap = await getDoc(doc(GROUPS_COLLECTION_REF, playerGroupId))
+  if (docSnap.exists()) return docSnap.data() as PlayerGroup
+  else throw Error(`Player group not found with id ${playerGroupId}`)
 }
 
 // Setters
