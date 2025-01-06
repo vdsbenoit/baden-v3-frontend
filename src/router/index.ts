@@ -50,9 +50,9 @@ const routes: Array<RouteRecordRaw> = [
     meta: { minimumRole: USER_ROLES.Participant }
   },
   {
-    name: 'teams',
+    name: 'team',
     path: '/team/:teamId',
-    component: () => import ('../views/TeamPage.vue'),
+    component: () => import ('../views/PlayerTeamPage.vue'),
     meta: { minimumRole: USER_ROLES.Participant }
   },
   {

@@ -21,7 +21,7 @@
       <div v-else>
         <ion-grid class="ion-padding-horizontal ion-padding-top">
           <ion-row class="ion-align-items-center">
-            <ion-col class="ion-padding-start" :router-link="`/player-group/${playerGroup?.id}`">
+            <ion-col class="ion-padding-start">
               <ion-card-subtitle v-if="team.groupCity">{{ team.groupCity }}</ion-card-subtitle>
               <h1 v-if="team.groupName" class="ion-no-margin" style="font-weight: bold">{{ team.groupName }}</h1>
               <ion-spinner v-else></ion-spinner>
@@ -60,7 +60,7 @@
                 </ion-note>
               </ion-item>
             </ion-list>
-            <ion-button expand="block" color="medium" :router-link="`/player-group/${playerGroup?.id}`" router-direction="back">
+            <ion-button expand="block" color="medium" :router-link="`/player-group/${team.groupId}`">
               Voir section
             </ion-button>
           </ion-card-content>
@@ -133,7 +133,7 @@ const appConfig = useAppConfig()
 const settings = useAppSettings()
 const teamId = useRouteParams('teamId', DEFAULT_TEAM_ID)
 const { data: team, pending: isLoadingTeam, error: errorLoadingTeam } = useTeam(teamId)
-const { data: playerGroup, pending: isLoadingPlayerGroup, error: errorLoadingPlayerGroup } = usePlayerGroup(team.value?.groupId ?? DEFAULT_GROUP_ID)
+const { data: playerGroup, pending: isLoadingPlayerGroup, error: errorLoadingPlayerGroup } = usePlayerGroup(() => team.value?.groupId ?? DEFAULT_GROUP_ID)
 const { data: matches, pending: isLoadingMatches, error: errorLoadingMatches } = useTeamMatches(teamId)
 
 // lifecycle hooks
