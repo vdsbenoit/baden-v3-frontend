@@ -8,18 +8,23 @@
             <ion-note class="ion-text-uppercase">score app</ion-note>
 
             <ion-menu-toggle :auto-hide="false" v-for="(p, i) in appPages" :key="i">
-              <ion-item router-direction="root" :router-link="p.url" lines="none" :detail="false" class="hydrated" :class="{ selected: isSelected(p.url) }">
+              <ion-item
+                router-direction="root"
+                :router-link="p.url"
+                lines="none"
+                :detail="false"
+                class="hydrated"
+                :class="{ selected: isSelected(p.url) }"
+              >
                 <ion-icon slot="start" :ios="p.iosIcon" :md="p.mdIcon"></ion-icon>
                 <ion-label>{{ p.title }}</ion-label>
               </ion-item>
             </ion-menu-toggle>
-              <ion-item lines="none" class="no-pointer ion-margin-bottom hydrated" :detail="false">
-                <ion-icon slot="start" :ios="moonOutline" :md="moonSharp" ></ion-icon>
-                <ion-label>
-                  Dark Mode
-                </ion-label>
-                <ion-toggle slot="end" v-model="isDarkModeEnabled"></ion-toggle>
-              </ion-item>
+            <ion-item lines="none" class="no-pointer ion-margin-bottom hydrated" :detail="false">
+              <ion-icon slot="start" :ios="moonOutline" :md="moonSharp"></ion-icon>
+              <ion-label> Dark Mode </ion-label>
+              <ion-toggle slot="end" v-model="isDarkModeEnabled"></ion-toggle>
+            </ion-item>
           </ion-list>
         </ion-content>
         <ion-menu-toggle :auto-hide="false">
@@ -41,82 +46,121 @@
 <script setup lang="ts">
 // prettier-ignore
 import { IonApp, IonContent, IonFooter, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, IonSplitPane, IonText, IonToggle } from "@ionic/vue";
-import { useDark } from "@vueuse/core";
-import { checkmarkCircleOutline, checkmarkCircleSharp, footballOutline, footballSharp, homeOutline, homeSharp, informationCircleOutline, informationCircleSharp, moonOutline, moonSharp, optionsOutline, optionsSharp, peopleCircleOutline, peopleCircleSharp, peopleOutline, peopleSharp, personAddOutline, personAddSharp, personCircleOutline, personCircleSharp, trophyOutline, trophySharp, } from "ionicons/icons";
-import { computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { useAppConfig, useAppSettings } from "./composables/app";
-import { useCurrentUserProfile } from "./composables/userProfile";
-import { USER_ROLES } from "./constants";
-import { getUserName } from "./utils/userProfile";
+import { useDark } from "@vueuse/core"
+import {
+  checkmarkCircleOutline,
+  checkmarkCircleSharp,
+  footballOutline,
+  footballSharp,
+  homeOutline,
+  homeSharp,
+  informationCircleOutline,
+  informationCircleSharp,
+  moonOutline,
+  moonSharp,
+  optionsOutline,
+  optionsSharp,
+  peopleCircleOutline,
+  peopleCircleSharp,
+  peopleOutline,
+  peopleSharp,
+  personAddOutline,
+  personAddSharp,
+  personCircleOutline,
+  personCircleSharp,
+  trophyOutline,
+  trophySharp
+} from "ionicons/icons"
+import { computed } from "vue"
+import { useRoute, useRouter } from "vue-router"
+import { useAppConfig, useAppSettings } from "./composables/app"
+import { useCurrentUserProfile } from "./composables/userProfile"
+import { USER_ROLES } from "./constants"
+import { getUserName } from "./utils/userProfile"
 
-const router = useRouter();
-const route = useRoute();
+const router = useRouter()
+const route = useRoute()
 const appSettings = useAppSettings()
 const appConfig = useAppConfig()
 const userProfile = useCurrentUserProfile()
 
 // reactive data
 
-const isDarkModeEnabled =  useDark({
-  valueLight: '',
-  valueDark: 'dark',
-  selector: 'body',
+const isDarkModeEnabled = useDark({
+  valueLight: "",
+  valueDark: "dark",
+  selector: "body"
 })
 
 // Computed
 
 const name = computed(() => {
-  if (!userProfile.value) return "undefined";
+  if (!userProfile.value) return "undefined"
   return getUserName(userProfile)
-});
+})
 const appPages = computed(() => {
-  if (!userProfile.value) return [guestHomePage, loginPage, aboutPage];
-  let pages = [homePage];
-  if (userProfile.value.teamId) pages = [...pages,  {
-      title: "Mon Equipe",
-      url: `/team/${userProfile.value.teamId}`,
-      iosIcon: peopleCircleOutline,
-      mdIcon: peopleCircleSharp,
-  }]
+  if (!userProfile.value) return [guestHomePage, loginPage, aboutPage]
+  let pages = [homePage]
+  if (userProfile.value.teamId)
+    pages = [
+      ...pages,
+      {
+        title: "Mon Equipe",
+        url: `/team/${userProfile.value.teamId}`,
+        iosIcon: peopleCircleOutline,
+        mdIcon: peopleCircleSharp
+      }
+    ]
   if (userProfile.value.role >= USER_ROLES.Animateur) {
     if (userProfile.value.games && appConfig.value) {
       for (const timeSlot of appConfig.value.attendantSchedule) {
-        pages = [...pages, {
-          title: `Mon épreuve (${timeSlot.name})`,
-          url: `/game/${userProfile.value.games[timeSlot.id]}`,
-          iosIcon: footballOutline,
-          mdIcon: footballSharp,
-        }]
+        pages = [
+          ...pages,
+          {
+            title: `Mon épreuve (${timeSlot.name})`,
+            url: `/game/${userProfile.value.games[timeSlot.id]}`,
+            iosIcon: footballOutline,
+            mdIcon: footballSharp
+          }
+        ]
       }
     }
-    if (userProfile.value.groupId) pages = [...pages, {
-      title: "Ma section",
-      url: `/attendant-group/${userProfile.value.groupId}`,
-      iosIcon: peopleSharp,
-      mdIcon: peopleSharp,
-    }]
-    if (userProfile.value.role >= USER_ROLES.Chef) pages = [...pages, applicantsPage];
-    pages = [...pages, attendantGroupsPage];
+    if (userProfile.value.groupId)
+      pages = [
+        ...pages,
+        {
+          title: "Ma section",
+          url: `/attendant-group/${userProfile.value.groupId}`,
+          iosIcon: peopleSharp,
+          mdIcon: peopleSharp
+        }
+      ]
+    if (userProfile.value.role >= USER_ROLES.Chef) pages = [...pages, applicantsPage]
+    pages = [...pages, attendantGroupsPage]
   }
-  if (userProfile.value.role == USER_ROLES.Participant) pages = [...pages, {
-    title: "Ma section",
-    url: `/player-group/${userProfile.value.groupId}`,
-    iosIcon: peopleSharp,
-    mdIcon: peopleSharp,
-  }];
-  if (userProfile.value.role > USER_ROLES.Newbie) pages = [...pages, playerGroupsPage, gamesPage];
-  if (userProfile.value.role >= USER_ROLES.Organisateur) pages = [...pages, checkScoresPage];
-  if (appSettings.value?.isRankingPublic || userProfile.value.role >= USER_ROLES.Organisateur) pages = [...pages, rankingPage];
-  if (userProfile.value.role >= USER_ROLES.Administrateur) pages = [...pages, settingsPage];
+  if (userProfile.value.role == USER_ROLES.Participant)
+    pages = [
+      ...pages,
+      {
+        title: "Ma section",
+        url: `/player-group/${userProfile.value.groupId}`,
+        iosIcon: peopleSharp,
+        mdIcon: peopleSharp
+      }
+    ]
+  if (userProfile.value.role > USER_ROLES.Newbie) pages = [...pages, playerGroupsPage, gamesPage]
+  if (userProfile.value.role >= USER_ROLES.Organisateur) pages = [...pages, checkScoresPage]
+  if (appSettings.value?.isRankingPublic || userProfile.value.role >= USER_ROLES.Organisateur)
+    pages = [...pages, rankingPage]
+  if (userProfile.value.role >= USER_ROLES.Administrateur) pages = [...pages, settingsPage]
   // bottom pages
-  pages = [...pages, profilePage,  aboutPage];
-  return pages;
-});
+  pages = [...pages, profilePage, aboutPage]
+  return pages
+})
 
 // Methods
 
-const isSelected = (url: string) => url === route.path;
+const isSelected = (url: string) => url === route.path
 
 // Data
 
@@ -124,75 +168,74 @@ const checkScoresPage = {
   title: "Check Scores",
   url: "/check-scores",
   iosIcon: checkmarkCircleOutline,
-  mdIcon: checkmarkCircleSharp,
+  mdIcon: checkmarkCircleSharp
 }
 const rankingPage = {
   title: "Classement",
   url: "/ranking",
   iosIcon: trophyOutline,
-  mdIcon: trophySharp,
+  mdIcon: trophySharp
 }
 const settingsPage = {
   title: "Paramètres",
   url: "/settings",
   iosIcon: optionsOutline,
-  mdIcon: optionsSharp,
+  mdIcon: optionsSharp
 }
-const homePage =   {
+const homePage = {
   title: "Accueil",
   url: "/home",
   iosIcon: homeOutline,
-  mdIcon: homeSharp,
+  mdIcon: homeSharp
 }
-const guestHomePage =   {
+const guestHomePage = {
   title: "Accueil",
-  url: "/guest", 
+  url: "/guest",
   iosIcon: homeOutline,
-  mdIcon: homeSharp,
+  mdIcon: homeSharp
 }
-const loginPage =   {
+const loginPage = {
   title: "Connexion",
   url: "/login",
   iosIcon: personCircleOutline,
-  mdIcon: personCircleSharp,
+  mdIcon: personCircleSharp
 }
 const profilePage = {
   title: "Profil",
   url: "/profile",
   iosIcon: personCircleOutline,
-  mdIcon: personCircleSharp,
+  mdIcon: personCircleSharp
 }
 const aboutPage = {
   title: "A propos",
   url: "/about",
   iosIcon: informationCircleOutline,
-  mdIcon: informationCircleSharp,
+  mdIcon: informationCircleSharp
 }
 const playerGroupsPage = {
   title: "Sections",
   url: "/player-group",
   iosIcon: peopleOutline,
-  mdIcon: peopleOutline,
+  mdIcon: peopleOutline
 }
 const attendantGroupsPage = {
   title: "Animateurs",
   url: "/attendant-group",
   iosIcon: peopleOutline,
-  mdIcon: peopleOutline,
+  mdIcon: peopleOutline
 }
 const gamesPage = {
   title: "Épreuves",
   url: "/games",
   iosIcon: footballOutline,
-  mdIcon: footballSharp,
+  mdIcon: footballSharp
 }
 const applicantsPage = {
   title: "Demandes d'accès",
   url: "/applicants",
   iosIcon: personAddOutline,
-  mdIcon: personAddSharp,
+  mdIcon: personAddSharp
 }
-
 </script>
 
 <style>
@@ -298,7 +341,6 @@ ion-note {
   display: inline-block;
   font-size: 14px;
   font-weight: bold;
-  
 }
 
 ion-item.selected {
@@ -351,12 +393,12 @@ ion-label p {
   font-weight: bold;
 }
 .can-go-back ion-menu-button {
-    display: none;
+  display: none;
 }
 .md .score-choice-popup .alert-wrapper {
   max-width: 300px;
 }
-.md .score-choice-popup .alert-button{
+.md .score-choice-popup .alert-button {
   font-size: 18px;
 }
 ion-card-title {

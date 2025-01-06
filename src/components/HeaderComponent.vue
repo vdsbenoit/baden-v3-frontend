@@ -20,6 +20,7 @@
 </template>
 
 <script setup lang="ts">
+// prettier-ignore
 import { IonButtons, IonHeader, IonMenuButton, IonTitle, IonToolbar, IonBackButton, IonButton, IonIcon } from "@ionic/vue";
 import { homeOutline } from "ionicons/icons";
 import { defineProps } from "vue";

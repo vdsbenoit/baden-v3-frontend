@@ -1,4 +1,4 @@
-import { GROUP_ROLES } from '@/constants';
+import { GROUP_ROLES } from "@/constants"
 import { Ref } from "vue"
 import { VueFirestoreDocumentData } from "vuefire"
 import { Group } from "./Group"

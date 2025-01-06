@@ -8,15 +8,15 @@
 </template>
 
 <script setup lang="ts">
-import { toastPopup } from "@/utils/popup";
+import { toastPopup } from "@/utils/popup"
 import { actionSheetController } from "@ionic/vue"
 import { defineProps, ref } from "vue"
 
 const props = defineProps<{
   actionSheetHeader?: string
   actionSheetSubHeader?: string
-  destructiveButtons?: { text: string, data: any }[]
-  buttons: { text: string, data: any }[]
+  destructiveButtons?: { text: string; data: any }[]
+  buttons: { text: string; data: any }[]
   callback: (res: any, payload: any) => Promise<void>
   payload: any
 }>()

@@ -145,7 +145,6 @@ body.dark {
   --ion-color-dark-contrast-rgb: 0, 0, 0;
   --ion-color-dark-shade: #cfcbca;
   --ion-color-dark-tint: #ede9e8;
-
 }
 
 /* Dark theme configurations */
@@ -188,7 +187,7 @@ body.dark .md {
   color: var(--ion-color-dark);
 }
 .alert-radio-label.sc-ion-alert-ios {
-  color: var(--ion-color-light)
+  color: var(--ion-color-light);
 }
 
 /* Existing footer and popover styles */

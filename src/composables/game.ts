@@ -16,7 +16,7 @@ export function useGame(rGameId: MaybeRefOrGetter<string>) {
 
 export function useGames(rShouldLoad: MaybeRefOrGetter<boolean> = true) {
   const dbRef = computed(() => {
-    if (! toValue(rShouldLoad)) return null
+    if (!toValue(rShouldLoad)) return null
     console.log(`Fetching all games`)
     return query(GAMES_COLLECTION_REF, orderBy("number"))
   })

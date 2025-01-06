@@ -6,14 +6,18 @@
       <ion-item color="primary">
         <ion-label>Choisir un horaire</ion-label>
         <ion-select v-model="selectedTime" interface="popover">
-          <ion-select-option v-for="(timeSlot, index) in schedules" :value="index + 1" :key="index">{{ timeSlot.start }} - {{ timeSlot.stop }}</ion-select-option>
+          <ion-select-option v-for="(timeSlot, index) in schedules" :value="index + 1" :key="index"
+            >{{ timeSlot.start }} - {{ timeSlot.stop }}</ion-select-option
+          >
         </ion-select>
       </ion-item>
       <ion-item v-if="isFilled" color="warning">
         <ion-label class="ion-text-center">Complet</ion-label>
       </ion-item>
       <div v-if="selectedTime === DEFAULT_TIME_VALUE" class="not-found">
-        <h2 class="ion-text-center ion-align-items-center">Sélectionne un horaire <ion-icon :ios="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
+        <h2 class="ion-text-center ion-align-items-center">
+          Sélectionne un horaire <ion-icon :ios="arrowUpOutline" :md="arrowUpSharp"></ion-icon>
+        </h2>
       </div>
       <ion-list v-else>
         <div v-if="isLoadingMatches" class="ion-text-center">
@@ -29,7 +33,13 @@
             <ion-label>
               {{ match.gameName }}
             </ion-label>
-            <ion-icon v-if="isScoreRecorded(match)" :color="iconColor(match)" slot="end" :ios="checkmarkCircle" :md="checkmarkCircleSharp"></ion-icon>
+            <ion-icon
+              v-if="isScoreRecorded(match)"
+              :color="iconColor(match)"
+              slot="end"
+              :ios="checkmarkCircle"
+              :md="checkmarkCircleSharp"
+            ></ion-icon>
             <ion-icon v-else color="danger" slot="end" :ios="closeCircle" :md="closeCircleSharp"></ion-icon>
           </ion-item>
         </div>
@@ -42,50 +52,51 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonList, IonItem, IonLabel, IonBadge, IonSpinner, IonSelect, IonSelectOption, IonIcon } from "@ionic/vue";
-import { arrowUpOutline, arrowUpSharp, checkmarkCircle, checkmarkCircleSharp, closeCircle, closeCircleSharp} from "ionicons/icons";
-import HeaderComponent from "@/components/HeaderComponent.vue";
-import { computed, ref } from "@vue/reactivity";
-import RefresherComponent from "@/components/RefresherComponent.vue";
-import { useTimeMatches } from "@/composables/match";
-import { DEFAULT_TIME_VALUE } from "@/constants";
-import { useAppConfig } from "@/composables/app";
-import { Match } from "@/types";
+import HeaderComponent from "@/components/HeaderComponent.vue"
+import RefresherComponent from "@/components/RefresherComponent.vue"
+import { useAppConfig } from "@/composables/app"
+import { useTimeMatches } from "@/composables/match"
+import { DEFAULT_TIME_VALUE } from "@/constants"
+import { Match } from "@/types"
+// prettier-ignore
+import { IonBadge, IonContent, IonIcon, IonItem, IonLabel, IonList, IonPage, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue";
+import { computed, ref } from "@vue/reactivity"
+// prettier-ignore
+import { arrowUpOutline, arrowUpSharp, checkmarkCircle, checkmarkCircleSharp, closeCircle, closeCircleSharp } from "ionicons/icons";
 
 // reactive data
-const selectedTime = ref(DEFAULT_TIME_VALUE);
+const selectedTime = ref(DEFAULT_TIME_VALUE)
 
 // Composables
 const appConfig = useAppConfig()
-const {data: matches, pending: isLoadingMatches, error: errorLoadingMatches } = useTimeMatches(selectedTime)
+const { data: matches, pending: isLoadingMatches, error: errorLoadingMatches } = useTimeMatches(selectedTime)
 
 // Computed
 const schedules = computed(() => {
-  if(!appConfig.value) return []
+  if (!appConfig.value) return []
   return appConfig.value.playerSchedule
-});
+})
 
 const isFilled = computed(() => {
-  if (!matches.value || matches.value.length === 0) return false;
+  if (!matches.value || matches.value.length === 0) return false
   for (const match of matches.value) {
     if (match.noScores) continue
     if (match.winnerTeamId) continue
     if (match.draw) continue
-    return false;
+    return false
   }
-  return true;
-});
+  return true
+})
 
 // Methods
 
 const iconColor = (match: Match) => {
-  if (match.noScores) return "medium";
-  return 'success'
-};
-const isScoreRecorded = (match: Match) => {
-  return (match.winnerTeamId || match.draw || match.noScores)
+  if (match.noScores) return "medium"
+  return "success"
 }
-
+const isScoreRecorded = (match: Match) => {
+  return match.winnerTeamId || match.draw || match.noScores
+}
 </script>
 <style scoped>
 .item-no-padding {

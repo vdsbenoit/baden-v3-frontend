@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonCard, IonCardContent, IonGrid, IonRow, IonCol, IonIcon } from "@ionic/vue";
-import { informationCircleOutline, informationCircleSharp } from "ionicons/icons";
-const infoIcon = { ios: informationCircleOutline, md: informationCircleSharp };
+import { IonCard, IonCardContent, IonGrid, IonRow, IonCol, IonIcon } from "@ionic/vue"
+import { informationCircleOutline, informationCircleSharp } from "ionicons/icons"
+const infoIcon = { ios: informationCircleOutline, md: informationCircleSharp }
 </script>

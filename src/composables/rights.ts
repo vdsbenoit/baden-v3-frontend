@@ -1,8 +1,8 @@
-import { useCurrentUserProfile } from "@/composables/userProfile";
-import { DEFAULT_GROUP_ID, USER_ROLES } from "@/constants";
-import { RefGame, RefUserProfile } from "@/types";
-import { computed, reactive, watchEffect } from "vue";
-import { useAppSettings } from "./app";
+import { useCurrentUserProfile } from "@/composables/userProfile"
+import { DEFAULT_GROUP_ID, USER_ROLES } from "@/constants"
+import { RefGame, RefUserProfile } from "@/types"
+import { computed, reactive, watchEffect } from "vue"
+import { useAppSettings } from "./app"
 
 export function useCanSeeRanking() {
   const currentUserProfile = useCurrentUserProfile()
@@ -184,22 +184,21 @@ export function useEditProfileRights(targetUserProfile: RefUserProfile) {
     if (!currentUserProfile.value) return false
     if (!targetUserProfile.value) return false
     return targetUserProfile.value.id === currentUserProfile.value.id
-  });
+  })
 
   // User can edit profile if it is its own profile or if it is an organizer
   const canEditProfile = computed(() => {
     if (!currentUserProfile.value) return false
-    if (currentUserProfile.value.role >= USER_ROLES.Organisateur) return true;
-    return isOwnProfile.value;
-  });
+    if (currentUserProfile.value.role >= USER_ROLES.Organisateur) return true
+    return isOwnProfile.value
+  })
 
-  
   // Only moderators & user itself can see email address (GPDR)
   const canSeeEmail = computed(() => {
     if (!currentUserProfile.value) return false
-    if (currentUserProfile.value.role >= USER_ROLES.Organisateur) return true;
-    return isOwnProfile.value;
-  });
+    if (currentUserProfile.value.role >= USER_ROLES.Organisateur) return true
+    return isOwnProfile.value
+  })
 
   // User can edit games if :
   // - it is its own profile
@@ -208,35 +207,48 @@ export function useEditProfileRights(targetUserProfile: RefUserProfile) {
   const canEditGames = computed(() => {
     if (!currentUserProfile.value) return false
     if (!targetUserProfile.value) return false
-    if (canEditProfile.value) return true;
-    if (currentUserProfile.value.role == USER_ROLES.Chef && currentUserProfile.value.groupId == targetUserProfile.value.groupId) return true;
-    return false;
-  });
+    if (canEditProfile.value) return true
+    if (
+      currentUserProfile.value.role == USER_ROLES.Chef &&
+      currentUserProfile.value.groupId == targetUserProfile.value.groupId
+    )
+      return true
+    return false
+  })
 
   // User can edit group if it is an organizer
   const canEditAttendantGroup = computed(() => {
     if (!currentUserProfile.value) return false
-    return currentUserProfile.value.role >= USER_ROLES.Organisateur;
-  });
+    return currentUserProfile.value.role >= USER_ROLES.Organisateur
+  })
 
   // User can set role if it is an organizer
   const canEditRole = computed(() => {
     if (!currentUserProfile.value) return false
-    return currentUserProfile.value.role >= USER_ROLES.Organisateur;
-  });
+    return currentUserProfile.value.role >= USER_ROLES.Organisateur
+  })
 
   // User can reset the onboarding if it is an organizer
   const canResetOnboarding = computed(() => {
     if (!currentUserProfile.value) return false
-    return currentUserProfile.value.role >= USER_ROLES.Organisateur;
-  });
+    return currentUserProfile.value.role >= USER_ROLES.Organisateur
+  })
 
   // User can delete profile if it is an organizer or if it is its own profile
   const canDeleteProfile = computed(() => {
     if (!currentUserProfile.value) return false
-    if (currentUserProfile.value.role >= USER_ROLES.Administrateur) return true;
-    return isOwnProfile.value;
-  });
+    if (currentUserProfile.value.role >= USER_ROLES.Administrateur) return true
+    return isOwnProfile.value
+  })
 
-  return { isOwnProfile, canEditProfile, canSeeEmail, canEditGames, canEditAttendantGroup, canEditRole, canResetOnboarding, canDeleteProfile }
+  return {
+    isOwnProfile,
+    canEditProfile,
+    canSeeEmail,
+    canEditGames,
+    canEditAttendantGroup,
+    canEditRole,
+    canResetOnboarding,
+    canDeleteProfile
+  }
 }

@@ -16,7 +16,7 @@ export type UserProfile = {
   groupId?: string
   groupName?: string
   teamId?: string // if it's a player
-  games?: { [timingId: string]: VueFireGame }  // if it's an attendant
+  games?: { [timingId: string]: VueFireGame } // if it's an attendant
   settings?: any
 }
 

@@ -22,11 +22,12 @@ export const getStaffSection = async (): Promise<[AttendantGroup, string]> => {
  * Get the section data of a given attendant section id
  * @param sectionId an attendant section id
  * @returns the section data (without the id)
- */ 
+ */
 export const getAttendantSection = async (sectionId: string): Promise<AttendantGroup> => {
   const dbRef = query(GROUPS_COLLECTION_REF, where("sectionId", "==", sectionId))
   const querySnapshot = await getDocs(dbRef)
   if (querySnapshot.empty) throw Error("Attendant section not found in DB")
-  if (querySnapshot.size > 1) throw Error(`There is more than one attendant section with id ${sectionId} in the database`)
+  if (querySnapshot.size > 1)
+    throw Error(`There is more than one attendant section with id ${sectionId} in the database`)
   return querySnapshot.docs[0].data() as AttendantGroup
 }

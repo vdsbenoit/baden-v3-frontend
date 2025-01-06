@@ -1,7 +1,6 @@
 <template>
   <ion-page>
-    <header-component :pageTitle="pageTitle">
-    </header-component>
+    <header-component :pageTitle="pageTitle"> </header-component>
     <ion-content :fullscreen="true" class="ion-padding">
       <refresher-component></refresher-component>
       <div v-if="!isProfile" class="not-found ion-padding">
@@ -15,130 +14,244 @@
             <ion-label position="stacked" color="primary">Nom</ion-label>
             <ion-input v-model="formData.name.value" name="name" type="text" @keydown.enter="setName"></ion-input>
             <ion-icon slot="end" :ios="checkmarkOutline" :md="checkmarkSharp" @click="setName"></ion-icon>
-            <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="formData.name.isEditting = false; resetFormData()"></ion-icon>
+            <ion-icon
+              slot="end"
+              :ios="closeOutline"
+              :md="closeSharp"
+              @click="formData.name.isEditting = false; resetFormData()"
+            ></ion-icon>
           </ion-item>
           <!-- Name (read mode) -->
           <ion-item lines="full" v-else>
             <ion-label position="stacked" color="primary">Nom</ion-label>
             <ion-input name="name" type="text" :readonly="true" inputmode="none">{{ formData.name.value }}</ion-input>
             <ion-spinner v-if="formData.name.isUpdating"></ion-spinner>
-            <ion-icon v-else-if="canEditProfile" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="formData.name.isEditting = true"></ion-icon>
+            <ion-icon
+              v-else-if="canEditProfile"
+              slot="end"
+              :ios="pencilOutline"
+              :md="pencilSharp"
+              @click="formData.name.isEditting = true"
+            ></ion-icon>
           </ion-item>
           <!-- Role (edit mode) -->
           <ion-item lines="full" v-if="formData.role.isEditting">
             <ion-label position="stacked" color="primary">Role</ion-label>
-            <ion-select 
-              v-model="formData.role.value" 
+            <ion-select
+              v-model="formData.role.value"
               @ion-change="setRole"
               @ion-cancel="formData.role.isEditting = false; resetFormData()"
-              cancel-text="Annuler" interface="action-sheet"
+              cancel-text="Annuler"
+              interface="action-sheet"
             >
-              <ion-select-option v-for="(value, role) in selectableRoles" :key="value" :value="value">{{ role }}</ion-select-option>
+              <ion-select-option v-for="(value, role) in selectableRoles" :key="value" :value="value">
+                {{ role }}
+              </ion-select-option>
             </ion-select>
-            <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="formData.role.isEditting = false; resetFormData()"></ion-icon>
+            <ion-icon
+              slot="end"
+              :ios="closeOutline"
+              :md="closeSharp"
+              @click="formData.role.isEditting = false; resetFormData()"
+            ></ion-icon>
           </ion-item>
           <!-- Role (read mode) -->
           <ion-item lines="full" v-else>
             <ion-label position="stacked" color="primary">Role</ion-label>
-            <ion-input type="text" :readonly="true" inputmode="none">{{ getRoleByValue(formData.role.value) }}</ion-input>
+            <ion-input type="text" :readonly="true" inputmode="none">
+              {{ getRoleByValue(formData.role.value) }}
+            </ion-input>
             <ion-spinner v-if="formData.role.isUpdating"></ion-spinner>
-            <ion-icon v-else-if="canEditRole" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="formData.role.isEditting = true"></ion-icon>
+            <ion-icon
+              v-else-if="canEditRole"
+              slot="end"
+              :ios="pencilOutline"
+              :md="pencilSharp"
+              @click="formData.role.isEditting = true"
+            ></ion-icon>
           </ion-item>
           <!-- PLAYER FIELDS -->
           <div v-if="isPlayer">
             <!-- Player Group Category (edit mode) -->
             <ion-item lines="full" v-if="formData.playerGroup.isEditting">
               <ion-label position="stacked" color="primary">Catégorie de section</ion-label>
-              <ion-input v-if="!appConfig" type="text" readonly>Error: cannot load group categories (i.e. appConfig)</ion-input>
-              <ion-select 
-                v-else 
+              <ion-input v-if="!appConfig" type="text" readonly>
+                Error: cannot load group categories (i.e. appConfig)
+              </ion-input>
+              <ion-select
+                v-else
                 v-model="formData.playerGroup.categoryId"
                 @ion-change="formData.playerGroup.id = DEFAULT_GROUP_ID; formData.playerGroup.name = ''"
                 @ion-cancel="formData.playerGroup.isEditting = false; resetFormData()"
-                cancel-text="Annuler" 
+                cancel-text="Annuler"
                 interface="action-sheet"
               >
-                <ion-select-option v-for="groupCategory, groupCategoryId in appConfig.groupCategories" :key="groupCategoryId" :value="groupCategoryId">{{ groupCategory.name }}</ion-select-option>
+                <ion-select-option
+                  v-for="(groupCategory, groupCategoryId) in appConfig.groupCategories"
+                  :key="groupCategoryId"
+                  :value="groupCategoryId"
+                >
+                  {{ groupCategory.name }}
+                </ion-select-option>
               </ion-select>
-              <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="formData.playerGroup.isEditting = false; resetFormData()"></ion-icon>
+              <ion-icon
+                slot="end"
+                :ios="closeOutline"
+                :md="closeSharp"
+                @click="formData.playerGroup.isEditting = false; resetFormData();"
+              ></ion-icon>
             </ion-item>
             <!-- Player Group Category (read mode) -->
             <ion-item lines="full" v-else>
               <ion-label position="stacked" color="primary">Catégorie de section</ion-label>
               <p v-if="!appConfig" class="field-error">Error: cannot load group categories (i.e. appConfig)</p>
-              <ion-input v-else-if="appConfig" type="text" readonly>{{ appConfig.groupCategories[formData.playerGroup.categoryId]?.name }}</ion-input>
-              <ion-spinner v-else ></ion-spinner>
+              <ion-input v-else-if="appConfig" type="text" readonly>
+                {{ appConfig.groupCategories[formData.playerGroup.categoryId]?.name }}
+              </ion-input>
+              <ion-spinner v-else></ion-spinner>
               <ion-spinner v-if="formData.playerGroup.isUpdating"></ion-spinner>
-              <ion-icon v-else-if="canEditProfile" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="formData.playerGroup.isEditting = true"></ion-icon>
+              <ion-icon
+                v-else-if="canEditProfile"
+                slot="end"
+                :ios="pencilOutline"
+                :md="pencilSharp"
+                @click="formData.playerGroup.isEditting = true"
+              ></ion-icon>
             </ion-item>
             <!-- Player Group (edit mode) -->
             <ion-item lines="full" v-if="formData.playerGroup.isEditting">
               <ion-label position="stacked" color="primary">Section</ion-label>
-              <p v-if="formData.playerGroup.categoryId === DEFAULT_GROUP_CATEGORY_ID" class="field-error">Selectionne d'abord un type de section</p>
-              <ion-select 
-                v-else-if="playerGroups.length > 0" 
+              <p v-if="formData.playerGroup.categoryId === DEFAULT_GROUP_CATEGORY_ID" class="field-error">
+                Selectionne d'abord un type de section
+              </p>
+              <ion-select
+                v-else-if="playerGroups.length > 0"
                 v-model="formData.playerGroup.id"
                 @ion-dismiss="setPlayerGroup"
                 @ion-cancel="formData.playerGroup.isEditting = false; resetFormData()"
-                cancel-text="Annuler" interface="action-sheet"
+                cancel-text="Annuler"
+                interface="action-sheet"
               >
-                <ion-select-option v-for="playerGroup in playerGroups" :key="playerGroup.id" :value="playerGroup.id">{{ playerGroup.name }}</ion-select-option>
+                <ion-select-option v-for="playerGroup in playerGroups" :key="playerGroup.id" :value="playerGroup.id">
+                  {{ playerGroup.name }}
+                </ion-select-option>
               </ion-select>
               <p v-else class="field-error">Pas de section pour ce type de section</p>
-              <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="formData.playerGroup.isEditting = false; resetFormData()"></ion-icon>
+              <ion-icon
+                slot="end"
+                :ios="closeOutline"
+                :md="closeSharp"
+                @click="formData.playerGroup.isEditting = false; resetFormData()"
+              ></ion-icon>
             </ion-item>
             <!-- Player Group (read mode) -->
             <ion-item lines="full" v-else>
               <ion-label position="stacked" color="primary">Section</ion-label>
-              <ion-input name="playerGroup" type="text" :readonly="true" inputmode="none" @click="goToPlayerGroupPage(formData.playerGroup.id)">{{ formData.playerGroup.name }}</ion-input>
+              <ion-input
+                name="playerGroup"
+                type="text"
+                :readonly="true"
+                inputmode="none"
+                @click="goToPlayerGroupPage(formData.playerGroup.id)"
+              >
+                {{ formData.playerGroup.name }}
+              </ion-input>
               <ion-spinner v-if="formData.playerGroup.isUpdating"></ion-spinner>
-              <ion-icon v-else-if="canEditProfile" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="formData.playerGroup.isEditting = true"></ion-icon>
+              <ion-icon
+                v-else-if="canEditProfile"
+                slot="end"
+                :ios="pencilOutline"
+                :md="pencilSharp"
+                @click="formData.playerGroup.isEditting = true"
+              ></ion-icon>
             </ion-item>
-              <!-- Team (edit mode)-->
+            <!-- Team (edit mode)-->
             <ion-item lines="full" v-if="formData.team.isEditting">
               <ion-label position="stacked" color="primary">Équipe</ion-label>
-              <ion-select 
-                v-if="selectedPlayerGroup && selectedPlayerGroup.teams.length > 0" 
-                v-model="formData.team.value" 
+              <ion-select
+                v-if="selectedPlayerGroup && selectedPlayerGroup.teams.length > 0"
+                v-model="formData.team.value"
                 @ion-change="setTeam"
                 @ion-cancel="formData.team.isEditting = false; resetFormData()"
-                cancel-text="Annuler" interface="action-sheet"
+                cancel-text="Annuler"
+                interface="action-sheet"
               >
-                <ion-select-option v-for="team in selectedPlayerGroup.teams" :key="team" :value="team">{{ team }}</ion-select-option>
+                <ion-select-option v-for="team in selectedPlayerGroup.teams" :key="team" :value="team">
+                  {{ team }}
+                </ion-select-option>
               </ion-select>
               <p v-else class="field-error">Pas de team pour cette section</p>
-              <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="formData.team.isEditting = false; resetFormData()"></ion-icon>
+              <ion-icon
+                slot="end"
+                :ios="closeOutline"
+                :md="closeSharp"
+                @click="formData.team.isEditting = false; resetFormData()"
+              ></ion-icon>
             </ion-item>
             <!-- Team (read mode)-->
             <ion-item lines="full" v-else>
               <ion-label position="stacked" color="primary">Équipe</ion-label>
-              <ion-input type="text" :readonly="true" inputmode="none" @click="goToTeamPage(formData.team.value)">{{ formData.team.value }}</ion-input>
+              <ion-input type="text" :readonly="true" inputmode="none" @click="goToTeamPage(formData.team.value)">
+                {{ formData.team.value }}
+              </ion-input>
               <ion-spinner v-if="formData.team.isUpdating"></ion-spinner>
-              <ion-icon v-else-if="canEditProfile" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="formData.team.isEditting = true"></ion-icon>
+              <ion-icon
+                v-else-if="canEditProfile"
+                slot="end"
+                :ios="pencilOutline"
+                :md="pencilSharp"
+                @click="formData.team.isEditting = true"
+              ></ion-icon>
             </ion-item>
           </div>
           <div v-if="isAttendant || isStaff">
             <!-- Attendant Group (edit mode) -->
             <ion-item lines="full" v-if="formData.attendantGroup.isEditting">
               <ion-label position="stacked" color="primary">Section</ion-label>
-              <ion-select 
-                v-if="attendantGroups.length > 0" 
+              <ion-select
+                v-if="attendantGroups.length > 0"
                 v-model="formData.attendantGroup.id"
                 @ion-change="setAttendantGroup"
                 @ion-cancel="formData.attendantGroup.isEditting = false; resetFormData()"
-                cancel-text="Annuler" interface="action-sheet"
+                cancel-text="Annuler"
+                interface="action-sheet"
               >
-                <ion-select-option v-for="attenantGroup in attendantGroups" :key="attenantGroup.id" :value="attenantGroup.id">{{ attenantGroup.name }}</ion-select-option>
+                <ion-select-option
+                  v-for="attenantGroup in attendantGroups"
+                  :key="attenantGroup.id"
+                  :value="attenantGroup.id"
+                >
+                  {{ attenantGroup.name }}
+                </ion-select-option>
               </ion-select>
               <p v-else class="field-error">Pas de section</p>
-              <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="formData.attendantGroup.isEditting = false; resetFormData()"></ion-icon>
+              <ion-icon
+                slot="end"
+                :ios="closeOutline"
+                :md="closeSharp"
+                @click="formData.attendantGroup.isEditting = false; resetFormData()"
+              ></ion-icon>
             </ion-item>
             <!-- Attendant Group (read mode) -->
             <ion-item lines="full" v-else>
               <ion-label position="stacked" color="primary">Section</ion-label>
-              <ion-input name="attendantGroup" type="text" :readonly="true" inputmode="none" @click="goToAttendantGroupPage(formData.attendantGroup.id)">{{ formData.attendantGroup.name }}</ion-input>
+              <ion-input
+                name="attendantGroup"
+                type="text"
+                :readonly="true"
+                inputmode="none"
+                @click="goToAttendantGroupPage(formData.attendantGroup.id)"
+              >
+                {{ formData.attendantGroup.name }}
+              </ion-input>
               <ion-spinner v-if="formData.attendantGroup.isUpdating"></ion-spinner>
-              <ion-icon v-else-if="canEditAttendantGroup" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="shouldLoadAttendantGroups = true; formData.attendantGroup.isEditting = true"></ion-icon>
+              <ion-icon
+                v-else-if="canEditAttendantGroup"
+                slot="end"
+                :ios="pencilOutline"
+                :md="pencilSharp"
+                @click="shouldLoadAttendantGroups = true; formData.attendantGroup.isEditting = true"
+              ></ion-icon>
             </ion-item>
           </div>
           <div v-if="isAttendant">
@@ -146,33 +259,58 @@
               <!-- Attendant Game (edit mode) -->
               <ion-item lines="full" v-if="formData.attendantGames.isEditting">
                 <ion-label position="stacked" color="primary">Épreuve {{ timeSlot.name }}</ion-label>
-                <ion-select 
-                  v-model="formData.attendantGames.ids[timeSlot.id]" 
+                <ion-select
+                  v-model="formData.attendantGames.ids[timeSlot.id]"
                   @ion-change="setGame(timeSlot.id)"
                   @ion-cancel="formData.attendantGames.isEditting = false; resetFormData()"
-                  cancel-text="Annuler" interface="action-sheet"
+                  cancel-text="Annuler"
+                  interface="action-sheet"
                 >
-                  <ion-select-option v-for="game in games" :key="game.id" :value="game.id">{{ game.id }}{{ isTimeSlotFull(game, timeSlot.id) ? " [COMPLET] " : " " }}{{ game.name }}</ion-select-option>
+                  <ion-select-option v-for="game in games" :key="game.id" :value="game.id">
+                    {{ game.id }}{{ isTimeSlotFull(game, timeSlot.id) ? " [COMPLET] " : " " }}{{ game.name }}
+                  </ion-select-option>
                 </ion-select>
-                <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="formData.attendantGames.isEditting = false; resetFormData()"></ion-icon>
+                <ion-icon
+                  slot="end"
+                  :ios="closeOutline"
+                  :md="closeSharp"
+                  @click="formData.attendantGames.isEditting = false; resetFormData()"
+                ></ion-icon>
               </ion-item>
               <!-- Attendant Game (read mode) -->
               <ion-item lines="full" v-else>
                 <ion-label position="stacked" color="primary">Épreuve {{ timeSlot.name }}</ion-label>
-                <ion-input v-if="timeSlot.id in formData.attendantGames.names" type="text" :readonly="true" inputmode="none" @click="goToGamePage(formData.attendantGames.ids[timeSlot.id])">
-                  <span>{{ formData.attendantGames.ids[timeSlot.id] }} {{ formData.attendantGames.names[timeSlot.id] }}</span>
+                <ion-input
+                  v-if="timeSlot.id in formData.attendantGames.names"
+                  type="text"
+                  :readonly="true"
+                  inputmode="none"
+                  @click="goToGamePage(formData.attendantGames.ids[timeSlot.id])"
+                >
+                  <span>
+                    {{ formData.attendantGames.ids[timeSlot.id] }}
+                    {{ formData.attendantGames.names[timeSlot.id] }}
+                  </span>
                 </ion-input>
                 <ion-input v-else type="text" :readonly="true" inputmode="none">Pas d'épreuve sélectionnée</ion-input>
                 <ion-spinner v-if="formData.attendantGames.isUpdating"></ion-spinner>
-                <ion-icon v-else-if="canEditGames" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="shouldLoadGames = true; formData.attendantGames.isEditting = true"></ion-icon>
+                <ion-icon
+                  v-else-if="canEditGames"
+                  slot="end"
+                  :ios="pencilOutline"
+                  :md="pencilSharp"
+                  @click="shouldLoadGames = true; formData.attendantGames.isEditting = true"
+                ></ion-icon>
               </ion-item>
             </div>
           </div>
-          
+
           <!-- email -->
           <ion-item lines="full" v-if="canSeeEmail">
             <ion-label position="stacked" color="primary">Adresse email</ion-label>
-            <ion-input v-if="userProfile" type="text" :readonly="true" inputmode="none">{{ userProfile.email }}</ion-input>
+            <ion-input v-if="userProfile" type="text" :readonly="true" inputmode="none">
+              {{ userProfile.email }}
+            </ion-input>
             <p v-else class="field-error">Erreur: impossible de charger l'adresse email</p>
           </ion-item>
         </ion-list>
@@ -182,10 +320,14 @@
               <ion-button expand="block" class="" color="warning" @click="logOut"> Se déconnecter </ion-button>
             </ion-col>
             <ion-col v-if="canDeleteProfile" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
-              <ion-button expand="block" class="" color="danger" @click="removeAccount"> Supprimer le compte </ion-button>
+              <ion-button expand="block" class="" color="danger" @click="removeAccount">
+                Supprimer le compte
+              </ion-button>
             </ion-col>
             <ion-col v-if="canResetOnboarding" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
-              <ion-button expand="block" class="" color="medium" @click="resetOnboarding"> Reset onboarding </ion-button>
+              <ion-button expand="block" class="" color="medium" @click="resetOnboarding">
+                Reset onboarding
+              </ion-button>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -195,30 +337,35 @@
 </template>
 
 <script setup lang="ts">
+import HeaderComponent from "@/components/HeaderComponent.vue"
+import RefresherComponent from "@/components/RefresherComponent.vue"
+import { useAppConfig, useAppSettings } from "@/composables/app"
+import { useAttendantGroups } from "@/composables/attendantGroup"
+import { useGames } from "@/composables/game"
+import { usePlayerGroup, usePlayerGroups } from "@/composables/playerGroup"
+import { useEditProfileRights } from "@/composables/rights"
+import { useCurrentUserProfile, useUserProfile } from "@/composables/userProfile"
 // prettier-ignore
-import HeaderComponent from "@/components/HeaderComponent.vue";
-import RefresherComponent from "@/components/RefresherComponent.vue";
-import { useAppConfig, useAppSettings } from "@/composables/app";
-import { useAttendantGroups } from "@/composables/attendantGroup";
-import { useGames } from "@/composables/game";
-import { usePlayerGroup, usePlayerGroups } from "@/composables/playerGroup";
-import { useEditProfileRights } from "@/composables/rights";
-import { useCurrentUserProfile, useUserProfile } from "@/composables/userProfile";
 import { DEFAULT_GAME_ID, DEFAULT_GROUP_CATEGORY_ID, DEFAULT_GROUP_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID, DEFAULT_USER_ROLE_VALUE, USER_ROLES } from "@/constants";
-import { VueFireGame } from "@/types";
-import { sanitizeInput } from "@/utils/form";
-import { addAttendant, removeAttendant } from "@/utils/game";
-import { confirmPopup, errorPopup, loadingPopup, toastPopup } from "@/utils/popup";
-import { getRoleByValue, removeFirebaseAccount, signOut, updateUserProfile } from "@/utils/userProfile";
+import { VueFireGame } from "@/types"
+import { sanitizeInput } from "@/utils/form"
+import { addAttendant, removeAttendant } from "@/utils/game"
+import { confirmPopup, errorPopup, loadingPopup, toastPopup } from "@/utils/popup"
+import { getRoleByValue, removeFirebaseAccount, signOut, updateUserProfile } from "@/utils/userProfile"
+// prettier-ignore
 import { IonButton, IonCard, IonCol, IonContent, IonGrid, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue";
-import { useRouteParams } from "@vueuse/router";
+import { useRouteParams } from "@vueuse/router"
+// prettier-ignore
 import { checkmarkOutline, checkmarkSharp, closeOutline, closeSharp, pencilOutline, pencilSharp } from "ionicons/icons";
-import { computed, reactive, ref, watch, watchEffect } from "vue";
-import { useRouter } from "vue-router";
-
+import { computed, reactive, ref, watch, watchEffect } from "vue"
+import { useRouter } from "vue-router"
 
 // Strip Erreur, Anonyme & Newbie from ROLES
-const selectableRoles = Object.fromEntries(Object.entries(USER_ROLES).filter(([, value]) => ![USER_ROLES.Erreur, USER_ROLES.Anonyme, USER_ROLES.Newbie].includes(value)))
+const selectableRoles = Object.fromEntries(
+  Object.entries(USER_ROLES).filter(
+    ([, value]) => ![USER_ROLES.Erreur, USER_ROLES.Anonyme, USER_ROLES.Newbie].includes(value)
+  )
+)
 
 // reactive form data
 const formData = reactive({
@@ -250,59 +397,67 @@ const formData = reactive({
     id: DEFAULT_GROUP_ID,
     name: ""
   },
-  attendantGames:{
+  attendantGames: {
     isEditting: false,
     isUpdating: false,
     ids: {} as { [timingId: string]: string },
     names: {} as { [timingId: string]: string }
-  },
+  }
 })
 
 // Composables & computed variables
 
-const router = useRouter();
+const router = useRouter()
 const appConfig = useAppConfig()
 const appSettings = useAppSettings()
-const attendantSchedule = computed(() => (appConfig.value?.attendantSchedule ?? []))
+const attendantSchedule = computed(() => appConfig.value?.attendantSchedule ?? [])
 const currentUserProfile = useCurrentUserProfile()
 const queryUserId = useRouteParams("userId", DEFAULT_USER_ID)
 const userId = computed(() => {
   if (!currentUserProfile.value) return DEFAULT_USER_ID
-  return queryUserId.value === DEFAULT_USER_ID ? currentUserProfile.value.id : queryUserId.value 
+  return queryUserId.value === DEFAULT_USER_ID ? currentUserProfile.value.id : queryUserId.value
 })
 const userProfile = useUserProfile(userId)
 
 // Checks & rights
 const isProfile = computed(() => {
-  return userProfile.value?.email ? true : false;
-});
+  return userProfile.value?.email ? true : false
+})
 const isPlayer = computed(() => {
-  if (!userProfile.value) return false;
-  return userProfile.value.role == USER_ROLES.Participant;
-});
+  if (!userProfile.value) return false
+  return userProfile.value.role == USER_ROLES.Participant
+})
 const isAttendant = computed(() => {
-  if (!userProfile.value) return false;
-  return userProfile.value.role === USER_ROLES.Animateur || userProfile.value.role === USER_ROLES.Chef; 
-});
+  if (!userProfile.value) return false
+  return userProfile.value.role === USER_ROLES.Animateur || userProfile.value.role === USER_ROLES.Chef
+})
 const isStaff = computed(() => {
-  if (!userProfile.value) return false;
-  return userProfile.value.role >= USER_ROLES.Organisateur;
-});
-const { isOwnProfile, canEditProfile, canSeeEmail, canEditGames, canEditAttendantGroup, canEditRole, canResetOnboarding, canDeleteProfile } = useEditProfileRights(userProfile)
+  if (!userProfile.value) return false
+  return userProfile.value.role >= USER_ROLES.Organisateur
+})
+const {
+  isOwnProfile,
+  canEditProfile,
+  canSeeEmail,
+  canEditGames,
+  canEditAttendantGroup,
+  canEditRole,
+  canResetOnboarding,
+  canDeleteProfile
+} = useEditProfileRights(userProfile)
 
 const isTimeSlotFull = (game: VueFireGame, timeSlotId: string) => {
-  if (!appSettings.value) return false;
-  if (!game.attendants || !game.attendants[timeSlotId]) return false;
-  return game.attendants[timeSlotId].length >= appSettings.value.maxGameAttendants 
+  if (!appSettings.value) return false
+  if (!game.attendants || !game.attendants[timeSlotId]) return false
+  return game.attendants[timeSlotId].length >= appSettings.value.maxGameAttendants
 }
 
 const pageTitle = computed(() => {
-  if (isOwnProfile.value) return "Ton profil";
-  if (!userProfile.value || !userProfile.value.email) return "Profil inconnu";
-  if (userProfile.value.name) return `Profil de ${userProfile.value.name}`;
-  return `Profil de ${userProfile.value.email}`;
-  
-});
+  if (isOwnProfile.value) return "Ton profil"
+  if (!userProfile.value || !userProfile.value.email) return "Profil inconnu"
+  if (userProfile.value.name) return `Profil de ${userProfile.value.name}`
+  return `Profil de ${userProfile.value.email}`
+})
 
 // Lazy loading of all player groups
 // They are only loaded after the user starts editting the player group
@@ -325,47 +480,46 @@ const games = useGames(shouldLoadGames)
 // Lazy loading of attendant groups
 // They are only loaded after the user starts editting the field
 const shouldLoadAttendantGroups = ref(false)
-const loadStaffGroups = computed(() => formData.role.value >= USER_ROLES.Organisateur ? "only" : "exclude");
+const loadStaffGroups = computed(() => (formData.role.value >= USER_ROLES.Organisateur ? "only" : "exclude"))
 const attendantGroups = useAttendantGroups(shouldLoadAttendantGroups, loadStaffGroups, true)
-
 
 /**
  * Update formData with selected user profile data
  * Does not update the form data if the user is editting the field
-*/ 
+ */
 const resetFormData = () => {
-  if (!userProfile.value) return;
+  if (!userProfile.value) return
 
   // common fields
-  if  (!formData.name.isEditting) formData.name.value = userProfile.value.name;    
-  if  (!formData.role.isEditting) formData.role.value = userProfile.value.role ?? DEFAULT_USER_ROLE_VALUE;
-  
+  if (!formData.name.isEditting) formData.name.value = userProfile.value.name
+  if (!formData.role.isEditting) formData.role.value = userProfile.value.role ?? DEFAULT_USER_ROLE_VALUE
+
   // players
-  if (userProfile.value.role == USER_ROLES.Participant){
-    if (!formData.team.isEditting) formData.team.value = userProfile.value.teamId ?? DEFAULT_TEAM_ID;
+  if (userProfile.value.role == USER_ROLES.Participant) {
+    if (!formData.team.isEditting) formData.team.value = userProfile.value.teamId ?? DEFAULT_TEAM_ID
     if (!formData.playerGroup.isEditting) {
-      formData.playerGroup.id = userProfile.value.groupId ?? DEFAULT_GROUP_ID;
-      formData.playerGroup.name = userProfile.value.groupName ?? "";
-      formData.playerGroup.categoryId = selectedPlayerGroup.value?.groupCategoryId ?? DEFAULT_GROUP_CATEGORY_ID;
+      formData.playerGroup.id = userProfile.value.groupId ?? DEFAULT_GROUP_ID
+      formData.playerGroup.name = userProfile.value.groupName ?? ""
+      formData.playerGroup.categoryId = selectedPlayerGroup.value?.groupCategoryId ?? DEFAULT_GROUP_CATEGORY_ID
     }
   }
-  
+
   // attendants & staff
-  if (userProfile.value.role >= USER_ROLES.Animateur && !formData.attendantGroup.isEditting){
+  if (userProfile.value.role >= USER_ROLES.Animateur && !formData.attendantGroup.isEditting) {
     formData.attendantGroup.id = userProfile.value.groupId ?? DEFAULT_GROUP_ID
     formData.attendantGroup.name = userProfile.value.groupName ?? ""
-  } 
+  }
 
   // attendants
   if (
-    (userProfile.value.role == USER_ROLES.Animateur || userProfile.value.role == USER_ROLES.Chef) && 
+    (userProfile.value.role == USER_ROLES.Animateur || userProfile.value.role == USER_ROLES.Chef) &&
     !formData.attendantGames.isEditting &&
     !formData.attendantGames.isUpdating
-  ){
+  ) {
     formData.attendantGames.ids = {} as { [timingId: string]: string }
     formData.attendantGames.names = {} as { [timingId: string]: string }
     if (userProfile.value.games) {
-      for (const [timeSlotId, game] of Object.entries(userProfile.value.games)){
+      for (const [timeSlotId, game] of Object.entries(userProfile.value.games)) {
         formData.attendantGames.ids[timeSlotId] = game.id
         formData.attendantGames.names[timeSlotId] = game.name
       }
@@ -376,72 +530,69 @@ const resetFormData = () => {
 // Watchers
 
 // Update the form data when the user profile changes
-watch(userProfile, (newProfileValue) => {
+watch(userProfile, newProfileValue => {
   if (newProfileValue) {
     resetFormData()
   }
-});
-watch(selectedPlayerGroup, (newGroupValue) => {
+})
+watch(selectedPlayerGroup, newGroupValue => {
   if (newGroupValue) {
     resetFormData()
   }
-});
+})
 // this is necessary to keep userProfile.games reactive
 watchEffect(() => {
-  if (!userProfile.value) return;
+  if (!userProfile.value) return
   if (userProfile.value.games) resetFormData()
-});
+})
 
 // Go to pages
 
 const goToPlayerGroupPage = (groupId: string) => {
-  if (groupId != DEFAULT_GROUP_ID) router.push(`/player-group/${groupId}`);
-};
+  if (groupId != DEFAULT_GROUP_ID) router.push(`/player-group/${groupId}`)
+}
 const goToAttendantGroupPage = (groupId: string) => {
-  if (groupId != DEFAULT_GROUP_ID) router.push(`/attendant-group/${groupId}`);
-};
+  if (groupId != DEFAULT_GROUP_ID) router.push(`/attendant-group/${groupId}`)
+}
 const goToTeamPage = (teamId: string) => {
-  if (teamId != DEFAULT_TEAM_ID) router.push(`/team/${teamId}`);
-};
+  if (teamId != DEFAULT_TEAM_ID) router.push(`/team/${teamId}`)
+}
 const goToGamePage = (gameId: string) => {
-  if (gameId != DEFAULT_GAME_ID) router.push(`/game/${gameId}`);
-};
-
+  if (gameId != DEFAULT_GAME_ID) router.push(`/game/${gameId}`)
+}
 
 // Setters
 
 /**
  * Setters
- * 
+ *
  * Each setter is responsible for updating the user profile with the new data
  * It also handles the loading and error states
- * 
+ *
  * The resetFormData function is called at the end of each setter to reset the form data
- * 
+ *
  * If an error occurs, the function throws an error and the form data is not reset
  */
 
- 
 /**
  * Set a new name for the user
  * Sanitize the input before updating the user profile
  */
 const setName = async () => {
   if (!formData.name.value) {
-    toastPopup("Erreur : aucun nom n'a été entré");
+    toastPopup("Erreur : aucun nom n'a été entré")
     formData.name.isEditting = false
     resetFormData()
-    return 
+    return
   }
   formData.name.isEditting = false
   formData.name.isUpdating = true
-  await updateUserProfile(userId.value, { name: sanitizeInput(formData.name.value) }).catch((error) => {
-    errorPopup(error.message, `Le n'a pas pu être mis à jour`);
-  });
-  formData.name.isUpdating = false;
+  await updateUserProfile(userId.value, { name: sanitizeInput(formData.name.value) }).catch(error => {
+    errorPopup(error.message, `Le n'a pas pu être mis à jour`)
+  })
+  formData.name.isUpdating = false
   resetFormData()
-};
-
+}
 
 /**
  * Set a new role for the user
@@ -451,10 +602,10 @@ const setName = async () => {
  */
 const setRole = async () => {
   if (!formData.role.value || formData.role.value === DEFAULT_USER_ROLE_VALUE) {
-    toastPopup("Erreur : aucun rôle n'a été sélectionné");
+    toastPopup("Erreur : aucun rôle n'a été sélectionné")
     formData.role.isEditting = false
     resetFormData()
-    return 
+    return
   }
   if (!userProfile.value) {
     errorPopup("Le profil de l'utilisateur n'a pas été chargé")
@@ -462,14 +613,20 @@ const setRole = async () => {
     resetFormData()
     return
   }
-  if (userProfile.value.role == USER_ROLES.Participant && formData.role.value > USER_ROLES.Participant){
-    errorPopup("Pour cela, il faut supprimer et recréer l'utilisateur", "Il n'est pas possible de changer le rôle d'un participant")
+  if (userProfile.value.role == USER_ROLES.Participant && formData.role.value > USER_ROLES.Participant) {
+    errorPopup(
+      "Pour cela, il faut supprimer et recréer l'utilisateur",
+      "Il n'est pas possible de changer le rôle d'un participant"
+    )
     formData.role.isEditting = false
     resetFormData()
     return
   }
-  if (userProfile.value.role >= USER_ROLES.Animateur && formData.role.value < USER_ROLES.Animateur){
-    errorPopup("Pour cela, il faut supprimer et recréer l'utilisateur", "Il n'est pas possible de rétrograder un utilisateur au role de participant")
+  if (userProfile.value.role >= USER_ROLES.Animateur && formData.role.value < USER_ROLES.Animateur) {
+    errorPopup(
+      "Pour cela, il faut supprimer et recréer l'utilisateur",
+      "Il n'est pas possible de rétrograder un utilisateur au role de participant"
+    )
     formData.role.isEditting = false
     resetFormData()
     return
@@ -477,12 +634,16 @@ const setRole = async () => {
   formData.role.isEditting = false
   formData.role.isUpdating = true
   // if the user was registered to games & that the new roles is not an attendant, remove the games
-  if (userProfile.value.games && Object.values(userProfile.value.games).length > 0 && formData.role.value > USER_ROLES.Chef) {
-    for (const [timeSlotId, game] of Object.entries(userProfile.value.games)){
+  if (
+    userProfile.value.games &&
+    Object.values(userProfile.value.games).length > 0 &&
+    formData.role.value > USER_ROLES.Chef
+  ) {
+    for (const [timeSlotId, game] of Object.entries(userProfile.value.games)) {
       try {
         await removeAttendant(game.id, userProfile.value.id, timeSlotId)
-      } catch (error: any){
-        errorPopup(error.message, `Erreur lors du désenregistrement de l'utilisateur à l'épreuve ${game}`);
+      } catch (error: any) {
+        errorPopup(error.message, `Erreur lors du désenregistrement de l'utilisateur à l'épreuve ${game}`)
         formData.role.isUpdating = false
         resetFormData()
         throw error
@@ -491,20 +652,20 @@ const setRole = async () => {
     }
   }
   try {
-    await updateUserProfile(userProfile.value.id, { 
+    await updateUserProfile(userProfile.value.id, {
       role: formData.role.value,
       groupId: DEFAULT_GROUP_ID,
-      groupName: "",
+      groupName: ""
     })
-  } catch(error: any){
-    errorPopup(error.message, `Le rôle n'a pas pu être mis à jour`);
+  } catch (error: any) {
+    errorPopup(error.message, `Le rôle n'a pas pu être mis à jour`)
     formData.role.isUpdating = false
     resetFormData()
     throw error
   }
   formData.role.isUpdating = false
   resetFormData()
-};
+}
 
 /**
  * Set a new player group
@@ -519,16 +680,16 @@ const setPlayerGroup = async () => {
   formData.playerGroup.isEditting = false
   formData.playerGroup.isUpdating = true
   const selectedGroup = playerGroups.value.find(group => group.id === formData.playerGroup.id)
-  if (!selectedGroup){
+  if (!selectedGroup) {
     formData.playerGroup.isUpdating = false
     resetFormData()
     return
   }
   try {
-    await updateUserProfile(userId.value, { 
+    await updateUserProfile(userId.value, {
       groupId: formData.playerGroup.id,
       groupName: selectedGroup.name,
-      teamId: DEFAULT_TEAM_ID,
+      teamId: DEFAULT_TEAM_ID
     })
   } catch (error: any) {
     errorPopup(error.message, `La section n'a pas pu être mise à jour`)
@@ -539,14 +700,14 @@ const setPlayerGroup = async () => {
   toastPopup("Vu que la section a changé, l'équipe a été effacée du profil")
   formData.playerGroup.isUpdating = false
   resetFormData()
-};
+}
 
 /**
  * Set a new team
  */
 const setTeam = async () => {
   if (formData.team.value === DEFAULT_TEAM_ID) {
-    toastPopup("Erreur : aucune équipe n'a été sélectionnée");
+    toastPopup("Erreur : aucune équipe n'a été sélectionnée")
     formData.team.isEditting = false
     resetFormData()
     return
@@ -563,14 +724,14 @@ const setTeam = async () => {
   }
   formData.team.isUpdating = false
   resetFormData()
-};
+}
 
 /**
  * Set a new attendant group
  */
 const setAttendantGroup = async () => {
   if (formData.attendantGroup.id === DEFAULT_GROUP_ID) {
-    toastPopup("Erreur : aucune section n'a été sélectionnée");
+    toastPopup("Erreur : aucune section n'a été sélectionnée")
     formData.attendantGroup.isEditting = false
     resetFormData()
     return
@@ -578,26 +739,26 @@ const setAttendantGroup = async () => {
   formData.attendantGroup.isEditting = false
   formData.attendantGroup.isUpdating = true
   const selectedGroup = attendantGroups.value.find(group => group.id === formData.attendantGroup.id)
-  if (!selectedGroup){
+  if (!selectedGroup) {
     errorPopup("La section n'a pas été trouvée")
     formData.attendantGroup.isUpdating = false
     resetFormData()
     return
   }
   try {
-    await updateUserProfile(userId.value, { 
+    await updateUserProfile(userId.value, {
       groupId: formData.attendantGroup.id,
-      groupName: selectedGroup.name,
+      groupName: selectedGroup.name
     })
   } catch (error: any) {
-    errorPopup(error.message, `La section n'a pas pu être mise à jour`);
+    errorPopup(error.message, `La section n'a pas pu être mise à jour`)
     formData.attendantGroup.isUpdating = false
     resetFormData()
     throw error
   }
   formData.attendantGroup.isUpdating = false
   resetFormData()
-};
+}
 
 /**
  * Set a new game for the user
@@ -605,7 +766,7 @@ const setAttendantGroup = async () => {
  */
 const setGame = async (timeSlotId: string) => {
   if (!formData.attendantGames.ids[timeSlotId]) {
-    toastPopup("Erreur : aucun jeu n'a été sélectionné");
+    toastPopup("Erreur : aucun jeu n'a été sélectionné")
     formData.attendantGames.isEditting = false
     resetFormData()
     return
@@ -620,9 +781,9 @@ const setGame = async (timeSlotId: string) => {
   formData.attendantGames.isUpdating = true
 
   // if the user was already registered to a game
-  if (userProfile.value.games && userProfile.value.games[timeSlotId]){
+  if (userProfile.value.games && userProfile.value.games[timeSlotId]) {
     // if the user is already registered to this game, cancel the operation and notify the user
-    if (userProfile.value.games[timeSlotId].id === formData.attendantGames.ids[timeSlotId]){
+    if (userProfile.value.games[timeSlotId].id === formData.attendantGames.ids[timeSlotId]) {
       toastPopup("L'utilisateur est déjà inscrit à cette épreuve")
       formData.attendantGames.isUpdating = false
       resetFormData()
@@ -631,8 +792,11 @@ const setGame = async (timeSlotId: string) => {
     // else, remove the user from the previous game
     try {
       await removeAttendant(userProfile.value.games[timeSlotId].id, userProfile.value.id, timeSlotId)
-    } catch (error: any){
-      errorPopup(error.message, `Erreur lors du désenregistrement de l'utilisateur à l'épreuve ${userProfile.value.games[timeSlotId]}`);
+    } catch (error: any) {
+      errorPopup(
+        error.message,
+        `Erreur lors du désenregistrement de l'utilisateur à l'épreuve ${userProfile.value.games[timeSlotId]}`
+      )
       formData.attendantGames.isUpdating = false
       resetFormData()
       throw error
@@ -640,16 +804,18 @@ const setGame = async (timeSlotId: string) => {
   }
   try {
     await addAttendant(formData.attendantGames.ids[timeSlotId], userProfile.value.id, timeSlotId)
-  }
-  catch (error: any){
-    errorPopup(error.message, `Erreur lors de l'enregistrement de l'utilisateur à l'épreuve ${formData.attendantGames.ids[timeSlotId]}`);
+  } catch (error: any) {
+    errorPopup(
+      error.message,
+      `Erreur lors de l'enregistrement de l'utilisateur à l'épreuve ${formData.attendantGames.ids[timeSlotId]}`
+    )
     formData.attendantGames.isUpdating = false
     resetFormData()
     throw error
   }
   formData.attendantGames.isUpdating = false
   resetFormData()
-};
+}
 
 // Actions
 
@@ -657,13 +823,13 @@ const setGame = async (timeSlotId: string) => {
  * Reset the onboarding process
  */
 const resetOnboarding = async () => {
-  const loading = await loadingPopup("Réinitialisation de l'onboarding");
+  const loading = await loadingPopup("Réinitialisation de l'onboarding")
   try {
-    await updateUserProfile(userId.value, { hasDoneOnboarding: false });
+    await updateUserProfile(userId.value, { hasDoneOnboarding: false })
   } catch (error: any) {
-    errorPopup(error.message, `L'onboarding n'a pas pu être réinitialisée`);
+    errorPopup(error.message, `L'onboarding n'a pas pu être réinitialisée`)
   }
-  loading.dismiss();
+  loading.dismiss()
 }
 
 /**
@@ -671,48 +837,51 @@ const resetOnboarding = async () => {
  */
 const logOut = () => {
   confirmPopup("Es-tu certain.e de vouloir te déconnecter ?", async () => {
-    const loading = await loadingPopup("Déconnexion");
+    const loading = await loadingPopup("Déconnexion")
     try {
-      await signOut();
-      router.replace("/home");
+      await signOut()
+      router.replace("/home")
     } catch (error: any) {
-      errorPopup(error.message, `Une erreur est survenue durant la déconnexion`);
+      errorPopup(error.message, `Une erreur est survenue durant la déconnexion`)
     }
-    loading.dismiss();
-  });
-};
+    loading.dismiss()
+  })
+}
 
 const removeAccount = async () => {
-  const confirmTitle = "Es-tu sûr.e ?";
-  const confirmMessage = "Cette opération supprimera toutes les données liées au profil";
+  const confirmTitle = "Es-tu sûr.e ?"
+  const confirmMessage = "Cette opération supprimera toutes les données liées au profil"
   const removeAccountHandler = async () => {
     if (!userProfile.value) {
       errorPopup("Le profil de l'utilisateur n'a pas été chargé")
       return
     }
-    const wasOwnProfile = isOwnProfile.value;
-    const loading = await loadingPopup("Suppression du profil");
-    if (userProfile.value.games){
-      for (const [timeSlotId, game] of Object.entries(userProfile.value.games)){
+    const wasOwnProfile = isOwnProfile.value
+    const loading = await loadingPopup("Suppression du profil")
+    if (userProfile.value.games) {
+      for (const [timeSlotId, game] of Object.entries(userProfile.value.games)) {
         try {
           await removeAttendant(game.id, userProfile.value.id, timeSlotId)
-        } catch (error: any){
-          errorPopup(error.message, `Erreur lors du désenregistrement de l'utilisateur ${userProfile.value.id} à l'épreuve ${game}`);
+        } catch (error: any) {
+          errorPopup(
+            error.message,
+            `Erreur lors du désenregistrement de l'utilisateur ${userProfile.value.id} à l'épreuve ${game}`
+          )
         }
-      } 
+      }
     }
     try {
       await removeFirebaseAccount(userProfile.value.id)
     } catch (error: any) {
-      errorPopup(error.message, `Erreur Lors de la suppression de l'utilisateur ${userProfile.value.id}`);
+      errorPopup(error.message, `Erreur Lors de la suppression de l'utilisateur ${userProfile.value.id}`)
     }
     if (wasOwnProfile) {
-      await signOut();
-      router.replace("/home");
+      await signOut()
+      router.replace("/home")
     }
-    loading.dismiss();
-  };
-  confirmPopup(confirmMessage, removeAccountHandler, null, confirmTitle);
+    loading.dismiss()
+  }
+  confirmPopup(confirmMessage, removeAccountHandler, null, confirmTitle)
 }
 </script>
 
@@ -730,7 +899,7 @@ ion-select {
 ion-item ion-icon {
   align-self: center;
 }
-ion-item ion-spinner{
+ion-item ion-spinner {
   align-self: center;
 }
 </style>

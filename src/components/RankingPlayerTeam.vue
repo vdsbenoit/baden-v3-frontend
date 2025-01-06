@@ -8,7 +8,7 @@
         <ion-spinner></ion-spinner>
       </div>
       <div v-else-if="errorLoading" class="not-found">
-          <h2 class="ion-text-center ion-align-items-center">Erreur lors du chargement</h2>
+        <h2 class="ion-text-center ion-align-items-center">Erreur lors du chargement</h2>
       </div>
       <ion-list v-else-if="teams.length > 0">
         <ion-item v-for="(team, index) in teams" :key="index" :routerLink="`/team/${team.id}`">
@@ -25,7 +25,7 @@
     </ion-card-content>
     <ion-card-content v-else>
       <div>
-        <br><br>
+        <br /><br />
         <table>
           <thead>
             <tr>
@@ -50,18 +50,16 @@
 </template>
 
 <script setup lang="ts">
+import { useTopTeams } from "@/composables/team"
 // prettier-ignore
-import { useTopTeams } from "@/composables/team";
 import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonLabel, IonList, IonSpinner, IonText } from "@ionic/vue";
-
-import { defineProps } from "vue";
+import { defineProps } from "vue"
 const props = defineProps<{
-  groupCategoryId: string;
+  groupCategoryId: string
   limit: number
-  printableScores: boolean;
-}>();
+  printableScores: boolean
+}>()
 
 // composable
-const { data: teams, pending: isLoading, error: errorLoading } = useTopTeams(props.groupCategoryId, props.limit);
-
+const { data: teams, pending: isLoading, error: errorLoading } = useTopTeams(props.groupCategoryId, props.limit)
 </script>

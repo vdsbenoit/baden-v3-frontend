@@ -1,6 +1,12 @@
 <template>
   <div>
-    <ion-badge v-for="(availability, i) in availabilities" :key="i" slot="end" class="ion-no-margin ion-margin-start" :color="availability.color">
+    <ion-badge
+      v-for="(availability, i) in availabilities"
+      :key="i"
+      slot="end"
+      class="ion-no-margin ion-margin-start"
+      :color="availability.color"
+    >
       {{ availability.nbAttendants }}
     </ion-badge>
   </div>

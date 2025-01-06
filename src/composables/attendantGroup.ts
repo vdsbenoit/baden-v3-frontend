@@ -20,7 +20,7 @@ export function useAttendantGroup(rGroupId: MaybeRefOrGetter<string>) {
  * @param rShouldLoad To be used to lazy load the collection
  * @param rStaffGroups To define if the staff groups should be included in the query, excluded or only the staff groups should be returned
  * @param rShowAllAttendantGroups If false, only the current user group will be returned
- * @returns 
+ * @returns
  */
 export function useAttendantGroups(
   rShouldLoad: MaybeRefOrGetter<boolean> = true,

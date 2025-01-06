@@ -44,7 +44,7 @@ export async function processSignInLink(href: string) {
     if (response.user) {
       const userProfile = await getUserProfile(response.user.uid as string)
       if (userProfile == undefined) createUserProfile(response.user.uid as string, response.user.email as string)
-      else updateUserProfile(response.user.uid as string, { lastLogin: Timestamp.now()})
+      else updateUserProfile(response.user.uid as string, { lastLogin: Timestamp.now() })
       window.localStorage.removeItem("emailForSignIn")
       loading.dismiss()
       return true
@@ -59,7 +59,7 @@ export async function processSignInLink(href: string) {
     else {
       errorPopup(e.message)
       console.error(e)
-    } 
+    }
     loading.dismiss()
     return false
   }

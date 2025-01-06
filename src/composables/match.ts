@@ -1,4 +1,10 @@
-import { DEFAULT_GAME_ID, DEFAULT_MATCH_ID, DEFAULT_TEAM_ID, DEFAULT_TIME_VALUE, MATCHES_COLLECTION_REF } from "@/constants"
+import {
+  DEFAULT_GAME_ID,
+  DEFAULT_MATCH_ID,
+  DEFAULT_TEAM_ID,
+  DEFAULT_TIME_VALUE,
+  MATCHES_COLLECTION_REF
+} from "@/constants"
 import { Match } from "@/types"
 import { doc, orderBy, query, where } from "firebase/firestore"
 import { MaybeRefOrGetter, computed, toValue } from "vue"

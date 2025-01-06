@@ -1,5 +1,5 @@
 import { Ref } from "vue"
-import { VueFirestoreDocumentData} from "vuefire"
+import { VueFirestoreDocumentData } from "vuefire"
 
 export type PlayerTeam = {
   hash: string

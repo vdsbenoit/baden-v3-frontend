@@ -8,7 +8,7 @@
         <ion-spinner></ion-spinner>
       </div>
       <div v-else-if="errorLoading" class="not-found">
-          <h2 class="ion-text-center ion-align-items-center">Erreur lors du chargement</h2>
+        <h2 class="ion-text-center ion-align-items-center">Erreur lors du chargement</h2>
       </div>
       <ion-list v-else-if="groups.length > 0">
         <ion-item v-for="(group, index) in groups" :key="index" :routerLink="`/player-group/${group.id}`">
@@ -25,7 +25,7 @@
     </ion-card-content>
     <ion-card-content v-else>
       <div>
-        <br><br>
+        <br /><br />
         <table>
           <thead>
             <tr>
@@ -50,18 +50,16 @@
 </template>
 
 <script setup lang="ts">
+import { useTopPlayerGroups } from "@/composables/playerGroup";
 // prettier-ignore
-import { useTopPlayerGroups as useTopPlayerGroups } from "@/composables/playerGroup";
 import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonLabel, IonList, IonSpinner, IonText } from "@ionic/vue";
-
 import { defineProps } from "vue";
 const props = defineProps<{
-  groupCategoryId: string;
+  groupCategoryId: string
   limit: number
-  printableScores: boolean;
-}>();
+  printableScores: boolean
+}>()
 
 // composable
-const { data: groups, pending: isLoading, error: errorLoading } = useTopPlayerGroups(props.groupCategoryId, props.limit);
-
+const { data: groups, pending: isLoading, error: errorLoading } = useTopPlayerGroups(props.groupCategoryId, props.limit)
 </script>

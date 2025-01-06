@@ -1,4 +1,10 @@
-import { DEFAULT_GROUP_ID, GROUPS_COLLECTION_NAME, GROUPS_COLLECTION_REF, TEAMS_COLLECTION_REF, USER_PROFILES_COLLECTION_REF } from "@/constants"
+import {
+  DEFAULT_GROUP_ID,
+  GROUPS_COLLECTION_NAME,
+  GROUPS_COLLECTION_REF,
+  TEAMS_COLLECTION_REF,
+  USER_PROFILES_COLLECTION_REF
+} from "@/constants"
 import { incrementDocField } from "@/services/firebase"
 import { AttendantGroup, PlayerGroup, PlayerTeam, UserProfile } from "@/types"
 import { doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore"
@@ -41,12 +47,12 @@ export const setGroupName = async (groupId: string, newGroupName: string) => {
   promises.push(updateDoc(dbRefGroup, { name: newGroupName } as Partial<PlayerGroup>))
   const dbRefUsers = query(USER_PROFILES_COLLECTION_REF, where("groupId", "==", groupId))
   const querySnapshotUsers = await getDocs(dbRefUsers)
-  querySnapshotUsers.forEach((doc) => {
+  querySnapshotUsers.forEach(doc => {
     promises.push(updateDoc(doc.ref, { groupName: newGroupName } as Partial<UserProfile>))
   })
   const dbRefPlayerTeams = query(TEAMS_COLLECTION_REF, where("groupId", "==", groupId))
   const querySnapshotTeams = await getDocs(dbRefPlayerTeams)
-  querySnapshotTeams.forEach((doc) => {
+  querySnapshotTeams.forEach(doc => {
     promises.push(updateDoc(doc.ref, { groupName: newGroupName } as Partial<PlayerTeam>))
   })
   return Promise.all(promises).then(() => console.log(`${groupId} group name has been set to ${newGroupName}`))

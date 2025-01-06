@@ -1,12 +1,12 @@
 // prettier-ignore
 import { DEFAULT_GROUP_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID, USER_ROLES, USER_PROFILES_COLLECTION_NAME, USER_PROFILES_COLLECTION_REF } from "@/constants";
-import { db, fbSignOut } from "@/services/firebase";
-import { RefUserProfile, UserProfile } from "@/types";
-import { Timestamp } from "@firebase/firestore";
-import { deleteUser } from "firebase/auth";
-import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { MaybeRefOrGetter, toValue } from "vue";
-import { useFirebaseAuth } from "vuefire";
+import { db, fbSignOut } from "@/services/firebase"
+import { RefUserProfile, UserProfile } from "@/types"
+import { Timestamp } from "@firebase/firestore"
+import { deleteUser } from "firebase/auth"
+import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
+import { MaybeRefOrGetter, toValue } from "vue"
+import { useFirebaseAuth } from "vuefire"
 
 // getters
 
@@ -41,7 +41,7 @@ export async function createUserProfile(uid: string, email: string) {
     hasDoneOnboarding: false,
     groupId: DEFAULT_GROUP_ID,
     groupName: "",
-    teamId: DEFAULT_TEAM_ID,
+    teamId: DEFAULT_TEAM_ID
   }
   const docRef = doc(USER_PROFILES_COLLECTION_REF, uid)
   return setDoc(docRef, newProfile).then(() => console.log(`Created new user profile : ${uid}`))

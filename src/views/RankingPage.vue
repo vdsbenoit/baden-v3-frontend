@@ -1,15 +1,15 @@
 <template>
   <ion-page>
     <header-component pageTitle="Classement">
-      <ion-label v-if="canPrint">
-        Printable
-      </ion-label>
+      <ion-label v-if="canPrint"> Printable </ion-label>
       <ion-toggle v-if="canPrint" @IonChange="togglePrintable" :checked="showPrintableScores"></ion-toggle>
-      <ion-button @click="setLimit"><ion-icon slot="icon-only" :ios="settingsOutline" :md="settingsSharp"></ion-icon></ion-button>
+      <ion-button @click="setLimit"
+        ><ion-icon slot="icon-only" :ios="settingsOutline" :md="settingsSharp"></ion-icon
+      ></ion-button>
     </header-component>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
-      <div v-if="appConfig" >
+      <div v-if="appConfig">
         <ion-card v-for="(groupCategory, groupCategoryId) in appConfig.groupCategories" :key="groupCategoryId">
           <ion-card-header>
             <ion-card-title>{{ groupCategory.name }}</ion-card-title>
@@ -18,10 +18,18 @@
             <ion-grid class="ion-no-padding">
               <ion-row>
                 <ion-col size="12" size-sm="6">
-                  <ranking-player-group :groupCategoryId="String(groupCategoryId)" :limit="limit" :printable-scores="showPrintableScores"/>
+                  <ranking-player-group
+                    :groupCategoryId="String(groupCategoryId)"
+                    :limit="limit"
+                    :printable-scores="showPrintableScores"
+                  />
                 </ion-col>
                 <ion-col size="12" size-sm="6">
-                  <ranking-player-team :groupCategoryId="String(groupCategoryId)" :limit="limit" :printable-scores="showPrintableScores"/>
+                  <ranking-player-team
+                    :groupCategoryId="String(groupCategoryId)"
+                    :limit="limit"
+                    :printable-scores="showPrintableScores"
+                  />
                 </ion-col>
               </ion-row>
             </ion-grid>
@@ -35,58 +43,59 @@
 <script setup lang="ts">
 // prettier-ignore
 import HeaderComponent from "@/components/HeaderComponent.vue";
-import RankingPlayerGroup from "@/components/RankingPlayerGroup.vue";
-import RankingPlayerTeam from "@/components/RankingPlayerTeam.vue";
-import RefresherComponent from "@/components/RefresherComponent.vue";
-import { useAppConfig } from "@/composables/app";
-import { useCurrentUserProfile } from "@/composables/userProfile";
-import { USER_ROLES } from "@/constants";
+import RankingPlayerGroup from "@/components/RankingPlayerGroup.vue"
+import RankingPlayerTeam from "@/components/RankingPlayerTeam.vue"
+import RefresherComponent from "@/components/RefresherComponent.vue"
+import { useAppConfig } from "@/composables/app"
+import { useCurrentUserProfile } from "@/composables/userProfile"
+import { USER_ROLES } from "@/constants"
+// prettier-ignore
 import { alertController, AlertInput, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonLabel, IonPage, IonRow, IonToggle } from "@ionic/vue";
-import { settingsOutline, settingsSharp } from "ionicons/icons";
-import { computed, ref } from "vue";
+import { settingsOutline, settingsSharp } from "ionicons/icons"
+import { computed, ref } from "vue"
 
 // reactive data
 
-const limit = ref(10);
-const showPrintableScores = ref(false);
+const limit = ref(10)
+const showPrintableScores = ref(false)
 
 // Composables
 
-const currentUserProfile = useCurrentUserProfile();
-const appConfig = useAppConfig();
+const currentUserProfile = useCurrentUserProfile()
+const appConfig = useAppConfig()
 
 // Computed
 
 const canPrint = computed(() => {
   return currentUserProfile.value && currentUserProfile.value.role >= USER_ROLES.Organisateur
-});
+})
 
 // Methods
 
 const setLimit = async () => {
-  const inputs = [] as AlertInput[];
-  const options = [10, 25, 50, 100, 500];
+  const inputs = [] as AlertInput[]
+  const options = [10, 25, 50, 100, 500]
   options.forEach((option: number) => {
     inputs.push({
       type: "radio",
       label: option.toString(),
       value: option,
       handler: () => {
-        limit.value = option;
+        limit.value = option
       },
-      checked: option === limit.value,
-    });
-  });
+      checked: option === limit.value
+    })
+  })
   const alert = await alertController.create({
     header: "Afficher combien de scores ?",
     inputs: inputs,
-    buttons: ["OK"],
-  });
-  await alert.present();
-};
+    buttons: ["OK"]
+  })
+  await alert.present()
+}
 const togglePrintable = () => {
-  showPrintableScores.value = !showPrintableScores.value;
-}; 
+  showPrintableScores.value = !showPrintableScores.value
+}
 </script>
 <style scoped>
 ion-select {

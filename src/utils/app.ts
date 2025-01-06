@@ -1,8 +1,8 @@
 // prettier-ignore
 import { APP_COLLECTION_NAME, APP_CONFIG_DOC_NAME, APP_CONFIG_DOC_REF, APP_SETTINGS_DOC_REF, ATTENDANT_SCHEDULE_KEY, GAMES_COLLECTION_NAME, USER_PROFILES_COLLECTION_NAME, USER_PROFILES_GAMES_KEY } from "@/constants";
-import { addToDocArray, generateRandomId, updateFieldInCollection } from "@/services/firebase";
-import { AppSettings, AttendantTimeSlot } from "@/types";
-import { getDoc, updateDoc } from "firebase/firestore";
+import { addToDocArray, generateRandomId, updateFieldInCollection } from "@/services/firebase"
+import { AppSettings, AttendantTimeSlot } from "@/types"
+import { getDoc, updateDoc } from "firebase/firestore"
 
 // Getters
 
@@ -30,19 +30,19 @@ export const addAttendantTiming = async (attendantTimeSlot: AttendantTimeSlot) =
 export const removeAttendantTiming = (): never => {
   throw Error("One should not remove the attendantTiming one by one")
 }
-const defaultAttendantTimings :AttendantTimeSlot[] = [
-  {start: "08h30", stop: "12h00", id: "", name: "Matin"},
-  {start: "13h00", stop: "17h00", id: "", name: "Après-midi"}
+const defaultAttendantTimings: AttendantTimeSlot[] = [
+  { start: "08h30", stop: "12h00", id: "", name: "Matin" },
+  { start: "13h00", stop: "17h00", id: "", name: "Après-midi" }
 ]
 /**
  * Reset attendants timings
  * Do not use if attendant have already registered to games as it would reset the id of the timings
- * @param attendantTimings new attendant timings 
- * @returns 
+ * @param attendantTimings new attendant timings
+ * @returns
  */
 export const resetAttendantTimings = async (attendantTimings: AttendantTimeSlot[] = defaultAttendantTimings) => {
-  for (let i=0; i< attendantTimings.length; i++){
-    if (!attendantTimings[i].name) attendantTimings[i].name = String(i+1)
+  for (let i = 0; i < attendantTimings.length; i++) {
+    if (!attendantTimings[i].name) attendantTimings[i].name = String(i + 1)
     attendantTimings[i].id = generateRandomId()
   }
   // remove all attendant registrations in games and users collections
@@ -51,4 +51,4 @@ export const resetAttendantTimings = async (attendantTimings: AttendantTimeSlot[
   await Promise.all([gamesCleaningPromise, usersCleaningPromise])
   // apply new attendant timings
   return updateDoc(APP_CONFIG_DOC_REF, { attendantTimings })
-} 
+}

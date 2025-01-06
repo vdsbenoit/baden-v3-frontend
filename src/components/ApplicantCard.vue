@@ -1,36 +1,38 @@
 <template>
-    <ion-card v-if="isLoadingApplicants || errorLoadingApplicants || applicants.length > 0"> 
-      <ion-card-header>
-        <ion-card-title>{{ attendantGroupName }} ({{ attendantGroupCity }})</ion-card-title>
-      </ion-card-header>
-      <ion-card-content class="ion-no-padding ion-padding-vertical">
-        <div v-if="isLoadingApplicants" class="not-found" style="background: transparent">
-          <ion-spinner></ion-spinner>
-        </div>
-        <div v-else-if="errorLoadingApplicants" class="not-found">
-          <strong class="capitalize">Erreur</strong>
-          <ion-text color="error">{{ errorLoadingApplicants.message }}</ion-text>
-        </div>
-        <ion-list lines="full">
-          <ion-item v-for="applicant in applicants" :key="applicant.id" @click="handleRequest(applicant)">
-            <ion-label>
-              <ion-text style="font-weight: bold">{{ applicant.name }} </ion-text>
-              <ion-text> ({{ applicant.email }})</ion-text>
-            </ion-label>
-            <ion-badge slot="end" :color="badgeColor(applicant)"> {{ getRoleByValue(applicant.requestedRole ?? -1) }} </ion-badge>
-          </ion-item>
-        </ion-list>
-      </ion-card-content>
-    </ion-card>
+  <ion-card v-if="isLoadingApplicants || errorLoadingApplicants || applicants.length > 0">
+    <ion-card-header>
+      <ion-card-title>{{ attendantGroupName }} ({{ attendantGroupCity }})</ion-card-title>
+    </ion-card-header>
+    <ion-card-content class="ion-no-padding ion-padding-vertical">
+      <div v-if="isLoadingApplicants" class="not-found" style="background: transparent">
+        <ion-spinner></ion-spinner>
+      </div>
+      <div v-else-if="errorLoadingApplicants" class="not-found">
+        <strong class="capitalize">Erreur</strong>
+        <ion-text color="error">{{ errorLoadingApplicants.message }}</ion-text>
+      </div>
+      <ion-list lines="full">
+        <ion-item v-for="applicant in applicants" :key="applicant.id" @click="handleRequest(applicant)">
+          <ion-label>
+            <ion-text style="font-weight: bold">{{ applicant.name }} </ion-text>
+            <ion-text> ({{ applicant.email }})</ion-text>
+          </ion-label>
+          <ion-badge slot="end" :color="badgeColor(applicant)">
+            {{ getRoleByValue(applicant.requestedRole ?? -1) }}
+          </ion-badge>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 </template>
 
 <script lang="ts" setup>
 import { useCurrentUserProfile, useGroupApplicants } from "@/composables/userProfile"
-import { DEFAULT_USER_ROLE_VALUE, USER_ROLES } from "@/constants";
+import { DEFAULT_USER_ROLE_VALUE, USER_ROLES } from "@/constants"
 import { VueFireUserProfile } from "@/types"
 import { defineProps, defineEmits, watch } from "vue"
-import { getRoleByValue, getUserName, updateUserProfile } from "@/utils/userProfile";
-import { choicePopup, errorPopup, textInputPopup } from "@/utils/popup";
+import { getRoleByValue, getUserName, updateUserProfile } from "@/utils/userProfile"
+import { choicePopup, errorPopup, textInputPopup } from "@/utils/popup"
 
 const props = defineProps<{
   attendantGroupId: string
@@ -42,7 +44,7 @@ const emit = defineEmits(["hasApplicants"])
 
 // composables
 
-const currentUser = useCurrentUserProfile();
+const currentUser = useCurrentUserProfile()
 const {
   data: applicants,
   pending: isLoadingApplicants,
@@ -51,7 +53,7 @@ const {
 
 // watchers
 
-watch(applicants, (newApplicants) => {
+watch(applicants, newApplicants => {
   if (newApplicants && newApplicants.length < 1 && !errorLoadingApplicants.value) {
     emit("hasApplicants", false)
   } else emit("hasApplicants", true)
@@ -68,15 +70,15 @@ watch(applicants, (newApplicants) => {
 const badgeColor = (user: VueFireUserProfile) => {
   switch (user.requestedRole) {
     case USER_ROLES.Animateur:
-      return "success";
+      return "success"
     case USER_ROLES.Chef:
-      return "primary";
+      return "primary"
     case USER_ROLES.Organisateur:
-      return "warning";
+      return "warning"
     case USER_ROLES.Administrateur:
-      return "danger";
+      return "danger"
     default:
-      return "medium";
+      return "medium"
   }
 }
 
@@ -99,56 +101,60 @@ const badgeColor = (user: VueFireUserProfile) => {
 
 const handleRequest = (applicant: VueFireUserProfile) => {
   if (!currentUser.value) {
-    errorPopup("Impossible de récupérer les informations de l'utilisateur actuel");
-    return;
+    errorPopup("Impossible de récupérer les informations de l'utilisateur actuel")
+    return
   }
   if (!applicant.requestedRole) {
-    errorPopup(`requestedRole n'est pas défini pour ${getUserName(applicant)}`);
-    return;
+    errorPopup(`requestedRole n'est pas défini pour ${getUserName(applicant)}`)
+    return
   }
-  let message = "";
+  let message = ""
   if (applicant.requestedRole === USER_ROLES.Animateur || applicant.requestedRole === USER_ROLES.Chef) {
     message = `Tu es sur le point d'ajouter ${getUserName(applicant)}
-    comme <b>${getRoleByValue(applicant.requestedRole)}</b> de la section ${props.attendantGroupName}.`;
+    comme <b>${getRoleByValue(applicant.requestedRole)}</b> de la section ${props.attendantGroupName}.`
   }
-  if (applicant.requestedRole >= USER_ROLES.Organisateur){
+  if (applicant.requestedRole >= USER_ROLES.Organisateur) {
     message = `Tu es sur le point d'ajouter ${getUserName(applicant)}
-    comme <b>${getRoleByValue(applicant.requestedRole)}</b> de la Baden Battle.`;
+    comme <b>${getRoleByValue(applicant.requestedRole)}</b> de la Baden Battle.`
   }
   if (!message) {
-    errorPopup(`Ce rôle n'existe pas (${applicant.requestedRole})`);
-    return;
+    errorPopup(`Ce rôle n'existe pas (${applicant.requestedRole})`)
+    return
   }
   const choices = ["Accepter", "Refuser", "Annuler"]
-  const reasonMessage = `Pourquoi refuse-tu la demande de ${getUserName(applicant)} ?`;
+  const reasonMessage = `Pourquoi refuse-tu la demande de ${getUserName(applicant)} ?`
   const acceptHandler = () => {
-    updateUserProfile(applicant.id, { 
-          role: applicant.requestedRole,
-          groupId: applicant.requestedGroupId,
-          groupName: applicant.requestedGroupName,
-          requestedRole: DEFAULT_USER_ROLE_VALUE,
-          requestedGroupId: "",
-          rejectionReason: "" 
-    });
-    
+    updateUserProfile(applicant.id, {
+      role: applicant.requestedRole,
+      groupId: applicant.requestedGroupId,
+      groupName: applicant.requestedGroupName,
+      requestedRole: DEFAULT_USER_ROLE_VALUE,
+      requestedGroupId: "",
+      rejectionReason: ""
+    })
   }
   const rejectHandler = (reason: string) => {
-    const fullReason = `${getUserName(currentUser)} (${getRoleByValue(currentUser.value?.role ?? -1)}) : "${reason}"`;
-    updateUserProfile(applicant.id, {  requestedRole: -1, requestedGroupId: "", rejectionReason: fullReason, hasDoneOnboarding: false });
+    const fullReason = `${getUserName(currentUser)} (${getRoleByValue(currentUser.value?.role ?? -1)}) : "${reason}"`
+    updateUserProfile(applicant.id, {
+      requestedRole: -1,
+      requestedGroupId: "",
+      rejectionReason: fullReason,
+      hasDoneOnboarding: false
+    })
   }
   const choicePopupHandler = (choice: string) => {
     switch (choice) {
       case "Accepter":
-        acceptHandler();
-        break;
+        acceptHandler()
+        break
       case "Refuser":
-        textInputPopup(reasonMessage, rejectHandler, "Raison", "Brève explication");
-        break;
+        textInputPopup(reasonMessage, rejectHandler, "Raison", "Brève explication")
+        break
       default:
-        break;
+        break
     }
   }
-  choicePopup("Continuer?", choices, choicePopupHandler, "", message);
+  choicePopup("Continuer?", choices, choicePopupHandler, "", message)
 }
 </script>
 

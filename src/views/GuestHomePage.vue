@@ -15,12 +15,12 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonButton } from "@ionic/vue";
-import HeaderComponent from "@/components/HeaderComponent.vue";
-import { useRouter } from "vue-router";
-import RefresherComponent from "@/components/RefresherComponent.vue";
+import { IonContent, IonPage, IonButton } from "@ionic/vue"
+import HeaderComponent from "@/components/HeaderComponent.vue"
+import { useRouter } from "vue-router"
+import RefresherComponent from "@/components/RefresherComponent.vue"
 
-const router = useRouter();
+const router = useRouter()
 </script>
 
 <style scoped>
@@ -40,10 +40,10 @@ const router = useRouter();
   max-width: 100%;
   max-height: 100%;
 }
-body.dark .logo img{
+body.dark .logo img {
   filter: invert(1);
 }
-.container{
+.container {
   text-align: center;
 }
 h1 {
