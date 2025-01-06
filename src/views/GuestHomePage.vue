@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonButton,} from "@ionic/vue";
+import { IonContent, IonPage, IonButton } from "@ionic/vue";
 import HeaderComponent from "@/components/HeaderComponent.vue";
 import { useRouter } from "vue-router";
 import RefresherComponent from "@/components/RefresherComponent.vue";

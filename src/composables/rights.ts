@@ -86,7 +86,7 @@ export function useEditScoreRights(rGame: RefGame) {
     const gameAttendantsIds = Object.values(rGame.value.attendants)
       .flat()
       .map(attendant => attendant.id)
-    const userGamesIds = Object.values(currentUserProfile.value.games)
+    const userGamesIds = Object.values(currentUserProfile.value.games).map(game => game.id)
     if (gameAttendantsIds.includes(currentUserProfile.value.id) && userGamesIds.includes(rGame.value.id)) {
       return true
     }

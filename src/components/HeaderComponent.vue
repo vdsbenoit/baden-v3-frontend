@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonButtons, IonHeader, IonMenuButton, IonTitle, IonToolbar, IonBackButton } from "@ionic/vue";
+import { IonButtons, IonHeader, IonMenuButton, IonTitle, IonToolbar, IonBackButton, IonButton, IonIcon } from "@ionic/vue";
 import { homeOutline } from "ionicons/icons";
 import { defineProps } from "vue";
 const props = defineProps(["pageTitle"]);

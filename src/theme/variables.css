@@ -183,6 +183,14 @@ body.dark .md {
   --button-color: var(--ion-color-dark);
 }
 
+/* Fixes for ionic dark theme */
+.alert-radio-label.sc-ion-alert-md {
+  color: var(--ion-color-dark);
+}
+.alert-radio-label.sc-ion-alert-ios {
+  color: var(--ion-color-light)
+}
+
 /* Existing footer and popover styles */
 ion-footer {
   color: var(--ion-color-dark);

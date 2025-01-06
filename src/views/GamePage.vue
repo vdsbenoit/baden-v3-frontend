@@ -48,13 +48,15 @@
             <ion-grid class="ion-margin-top">
               <ion-row>
                 <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister.itself">
-                  <MyActionSheetButton expand="block" color="primary" action-sheet-header="M'inscrire" 
-                  :buttons="attendantSchedule.map(timeSlot => ({ text: timeSlot.name, data: timeSlot}))" :callback="register" :payload="{ targetUser: currentUser}">
+                  <my-action-sheet-button expand="block" color="primary" action-sheet-header="Quand ?" 
+                  :buttons="attendantSchedule.map(timeSlot => ({ text: timeSlot.name, data: timeSlot}))" 
+                  :callback="register" 
+                  :payload="{ targetUser: currentUser}">
                     M'inscrire
-                  </MyActionSheetButton>
+                  </my-action-sheet-button>
                 </ion-col>
                 <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister.itself && isUserRegisteredHere">
-                  <ion-button @click="unregister" expand="block" color="danger" action-sheet-header="Se désinscrire">
+                  <ion-button @click="unregister" expand="block" color="danger">
                     Se désinscrire
                   </ion-button>
                 </ion-col>
@@ -85,7 +87,7 @@
                     <strong class="capitalize ion-text-center">Erreur</strong>
                     <ion-text color="error">{{ errorLoadingAttendantGroups.message }}</ion-text>
                   </div>
-                  <ion-select v-else-if="attendantGroups && attendantGroups.length > 0" v-model="edit.selectedAttendantGroupId" placeholder="Choisir section" interface="alert">
+                  <ion-select v-else-if="attendantGroups && attendantGroups.length > 0" v-model="edit.selectedAttendantGroupId" placeholder="Choisir section" interface="action-sheet">
                     <ion-select-option v-for="group in attendantGroups" :value="group.id" :key="group.id"> {{ group.name }} ({{ group.city }}) </ion-select-option>
                   </ion-select>
                   <div v-else class="ion-text-center ion-padding-top">Aucune section trouvée</div>
@@ -96,18 +98,20 @@
                       <strong class="capitalize ion-text-center">Erreur</strong>
                       <ion-text color="error">{{ errorLoadingAttendants.message }}</ion-text>
                     </div>
-                    <ion-select v-else-if="attendants && attendants.length > 0" v-model="edit.selectedAttendant" placeholder="Choisir animateur" interface="alert">
+                    <ion-select v-else-if="attendants && attendants.length > 0" v-model="edit.selectedAttendantId" placeholder="Choisir animateur" interface="action-sheet">
                       <ion-select-option color="dark" v-for="attendant in attendants" :value="attendant" :key="attendant.id"> {{ getUserName(attendant) }} </ion-select-option>
                     </ion-select>
                     <p v-else class="ion-text-center ion-padding-top">Aucun animateur trouvé</p>
                 </ion-col>
               </ion-row>
               <ion-row>
-                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="edit.selectedAttendant">
-                  <MyActionSheetButton expand="block" color="primary" action-sheet-header="Inscrire" 
-                  :buttons="attendantSchedule.map(timeSlot => ({ text: timeSlot.name, data: timeSlot}))" :callback="register" :payload="{ targetUser: edit.selectedAttendant }">
-                    Inscrire {{ getUserName(edit.selectedAttendant) }}
-                  </MyActionSheetButton>
+                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="edit.selectedAttendantId">
+                  <my-action-sheet-button expand="block" color="primary" action-sheet-header="Quand ?" 
+                  :buttons="attendantSchedule.map(timeSlot => ({ text: timeSlot.name, data: timeSlot}))" 
+                  :callback="register" 
+                  :payload="{ targetUser: edit.selectedAttendantId }">
+                    Inscrire {{ getUserName(edit.selectedAttendantId) }}
+                  </my-action-sheet-button>
                 </ion-col>
               </ion-row>
             </ion-grid>
@@ -160,7 +164,7 @@ import { DEFAULT_GROUP_ID, DEFAULT_GAME_ID, USER_ROLES } from "@/constants";
 import { AttendantTimeSlot, Match, VueFireUserProfile } from "@/types";
 import { addAttendant, removeAttendant, setGameNoScores } from "@/utils/game";
 import { setMatchNoScores } from "@/utils/match";
-import { confirmPopup, toastPopup } from "@/utils/popup";
+import { confirmPopup, errorPopup, toastPopup } from "@/utils/popup";
 import { canBeRegistered } from "@/utils/rights";
 import { getRoleByValue, getUserName } from "@/utils/userProfile";
 import { IonBadge, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner, IonText, useIonRouter } from "@ionic/vue";
@@ -175,7 +179,7 @@ const isTogglingNoScores = ref(false);
 const edit = reactive({
   isOn: false,
   selectedAttendantGroupId: DEFAULT_GROUP_ID,
-  selectedAttendant: undefined
+  selectedAttendantId: undefined
 })
 
 // composables
@@ -192,7 +196,7 @@ const canEditGameSettings = useCanEditGames()
 const canSeeModerationStuff = useCanSeeModerationStuff()
 
 const { data: attendantGroups, pending: isLoadingAttendantGroups, error: errorLoadingAttendantGroups } = useAttendantGroups(toRef(edit, 'isOn'), "exclude", canSeeModerationStuff)
-const { data: attendants, pending: isLoadingAttendants, error: errorLoadingAttendants } = useMembersOfGroup(edit.selectedAttendantGroupId)
+const { data: attendants, pending: isLoadingAttendants, error: errorLoadingAttendants } = useMembersOfGroup(toRef(edit, 'selectedAttendantGroupId'))
 
 // lifecycle hooks
 
@@ -218,7 +222,7 @@ const attendantSchedule = computed(() => (appConfig.value?.attendantSchedule ?? 
 const isUserRegisteredHere = computed(() => {
   if (!currentUser.value) return false
   if (!currentUser.value.games) return false
-  return Object.values(currentUser.value.games).includes(gameId.value)
+  return Object.values(currentUser.value.games).map(game => game.id).includes(gameId.value)
 })
 
 // Methods
@@ -243,7 +247,10 @@ const register = async (result: any, payload: any) => {
 
   const maxGameAttendants = appSettings.value.maxGameAttendants
   const isCurrentUser = _targetUser.id === _currentUser.id
-  const currentAttendants = _game.attendants[_timeSlot.id].map(attendant => attendant.id)
+  let currentAttendantsIds: string[] = []
+  if (_game.attendants[_timeSlot.id]){
+    currentAttendantsIds = _game.attendants[_timeSlot.id].map(attendant => attendant.id)
+  }
 
   try {
     // applicability checks
@@ -261,21 +268,24 @@ const register = async (result: any, payload: any) => {
       L'utilisateur ${getUserName(_targetUser)} ne fait pas partie de ta section. 
       Seuls les organisateurs peuvent assigner n'importe qui à une épreuve
     `)
+    // if target user is not an attendant
     if (!canBeRegistered(_targetUser)) throw new Error(`
       Le rôle de ${getUserName(_targetUser)} est ${getRoleByValue(_targetUser.role)}. 
       Seuls les ${getRoleByValue(USER_ROLES.Animateur)} et les ${getRoleByValue(USER_ROLES.Chef)} peuvent être inscrit à une épreuve
     `)
-    if (currentAttendants.includes(_targetUser.id)) throw Error(
+    // if target user is already registered in another game
+    if (currentAttendantsIds.includes(_targetUser.id)) throw Error(
       isCurrentUser
         ? `Tu es déjà inscrit.e à l'épreuve ${_game.id} au timing ${_timeSlot.name}`
         : `${getUserName(_targetUser)} est déjà inscrit.e au timing ${_timeSlot.name} de l'épreuve ${_game.id}`
     )
-    if (currentAttendants.length >= maxGameAttendants) throw new Error(`
+    // if max attendants reached
+    if (currentAttendantsIds.length >= maxGameAttendants) throw new Error(`
       Le nombre maximum d'animateurs a été atteint au timing ${_timeSlot.name} de l'épreuve ${_game.id}
     `)
     // if target user is busy at target timing
-    if (_targetUser.games && _timeSlot.id in _targetUser.games && _targetUser.games[_timeSlot.id] != DEFAULT_GAME_ID) {
-      const currentGameId = _targetUser.games[_timeSlot.id]
+    if (_targetUser.games && _timeSlot.id in _targetUser.games && _targetUser.games[_timeSlot.id]) {
+      const currentGameId = _targetUser.games[_timeSlot.id].id
       const message =
         isCurrentUser
           ? `Tu es déjà inscrit.e à l'épreuve ${currentGameId} au timing ${_timeSlot.name}. Veux-tu te désincrire ?`
@@ -304,22 +314,17 @@ const register = async (result: any, payload: any) => {
 }
 
 /**
- * This function is passed as a callback func of the action sheet button
- * @param result Action sheet result. The selection the action sheet is stored in result.data
- * @param payload Payload passed to the action sheet 
+ * Unregister the current user from all games
  */
-const unregister = async (result: any, payload: any) => {
-  const _timing = result.data as AttendantTimeSlot
-  const _targetUser = toValue(payload.targetUser) as VueFireUserProfile
-  const _game = toValue(game)
-
+const unregister = async () => {
   // arguments checks
-  if (!_game) throw Error("Undefined game")
-  if (!_targetUser) throw Error("Undefined target user")
+  if (!currentUser.value) return errorPopup("Current user data not found")
 
-  await removeAttendant(_game.id, _targetUser.id, _timing.id).then(() => {
-    toastPopup(`Désinscription à l'épreuve ${_game.id} effectuée`)
-  })
+  for (const timeSlot of attendantSchedule.value) {
+    await removeAttendant(gameId.value, currentUser.value.id, timeSlot.id).then(() => {
+      toastPopup(`Désinscription à l'épreuve ${gameId.value} effectuée`)
+    })
+  }
 }
 
 const getWinner = (match: Match) => {
