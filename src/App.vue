@@ -1,7 +1,7 @@
 <template>
   <ion-app>
     <ion-split-pane content-id="main-content">
-      <ion-menu content-id="main-content" type="overlay" side="end">
+      <ion-menu content-id="main-content" type="overlay" side="start">
         <ion-content style="height: 100%">
           <ion-list id="menu-list">
             <ion-list-header>Baden Battle</ion-list-header>

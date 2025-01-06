@@ -4,16 +4,16 @@
       <ion-buttons slot="start">
         <!-- back button-->
         <ion-back-button></ion-back-button>
-        <!-- home button -->
-        <ion-button class="ion-no-margin" href="/home" router-direction="root">
-          <ion-icon color="primary" :icon="homeOutline" slot="icon-only"></ion-icon>
-        </ion-button>
+        <!-- menu button -->
+        <ion-menu-button color="primary"></ion-menu-button>
       </ion-buttons>
       <ion-title>{{ props.pageTitle }}</ion-title>
       <ion-buttons slot="end">
         <slot></slot>
-        <!-- menu button -->
-        <ion-menu-button color="primary" :auto-hide="false"></ion-menu-button>
+        <!-- home button -->
+        <ion-button class="ion-no-margin" href="/home" router-direction="root">
+          <ion-icon color="primary" :icon="homeOutline" slot="icon-only"></ion-icon>
+        </ion-button>
       </ion-buttons>
     </ion-toolbar>
   </ion-header>

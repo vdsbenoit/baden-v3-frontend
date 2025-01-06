@@ -30,7 +30,7 @@
           </tile-col>
 
           <!-- chef -->
-          <tile-col v-if="showRegisterAttendants" :target="`/attendant/${userProfile.groupId}`">Inscris tes animés à des épreuves</tile-col>
+          <tile-col v-if="showRegisterAttendants" :target="`/attendant-group/${userProfile.groupId}`">Inscris tes animés à des épreuves</tile-col>
 
           <!-- animateur -->
           <tile-col v-if="userProfile.role >= USER_ROLES.Animateur && userProfile.groupId" :target="`/attendant-group/${userProfile.groupId}`">Ma section</tile-col>
