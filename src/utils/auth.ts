@@ -1,6 +1,7 @@
 import { fbSendSignInEmail, fbSignInWithEmailLink } from "@/services/firebase"
 import { choicePopup, errorPopup, loadingPopup } from "@/utils/popup"
-import { createUserProfile, getUserProfile } from "./userProfile"
+import { createUserProfile, getUserProfile, updateUserProfile } from "./userProfile"
+import { Timestamp } from "firebase/firestore"
 
 export async function sendSignInEmail(email: string, redirectUrl: string) {
   email = email.trim()
@@ -43,6 +44,7 @@ export async function processSignInLink(href: string) {
     if (response.user) {
       const userProfile = await getUserProfile(response.user.uid as string)
       if (userProfile == undefined) createUserProfile(response.user.uid as string, response.user.email as string)
+      else updateUserProfile(response.user.uid as string, { lastLogin: Timestamp.now()})
       window.localStorage.removeItem("emailForSignIn")
       loading.dismiss()
       return true

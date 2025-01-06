@@ -34,6 +34,7 @@ export async function getUserProfile(uid: string): Promise<UserProfile | undefin
 export async function createUserProfile(uid: string, email: string) {
   const newProfile: UserProfile = {
     creationDate: Timestamp.now(),
+    lastLogin: Timestamp.now(),
     email,
     name: "",
     role: USER_ROLES.Newbie,

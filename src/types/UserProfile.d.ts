@@ -4,6 +4,7 @@ import { VueFireGame } from "./Game"
 
 export type UserProfile = {
   creationDate: Timestamp
+  lastLogin: Timestamp
   email: string
   name: string
   role: number
