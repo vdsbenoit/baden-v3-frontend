@@ -36,25 +36,25 @@ The user can add breaks and move them across the time slots. There cannot be 2 c
 
 The user can edit the name of the breaks.
 
-## Create sections
+## Create player groups
 
-The user needs to create a section type. For instance `Lutins`.  
+The user needs to create a player group category. For instance `Lutins`.  
 
-Info box : inform the user that the players only play against people from the same sections type. 
+Info box : inform the user that the players only play against people from the same groups type. 
 
-The user can either <u>create new section type</u> or <u>load the settings from an existing section type</u>.
+The user can either <u>create new player group category</u> or <u>load the settings from an existing player group category</u>.
 
-A sections type comes with some dedicated parameters : 
+A group category comes with some dedicated parameters : 
 
 | Parameter           | Description                        | Example  |
 | ------------------- | ---------------------------------- | -------- |
-| `name`              | Name of the section type           | `Lutins` |
+| `name`              | Name of the player group category  | `Lutins` |
 | `minPlayersPerTeam` | Minimum number of players per team | 3        |
 | `maxPlayersPerTeam` | Maximum number of players per team | 12       |
 
-Then, the user can either add sections one by one or load a batch through a a csv file.
+Then, the user can either add groups one by one or load a batch through a a csv file.
 
-Each section must have these fields: 
+Each group must have these fields: 
 
 | Field     | Description         | Example          |
 | --------- | ------------------- | ---------------- |
@@ -64,15 +64,15 @@ Each section must have these fields:
 | nbPlayers | Nombre d'animés     | 30               |
 | nbLeaders | Nombre de chefs     | 6                |
 
-Once all the sections have been defined, the user can click a button `Create teams, games & circuits`
+Once all the groups have been defined, the user can click a button `Create teams, games & circuits`
 
 If there is an error : explain what parameters need to be fixed and <u>re-run</u>.
 
-If everything went through : ask if the user wants to <u>create/edit another section type</u> -> refresh the page
+If everything went through : ask if the user wants to <u>create/edit another player group category</u> -> refresh the page
 
 Button to validate the DB.
 
-If all the section have been created, <u>link to schedule setup</u>
+If all the player groups have been created, <u>link to schedule setup</u>
 
 ## Attendants schedule
 
