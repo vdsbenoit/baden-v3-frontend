@@ -26,7 +26,7 @@
             <ion-note v-if="nameError" slot="error">Mentionne ton totem ou ton nom</ion-note>
           </ion-item>
           <ion-item>
-            <ion-label position="floating" color="primary">Quel sera ton role durant la BB ?</ion-label>
+            <ion-label position="floating" color="primary">Quel sera ton role durant la Baden Battle ?</ion-label>
             <ion-select v-model="selectedRole" required interface="popover" @ionChange="handleRoleChange">
               <ion-select-option v-for="(value, roleName) in selectableRoles" :key="value" :value="value">{{ roleName }}</ion-select-option>
             </ion-select>
@@ -42,7 +42,7 @@
             <ion-label position="floating" color="primary">Section</ion-label>
             <ion-spinner v-if="isLoadingPlayerGroups"></ion-spinner>
             <div v-else-if="errorLoadingGroups">Erreur : {{ errorLoadingGroups.message }}</div>
-            <ion-select v-else v-model="selectedPlayerGroupId" interface="popover" required>
+            <ion-select v-else v-model="selectedGroupId" interface="popover" required>
               <ion-select-option v-for="playerGroup in playerGroups" :key="playerGroup.id" :value="playerGroup.id"> {{ playerGroup.name }} ({{ playerGroup.city }}) </ion-select-option>
             </ion-select>
           </ion-item>
@@ -51,7 +51,7 @@
             <ion-label position="floating" color="primary">Section</ion-label>
             <ion-spinner v-if="isLoadingAttendantGroups"></ion-spinner>
             <div v-else-if="errorLoadingAttendantGroups">Erreur : {{ errorLoadingAttendantGroups.message }}</div>
-            <ion-select v-else v-model="selectedAttendantGroupId" interface="popover" required>
+            <ion-select v-else v-model="selectedGroupId" interface="popover" required>
               <ion-select-option v-for="attendantgroup in attendantGroups" :key="attendantgroup.id" :value="attendantgroup.id"> {{ attendantgroup.name }} ({{ attendantgroup.city }}) </ion-select-option>
             </ion-select>
           </ion-item>
@@ -78,9 +78,8 @@ import { useCurrentUserProfile } from "@/composables/userProfile";
 import { DEFAULT_GROUP_CATEGORY_ID, DEFAULT_GROUP_ID, DEFAULT_USER_ROLE_VALUE, USER_ROLES } from "@/constants";
 import { UserProfile } from "@/types";
 import { Group } from "@/types/Group";
-import { getAttendantSection, getStaffSection } from "@/utils/attendantSection";
 import { sanitizeInput } from "@/utils/form";
-import { getPlayerGroup } from "@/utils/playerGroup";
+import { getGroup } from "@/utils/playerGroup";
 import { confirmPopup, errorPopup, toastPopup } from "@/utils/popup";
 import { updateUserProfile } from "@/utils/userProfile";
 import { IonButton, IonCard, IonCardHeader, IonCardTitle, IonContent, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue";
@@ -97,8 +96,7 @@ const selectableRoles = Object.fromEntries(Object.entries(USER_ROLES).filter(([,
 const name = ref('');
 const selectedRole = ref(DEFAULT_USER_ROLE_VALUE);
 const selectedgroupCategoryId = ref(DEFAULT_GROUP_CATEGORY_ID);
-const selectedPlayerGroupId = ref(DEFAULT_GROUP_ID);
-const selectedAttendantGroupId = ref(DEFAULT_GROUP_ID);
+const selectedGroupId = ref(DEFAULT_GROUP_ID);
 const nameError = ref(false);
 const isUpdatingProfile = ref(false);
 
@@ -115,8 +113,8 @@ const { data: attendantGroups, pending: isLoadingAttendantGroups, error: errorLo
 
 const canSubmit = computed(() => {
   if (!name.value) return false;
-  if (isParticipant.value && selectedgroupCategoryId.value != DEFAULT_GROUP_CATEGORY_ID && selectedPlayerGroupId.value != DEFAULT_GROUP_ID) return true
-  if (isAttendant.value && selectedAttendantGroupId.value != DEFAULT_GROUP_ID) return true
+  if (isParticipant.value && selectedgroupCategoryId.value != DEFAULT_GROUP_CATEGORY_ID && selectedGroupId.value != DEFAULT_GROUP_ID) return true
+  if (isAttendant.value && selectedGroupId.value != DEFAULT_GROUP_ID) return true
   if (selectedRole.value >= USER_ROLES.Organisateur) return true
   return false;
 });
@@ -126,8 +124,7 @@ const canSubmit = computed(() => {
 const handleRoleChange = () => {
     // Reset category, player group and attendant group values when changing the role
     selectedgroupCategoryId.value = DEFAULT_GROUP_CATEGORY_ID
-    selectedPlayerGroupId.value = DEFAULT_GROUP_ID
-    selectedAttendantGroupId.value = DEFAULT_GROUP_ID
+    selectedGroupId.value = DEFAULT_GROUP_ID
     if (!name.value) nameError.value = true;
 }
 const handleNameChange = () => {
@@ -137,22 +134,12 @@ const handleNameChange = () => {
 const processForm = (groupData: Group) => {
   isUpdatingProfile.value = true;
   let newProfile: Partial<UserProfile>;
-  if (selectedRole.value === USER_ROLES.Participant) {
-    newProfile = {
-      name: sanitizeInput(name.value),
-      role: USER_ROLES.Participant,
-      groupId: selectedPlayerGroupId.value,
-      groupName: groupData.name,
-      hasDoneOnboarding: true,
-    };
-  } else {
-    newProfile = {
-      name: sanitizeInput(name.value),
-      requestedRole: selectedRole.value,
-      requestedGroupId: selectedAttendantGroupId.value,
-      requestedGroupName: groupData.name,
-      hasDoneOnboarding: true,
-    }
+  newProfile = {
+    name: sanitizeInput(name.value),
+    requestedRole: selectedRole.value,
+    requestedGroupId: selectedGroupId.value,
+    requestedGroupName: groupData.name,
+    hasDoneOnboarding: true,
   }
   if (!currentUser.value) return errorPopup("currentUser not found", "Impossible de mettre à jour le profil");
   updateUserProfile(currentUser.value.id, newProfile)
@@ -177,43 +164,36 @@ const submitForm = async () => {
   // Check if all required fields are filled
   if (!name.value) return errorPopup('Mentionne ton totem ou ton nom');
   if (selectedRole.value < USER_ROLES.Participant) return errorPopup('Choisis un role');
-  if (!selectedAttendantGroupId.value && selectedRole.value < USER_ROLES.Organisateur) return errorPopup('Choisis une section');
-
-  try{
-    // If the user is a participant
-    if (selectedRole.value === USER_ROLES.Participant){
-      groupData = await getPlayerGroup(selectedPlayerGroupId.value);
-      if (selectedPlayerGroupId.value) return processForm(groupData);
-      else return errorPopup('Choisis une section');
-    }
+  if (!selectedGroupId.value)  return errorPopup('Choisis une section');
   
-    // If the user is an attendant
-    if (selectedRole.value === USER_ROLES.Animateur) {
-        groupData = await getAttendantSection(selectedAttendantGroupId.value);
-        message = `Tu as choisi le role d'animateur. 
-        Cela signifie qu'un•e des chefs de la section ${groupData.name} ou un•e organisateur/organisatrice de la Baden Battle devra
-        <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
-    }
-    if (selectedRole.value === USER_ROLES.Chef) {
-        groupData = await getAttendantSection(selectedAttendantGroupId.value);
-        message = `Tu as choisi le role de chef. 
-        Cela signifie qu'un•e des chefs de la section ${groupData.name} ou un•e organisateur/organisatrice de la Baden Battle devra
-        <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
-    }
-
-    // If the user is from the staff
-    if (selectedRole.value === USER_ROLES.Organisateur) {
-      [groupData, selectedAttendantGroupId.value] = await getStaffSection()
-      message = `Tu as choisi le role d'organisateur de la Baden Battle. 
-      Cela signifie qu'une autre personne avec le rôle d'organisateur de la Baden Battle devra <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
-    }
-    if (selectedRole.value === USER_ROLES.Administrateur) {
-      [groupData, selectedAttendantGroupId.value] = await getStaffSection()
-      message = `Tu as choisi le role d'administrateur de l'application. 
-      Cela signifie qu'une autre personne avec le rôle d'administrateur devra <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
-    }
+  try{
+    groupData = await getGroup(selectedGroupId.value);
   } catch (error: any) {
     return errorPopup(error.message, `Une erreur est survenue`);
+  }
+  switch (selectedRole.value) {
+    case USER_ROLES.Participant:
+      message = `Tu as choisi le role de participant. 
+      Cela signifie que tu participeras à la Baden Battle avec la section ${groupData.name}.`
+      break;
+    case USER_ROLES.Animateur:
+      message = `Tu as choisi le role d'animateur. 
+      Cela signifie qu'un•e des chefs de la section ${groupData.name} ou un•e organisateur/organisatrice de la Baden Battle devra
+      <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
+      break;
+    case USER_ROLES.Chef:
+      message = `Tu as choisi le role de chef. 
+      Cela signifie qu'un•e des chefs de la section ${groupData.name} ou un•e organisateur/organisatrice de la Baden Battle devra
+      <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
+      break;
+    case USER_ROLES.Organisateur:
+      message = `Tu as choisi le role d'organisateur de la Baden Battle. 
+      Cela signifie qu'une autre personne avec le rôle d'organisateur de la Baden Battle devra <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
+      break;
+    case USER_ROLES.Administrateur:
+      message = `Tu as choisi le role d'administrateur de l'application. 
+      Cela signifie qu'une autre personne avec le rôle d'administrateur devra <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
+      break;
   }
   message += ` Veux-tu continuer ?`
   const handler = () => processForm(groupData);

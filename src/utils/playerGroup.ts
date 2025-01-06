@@ -1,6 +1,6 @@
 import { DEFAULT_GROUP_ID, GROUPS_COLLECTION_NAME, GROUPS_COLLECTION_REF, TEAMS_COLLECTION_REF, USER_PROFILES_COLLECTION_REF } from "@/constants"
 import { incrementDocField } from "@/services/firebase"
-import { PlayerGroup, PlayerTeam, UserProfile } from "@/types"
+import { AttendantGroup, PlayerGroup, PlayerTeam, UserProfile } from "@/types"
 import { doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore"
 
 // Getters
@@ -11,11 +11,26 @@ import { doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestor
  * @returns the group data (without the id)
  */
 export const getPlayerGroup = async (playerGroupId: string): Promise<PlayerGroup> => {
-  if (!playerGroupId) throw Error("Cannot get player group : group is undefined")
+  if (!playerGroupId) throw Error("Cannot get player group : groupId is undefined")
   if (playerGroupId === DEFAULT_GROUP_ID) throw Error("Cannot get player group : groupId is the default value")
   const docSnap = await getDoc(doc(GROUPS_COLLECTION_REF, playerGroupId))
   if (docSnap.exists()) return docSnap.data() as PlayerGroup
   else throw Error(`Player group not found with id ${playerGroupId}`)
+}
+
+/**
+ * Get the group data of a given group id, whether it's a player or an attendant group
+ * @param groupId a player group id
+ * @returns the group data (without the id)
+ */
+export const getGroup = async (groupId: string): Promise<PlayerGroup | AttendantGroup> => {
+  if (!groupId) throw Error("Cannot get group : groupId is undefined")
+  if (groupId === DEFAULT_GROUP_ID) throw Error("Cannot get group : groupId is the default value")
+  const docSnap = await getDoc(doc(GROUPS_COLLECTION_REF, groupId))
+  if (!docSnap.exists()) throw Error(`Player group not found with id ${groupId}`)
+  if (!docSnap.data()["role"]) throw Error(`Group ${groupId} has no role attribute`)
+  if (docSnap.data()["role"] >= 4) return docSnap.data() as AttendantGroup
+  return docSnap.data() as PlayerGroup
 }
 
 // Setters
