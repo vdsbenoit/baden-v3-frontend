@@ -1,7 +1,7 @@
 // prettier-ignore
 import { DEFAULT_GROUP_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID, USER_ROLES, USER_PROFILES_COLLECTION_NAME, USER_PROFILES_COLLECTION_REF } from "@/constants";
 import { db, fbSignOut } from "@/services/firebase";
-import { UserProfile } from "@/types";
+import { RefUserProfile, UserProfile } from "@/types";
 import { Timestamp } from "@firebase/firestore";
 import { deleteUser } from "firebase/auth";
 import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
@@ -16,7 +16,7 @@ export const getRoleByValue = (roleNumber: number): string => {
   }
   throw Error(`Unknown role : ${roleNumber}`)
 }
-export function getUserName(rProfile: MaybeRefOrGetter<UserProfile>) {
+export function getUserName(rProfile: MaybeRefOrGetter<UserProfile> | RefUserProfile) {
   const profile = toValue(rProfile)
   if (!profile) return getRoleByValue(USER_ROLES.Anonyme)
   if (profile.name) return profile.name

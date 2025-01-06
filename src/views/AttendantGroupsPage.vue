@@ -67,7 +67,7 @@
                 </div>
                 <ion-list v-else-if="groupMembers && groupMembers.length > 0">
                   <ion-item v-for="user in groupMembers" :key="user.id" :routerLink="`/profile/${user.id}`">
-                    <ion-label>{{ user.name }}</ion-label>
+                    <ion-label>{{ getUserName(user) }}</ion-label>
                     <div v-if="user.role <= USER_ROLES.Chef">
                       <ion-badge v-if="countGames(user) === 0" slot="end" color="danger">Pas inscrit</ion-badge>
                       <ion-badge v-else slot="end" :color="countGames(user) < maxGames ? 'warning' : 'success'">
@@ -98,7 +98,7 @@
                 </div>
                 <ion-list v-else-if="groupLeaders && groupLeaders.length > 0">
                   <ion-item v-for="user in groupLeaders" :key="user.id" :routerLink="`/profile/${user.id}`">
-                    <ion-label>{{ user.name }}</ion-label>
+                    <ion-label>{{ getUserName(user) }}</ion-label>
                     <div v-if="user.role <= USER_ROLES.Chef">
                       <ion-badge v-if="countGames(user) === 0" slot="end" color="danger">Pas inscrit</ion-badge>
                       <ion-badge v-else slot="end" :color="countGames(user) < maxGames ? 'warning' : 'success'">
@@ -130,6 +130,7 @@ import { useAttendantGroup, useAttendantGroups } from "@/composables/attendantGr
 import { useMembersOfGroup, useGroupApplicants } from "@/composables/userProfile";
 import { DEFAULT_GROUP_ID, GROUP_ROLES, USER_ROLES } from "@/constants";
 import { UserProfile } from "@/types";
+import { getUserName } from "@/utils/userProfile";
 import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue";
 import { computed } from "@vue/reactivity";
 import { useRouteParams } from "@vueuse/router";

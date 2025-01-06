@@ -48,6 +48,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useAppConfig, useAppSettings } from "./composables/app";
 import { useCurrentUserProfile } from "./composables/userProfile";
 import { USER_ROLES } from "./constants";
+import { getUserName } from "./utils/userProfile";
 
 const router = useRouter();
 const route = useRoute();
@@ -67,7 +68,7 @@ const isDarkModeEnabled =  useDark({
 
 const name = computed(() => {
   if (!userProfile.value) return "undefined";
-  return userProfile.value.name
+  return getUserName(userProfile)
 });
 const appPages = computed(() => {
   if (!userProfile.value) return [guestHomePage, loginPage, aboutPage];

@@ -16,7 +16,7 @@
           <div v-if="user.id === editedUid">
             <ion-item>
               <ion-label :routerLink="`/profile/${user.id}`">
-                <ion-text style="font-weight: bold">{{ user.name }}</ion-text>
+                <ion-text style="font-weight: bold">{{ getUserName(user) }}</ion-text>
               </ion-label>
               <ion-select v-model="editedRole" cancel-text="Annuler" interface="popover">
                 <ion-select-option v-for="(value, role) in roles" :key="value" :value="value">{{ role }}</ion-select-option>
@@ -29,7 +29,7 @@
             <ion-item>
               <ion-label :routerLink="`/profile/${user.id}`">
                 <ion-text style="font-size: small;">{{ parseDate(user.creationDate) }}</ion-text>
-                <ion-text style="font-weight: bold"  class="ion-padding-start">{{ user.name }} </ion-text>
+                <ion-text style="font-weight: bold"  class="ion-padding-start">{{ getUserName(user) }} </ion-text>
               </ion-label>
               <ion-input slot="end" type="text" readonly="true">{{ getRoleByValue(user.role) }}</ion-input>
               <ion-icon @click="toggleEditRole(user)" slot="end" :ios="pencilOutline" :md="pencilSharp"></ion-icon>
@@ -53,7 +53,7 @@ import { ref, watch } from "vue";
 import { FirestoreError } from "firebase/firestore";
 import { toastPopup } from "@/utils/popup";
 import { VueFireUserProfile } from "@/types";
-import { getRoleByValue, updateUserProfile } from "@/utils/userProfile";
+import { getRoleByValue, getUserName, updateUserProfile } from "@/utils/userProfile";
 
 // Strip Erreur, Anonyme & Newbie from ROLES
 const roles = Object.fromEntries(Object.entries(USER_ROLES).filter(([, value]) => ![USER_ROLES.Erreur, USER_ROLES.Anonyme, USER_ROLES.Newbie].includes(value)))

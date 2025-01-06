@@ -29,7 +29,7 @@ import { useCurrentUserProfile, useGroupApplicants } from "@/composables/userPro
 import { DEFAULT_USER_ROLE_VALUE, USER_ROLES } from "@/constants";
 import { VueFireUserProfile } from "@/types"
 import { defineProps, defineEmits, watch } from "vue"
-import { getRoleByValue, updateUserProfile } from "@/utils/userProfile";
+import { getRoleByValue, getUserName, updateUserProfile } from "@/utils/userProfile";
 import { choicePopup, errorPopup, textInputPopup } from "@/utils/popup";
 
 const props = defineProps<{
@@ -103,16 +103,16 @@ const handleRequest = (applicant: VueFireUserProfile) => {
     return;
   }
   if (!applicant.requestedRole) {
-    errorPopup(`requestedRole n'est pas défini pour ${applicant.name}`);
+    errorPopup(`requestedRole n'est pas défini pour ${getUserName(applicant)}`);
     return;
   }
   let message = "";
   if (applicant.requestedRole === USER_ROLES.Animateur || applicant.requestedRole === USER_ROLES.Chef) {
-    message = `Tu es sur le point d'ajouter ${applicant.name} (${applicant.email})
+    message = `Tu es sur le point d'ajouter ${getUserName(applicant)}
     comme <b>${getRoleByValue(applicant.requestedRole)}</b> de la section ${props.attendantGroupName}.`;
   }
   if (applicant.requestedRole >= USER_ROLES.Organisateur){
-    message = `Tu es sur le point d'ajouter ${applicant.name} (${applicant.email})
+    message = `Tu es sur le point d'ajouter ${getUserName(applicant)}
     comme <b>${getRoleByValue(applicant.requestedRole)}</b> de la Baden Battle.`;
   }
   if (!message) {
@@ -120,7 +120,7 @@ const handleRequest = (applicant: VueFireUserProfile) => {
     return;
   }
   const choices = ["Accepter", "Refuser", "Annuler"]
-  const reasonMessage = `Pourquoi refuse-tu la demande de ${applicant.name} ?`;
+  const reasonMessage = `Pourquoi refuse-tu la demande de ${getUserName(applicant)} ?`;
   const acceptHandler = () => {
     updateUserProfile(applicant.id, { 
           role: applicant.requestedRole,
@@ -133,7 +133,7 @@ const handleRequest = (applicant: VueFireUserProfile) => {
     
   }
   const rejectHandler = (reason: string) => {
-    const fullReason = `${currentUser.value?.name} (${getRoleByValue(currentUser.value?.role ?? -1)}) : "${reason}"`;
+    const fullReason = `${getUserName(currentUser)} (${getRoleByValue(currentUser.value?.role ?? -1)}) : "${reason}"`;
     updateUserProfile(applicant.id, {  requestedRole: -1, requestedGroupId: "", rejectionReason: fullReason, hasDoneOnboarding: false });
   }
   const choicePopupHandler = (choice: string) => {
