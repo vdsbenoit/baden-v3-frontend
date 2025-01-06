@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ion-badge v-for="(availability, i) in availabilities" :key="i" slot="end" :color="availability.color">
+    <ion-badge v-for="(availability, i) in availabilities" :key="i" slot="end" class="ion-no-margin ion-margin-start" :color="availability.color">
       {{ availability.nbAttendants }}
     </ion-badge>
   </div>
@@ -35,8 +35,8 @@ const availabilities = computed(() => {
   for (const timeSlot of attendantSchedule.value) {
     const nbAttendants = props.game.attendants[timeSlot.id] ? props.game.attendants[timeSlot.id].length : 0
     let color = "success"
-    if (nbAttendants === 0) color = "danger"
     if (nbAttendants < maxGameAttendants.value) color = "warning"
+    if (nbAttendants === 0) color = "danger"
     data.push({ nbAttendants, color })
   }
   return data
