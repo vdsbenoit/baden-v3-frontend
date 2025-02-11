@@ -12,7 +12,9 @@
       "webRoot": "${workspaceFolder}/src",
       "sourceMapPathOverrides": {
         "webpack:///src/*": "${webRoot}/*"
-      }
+      },
+      "preLaunchTask": "start ionic dev server",
+      "postDebugTask": "kill ionic"
     }
   ]
 }
