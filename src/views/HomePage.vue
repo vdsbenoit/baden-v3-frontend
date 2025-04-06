@@ -1,39 +1,54 @@
 <template>
   <ion-page>
-    <header-template pageTitle="Accueil"></header-template>
+    <header-component pageTitle="Accueil"></header-component>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
-      <div class="logo">
+      <div class="homepage-logo">
         <img src="@/assets/img/logo-bb.png" alt="Logo Baden Battle" />
       </div>
       <info-card-component v-if="showPendingRequestInfo" class="ion-margin-horizontal">
-          Ton inscription est en attente de validation par un {{ requestValidator }}. 
-          N'hésite pas à les contacter pour accélérer ta demande.
+        Ton inscription est en attente de validation par un•e {{ requestValidator }}. N'hésite pas à les contacter pour
+        accélérer ta demande.
       </info-card-component>
-      <ion-grid class="home-grid">
+      <ion-grid v-if="userProfile" class="home-grid">
+        <!-- animateur -->
+        <ion-row v-if="userProfile.role === USER_ROLES.Animateur || userProfile.role === USER_ROLES.Chef">
+          <ion-col size="6" size-sm="4" size-lg="2" v-for="timeSlot in attendantSchedule" :key="timeSlot.id">
+            <tile-col
+              size="12"
+              v-if="userProfile.games && userProfile.games[timeSlot.id]"
+              :target="`/game/${userProfile.games[timeSlot.id]}`"
+              >Mon épreuve ({{ timeSlot.name }})</tile-col
+            >
+            <tile-col size="12" v-else-if="appSettings && appSettings.isAttendantRegistrationOpen" target="/games"
+              >Inscris-toi à une épreuve ({{ timeSlot.name }})</tile-col
+            >
+          </ion-col>
+        </ion-row>
         <ion-row>
           <!-- participant -->
-          <tile-col v-if="showSelectTeam" :target="`/section/${user.profile.sectionId}`">Choisis une équipe</tile-col>
-          <tile-col v-if="showSectionButton" :target="`/section/${user.profile.sectionId}`">Ma section</tile-col>
-          <tile-col v-if="user.profile.team" :target="`/team/${user.profile.team}`">Mon équipe</tile-col>
+          <tile-col v-if="showSelectTeam" :target="`/player-group/${userProfile.groupId}`">Choisis une équipe</tile-col>
+          <tile-col v-if="showMyGroupButton" :target="`/player-group/${userProfile.groupId}`">Ma section</tile-col>
+          <tile-col v-if="userProfile.teamId" :target="`/team/${userProfile.teamId}`">Mon équipe</tile-col>
 
           <!-- >= chef -->
-          <tile-col v-if="nbPendingRequests" target="/requests">
-            {{ nbPendingRequests }} demande{{ typeof nbPendingRequests == 'string' || nbPendingRequests > 1  ? "s" : "" }} d'accès
+          <tile-col v-if="nbApplicants" target="/applicants">
+            {{ nbApplicants }} demande{{ typeof nbApplicants == "string" || nbApplicants > 1 ? "s" : "" }} d'accès
           </tile-col>
 
           <!-- chef -->
-          <tile-col v-if="showRegisterLeaders" :target="`/leader/${user.profile.sectionId}`">Inscris tes animés à des épreuves</tile-col>
+          <tile-col v-if="showRegisterAttendants" :target="`/attendant-group/${userProfile.groupId}`"
+            >Inscris tes animés à des épreuves</tile-col
+          >
 
           <!-- animateur -->
-          <tile-col v-if="showSelectMorningGame" target="/games">Inscris-toi à une épreuve du matin</tile-col>
-          <tile-col v-if="showSelectAfternoonGame" target="/games">Inscris-toi à une épreuve de l'aprèm</tile-col>
-          <tile-col v-if="showLeaderSectionButton" :target="`/leader/${user.profile.sectionId}`">Ma section</tile-col>
-          <tile-col v-if="user.profile.morningGame" :target="`/game/${user.profile.morningGame}`">Mon épreuve du matin</tile-col>
-          <tile-col v-if="user.profile.afternoonGame" :target="`/game/${user.profile.afternoonGame}`">Mon épreuve de l'aprèm</tile-col>
-
+          <tile-col
+            v-if="userProfile.role >= USER_ROLES.Animateur && userProfile.groupId"
+            :target="`/attendant-group/${userProfile.groupId}`"
+            >Ma section</tile-col
+          >
           <!-- organisateur -->
-          <tile-col v-if="user.profile.role >= ROLES.Organisateur" target="/leaders">Animateurs</tile-col>
+          <tile-col v-if="userProfile.role >= USER_ROLES.Organisateur" target="/attendant-group">Animateurs</tile-col>
         </ion-row>
       </ion-grid>
     </ion-content>
@@ -41,86 +56,64 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonGrid, IonRow } from "@ionic/vue";
-import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { ROLES, useAuthStore } from "@/services/users";
-import TileCol from "@/components/TileCol.vue";
-import { computed } from "vue";
-import { isLeaderRegistrationOpen } from "@/services/settings";
-import InfoCardComponent from "../components/InfoCardComponent.vue";
-import RefresherComponent from "@/components/RefresherComponent.vue";
+import HeaderComponent from "@/components/HeaderComponent.vue"
+import InfoCardComponent from "@/components/InfoCardComponent.vue"
+import RefresherComponent from "@/components/RefresherComponent.vue"
+import TileCol from "@/components/TileCol.vue"
+import { useAppConfig, useAppSettings } from "@/composables/app"
+import { useApplicants, useCurrentUserProfile } from "@/composables/userProfile"
+import { USER_ROLES } from "@/constants"
+import { IonContent, IonGrid, IonPage, IonRow, IonCol } from "@ionic/vue"
+import { computed } from "vue"
 
-const user = useAuthStore();
+// Composables
+
+const userProfile = useCurrentUserProfile()
+const appSettings = useAppSettings()
+const appConfig = useAppConfig()
+const applicants = useApplicants(15)
 
 // Computed vars
+const attendantSchedule = computed(() => appConfig.value?.attendantSchedule ?? [])
 const showPendingRequestInfo = computed(() => {
-  return user.profile.role === ROLES.Newbie && user.profile.hasDoneOnboarding;
-});
+  if (!userProfile.value) return false
+  return userProfile.value.role === USER_ROLES.Newbie && userProfile.value.hasDoneOnboarding
+})
 const showSelectTeam = computed(() => {
-  return user.profile.role === ROLES.Participant && !user.profile.team;
-});
-const showSectionButton = computed(() => {
-  return user.profile.role === ROLES.Participant && user.profile.sectionId;
-});
-const showLeaderSectionButton = computed(() => {
-  return user.profile.role >= ROLES.Animateur && user.profile.sectionId;
-});
-const showRegisterLeaders = computed(() => {
-  return (user.profile.role === ROLES.Chef) && isLeaderRegistrationOpen();
-});
-const showSelectMorningGame = computed(() => {
-  if (!isLeaderRegistrationOpen()) return false;
-  return ((user.profile.role === ROLES.Animateur || user.profile.role === ROLES.Chef) && !user.profile.morningGame);
-});
-const showSelectAfternoonGame = computed(() => {
-  if (!isLeaderRegistrationOpen()) return false;
-  return ((user.profile.role === ROLES.Animateur || user.profile.role === ROLES.Chef) && !user.profile.afternoonGame);
-});
-const pendingRequests = computed(() => {
-  if (user.profile.role === ROLES.Chef) {
-    return user.getSectionApplicants(15, user.profile.sectionId);
-  }
-  if (user.profile.role > ROLES.Chef) {
-    return user.getApplicants(15);
-  }
-  return new Map();
-});
-const nbPendingRequests = computed(() => {
-  return pendingRequests.value.size <= 15 ? pendingRequests.value.size : "15+";
-});
+  if (!userProfile.value) return false
+  return userProfile.value.role === USER_ROLES.Participant && !userProfile.value.teamId
+})
+const showMyGroupButton = computed(() => {
+  if (!userProfile.value) return false
+  return userProfile.value.role === USER_ROLES.Participant && userProfile.value.groupId
+})
+const showRegisterAttendants = computed(() => {
+  if (!userProfile.value) return false
+  if (!appSettings.value || !appSettings.value.isAttendantRegistrationOpen) return false
+  return userProfile.value.role === USER_ROLES.Chef
+})
+const nbApplicants = computed(() => {
+  if (!applicants.value) return 0
+  return applicants.value.length <= 15 ? applicants.value.length : "15+"
+})
 const requestValidator = computed(() => {
-  switch (user.profile.requestedRole) {
-    case ROLES.Animateur:
-    case ROLES.Chef:
-      return "chef de ta section";
-    case ROLES.Organisateur:
-      return "organisateur de la Baden Battle";
-    case ROLES.Administrateur:
-      return "administrateur de l'app";
+  if (!userProfile.value) return ""
+  switch (userProfile.value.requestedRole) {
+    case USER_ROLES.Animateur:
+    case USER_ROLES.Chef:
+      return "chef•fe de ta section"
+    case USER_ROLES.Organisateur:
+      return "orga de la Baden Battle"
+    case USER_ROLES.Administrateur:
+      return "admin de l'app"
     default:
-      return "";
+      return ""
   }
-});
+})
 </script>
 
 <style scoped>
-.logo {
-  background-color: var(--ion-background-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: min(1%, 20px);
-  width: 100%;
-  height: 30%;
-  margin-bottom: 20px;
-  margin-top: 10px;
-}
-.logo img {
-  max-width: 100%;
-  max-height: 100%;
-}
-.container{
+.container {
   text-align: center;
 }
 h1 {

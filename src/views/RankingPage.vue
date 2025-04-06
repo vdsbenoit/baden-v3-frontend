@@ -1,142 +1,100 @@
 <template>
   <ion-page>
-    <header-template pageTitle="Classement">
-      <ion-label v-if="canPrint">
-        Printable
-      </ion-label>
+    <header-component pageTitle="Classement">
       <ion-toggle v-if="canPrint" @IonChange="togglePrintable" :checked="showPrintableScores"></ion-toggle>
-      <ion-button @click="setLimit"><ion-icon slot="icon-only" :ios="settingsOutline" :md="settingsSharp"></ion-icon></ion-button>
-    </header-template>
+      <ion-button @click="setLimit"
+        ><ion-icon slot="icon-only" :ios="settingsOutline" :md="settingsSharp"></ion-icon
+      ></ion-button>
+    </header-component>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Lutins</ion-card-title>
-        </ion-card-header>
-        <ion-card-content class="ion-no-padding">
-          <ion-grid class="ion-no-padding">
-            <ion-row>
-              <ion-col size="12" size-sm="6">
-                <ranking-component type="section" :printable-scores="showPrintableScores" :ranking-list="lutinTopSections"/>
-              </ion-col>
-              <ion-col size="12" size-sm="6">
-                <ranking-component type="team" :printable-scores="showPrintableScores" :ranking-list="lutinTopTeams"/>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ion-card-content>
-      </ion-card>
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Louveteaux</ion-card-title>
-        </ion-card-header>
-        <ion-card-content class="ion-no-padding">
-          <ion-grid class="ion-no-padding">
-            <ion-row>
-              <ion-col size="12" size-sm="6">
-                <ranking-component type="section" :printable-scores="showPrintableScores" :ranking-list="loupTopSections"/>
-              </ion-col>
-              <ion-col size="12" size-sm="6">
-                <ranking-component type="team" :printable-scores="showPrintableScores" :ranking-list="loupTopTeams"/>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ion-card-content>
-      </ion-card>
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Baladins / Nutons</ion-card-title>
-        </ion-card-header>
-        <ion-card-content class="ion-no-padding">
-          <ion-grid class="ion-no-padding">
-            <ion-row>
-              <ion-col size="12" size-sm="6">
-                <ranking-component type="section" :printable-scores="showPrintableScores" :ranking-list="nutonTopSections"/>
-              </ion-col>
-              <ion-col size="12" size-sm="6">
-                <ranking-component type="team" :printable-scores="showPrintableScores" :ranking-list="nutonTopTeams"/>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ion-card-content>
-      </ion-card>
+      <div v-if="appConfig">
+        <ion-card v-for="(groupCategory, groupCategoryId) in appConfig.groupCategories" :key="groupCategoryId">
+          <ion-card-header>
+            <ion-card-title>{{ groupCategory.name }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content class="ion-no-padding">
+            <ion-grid class="ion-no-padding">
+              <ion-row>
+                <ion-col size="12" size-sm="6">
+                  <ranking-player-group
+                    :groupCategoryId="String(groupCategoryId)"
+                    :limit="limit"
+                    :printable-scores="showPrintableScores"
+                  />
+                </ion-col>
+                <ion-col size="12" size-sm="6">
+                  <ranking-player-team
+                    :groupCategoryId="String(groupCategoryId)"
+                    :limit="limit"
+                    :printable-scores="showPrintableScores"
+                  />
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+      </div>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonGrid, IonRow, IonCol, IonLabel, IonToggle,
-AlertInput, alertController, IonIcon, IonButton } from "@ionic/vue";
-import { settingsOutline, settingsSharp} from "ionicons/icons";
-import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import RankingComponent from "@/components/RankingComponent.vue";
-import { computed, ref } from "@vue/reactivity";
-import { streamTopSections } from "@/services/sections";
-import { streamTopTeams } from "@/services/teams";
-import RefresherComponent from "@/components/RefresherComponent.vue";
-import { ROLES, useAuthStore } from "@/services/users";
-
-const user = useAuthStore();
+// prettier-ignore
+import HeaderComponent from "@/components/HeaderComponent.vue";
+import RankingPlayerGroup from "@/components/RankingPlayerGroup.vue"
+import RankingPlayerTeam from "@/components/RankingPlayerTeam.vue"
+import RefresherComponent from "@/components/RefresherComponent.vue"
+import { useAppConfig } from "@/composables/app"
+import { useCurrentUserProfile } from "@/composables/userProfile"
+import { USER_ROLES } from "@/constants"
+// prettier-ignore
+import { alertController, AlertInput, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonPage, IonRow, IonToggle } from "@ionic/vue";
+import { settingsOutline, settingsSharp } from "ionicons/icons"
+import { computed, ref } from "vue"
 
 // reactive data
 
-const maxItems = ref(10);
-const showPrintableScores = ref(false);
+const limit = ref(10)
+const showPrintableScores = ref(false)
 
-// lifecycle hooks
+// Composables
+
+const currentUserProfile = useCurrentUserProfile()
+const appConfig = useAppConfig()
 
 // Computed
 
-const lutinTopSections = computed(() => {
-  return streamTopSections("Lutins", maxItems.value);
-});
-const lutinTopTeams = computed(() => {
-  return streamTopTeams("Lutins", maxItems.value);
-});
-const loupTopSections = computed(() => {
-  return streamTopSections("Louveteaux", maxItems.value);
-});
-const loupTopTeams = computed(() => {
-  return streamTopTeams("Louveteaux", maxItems.value);
-});
-const nutonTopSections = computed(() => {
-  return streamTopSections("Baladins & Nutons", maxItems.value);
-});
-const nutonTopTeams = computed(() => {
-  return streamTopTeams("Baladins & Nutons", maxItems.value);
-});
 const canPrint = computed(() => {
-  return user.profile.role === ROLES.Organisateur
-});
-
-// Watchers
+  return currentUserProfile.value && currentUserProfile.value.role >= USER_ROLES.Organisateur
+})
 
 // Methods
 
 const setLimit = async () => {
-  const inputs = [] as AlertInput[];
-  const options = [10, 25, 50, 100, 500];
+  const inputs = [] as AlertInput[]
+  const options = [10, 25, 50, 100, 500]
   options.forEach((option: number) => {
     inputs.push({
       type: "radio",
       label: option.toString(),
       value: option,
       handler: () => {
-        maxItems.value = option;
+        limit.value = option
       },
-      checked: option === maxItems.value,
-    });
-  });
+      checked: option === limit.value
+    })
+  })
   const alert = await alertController.create({
     header: "Afficher combien de scores ?",
     inputs: inputs,
-    buttons: ["OK"],
-  });
-  await alert.present();
-};
+    buttons: ["OK"]
+  })
+  await alert.present()
+}
 const togglePrintable = () => {
-  showPrintableScores.value = !showPrintableScores.value;
-}; 
+  showPrintableScores.value = !showPrintableScores.value
+}
 </script>
 <style scoped>
 ion-select {

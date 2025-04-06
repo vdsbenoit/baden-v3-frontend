@@ -1,7 +1,7 @@
 # Créer une page
 
 - créer une page : nouveau fichier dans `views/`
-  - importer le component `HeaderTemplate` & set la prop `pageTitle` 
+  - importer le component `HeaderComponent` & set la prop `pageTitle` 
 - ajouter un élément dans le menu: `App.vue`
 - ajouter un élément dans le router:  `router/main.ts`
 
@@ -35,8 +35,8 @@ Check que tu n'importes pas d'autres services dans `users.ts` car ce module est 
 - ionic 6 : UI 
 - firebase : auth & db
 - pinia : state management
-- magnetar: firestore 
-- Volar plugin (VS Code): I applied [this config](https://github.com/johnsoncodehk/volar/discussions/471).
+- vuefire : firestore interface
+- [Vue extension box (VS Code)](https://marketplace.visualstudio.com/items/?itemName=MisterJ.vue-volar-extention-pack)
 - Auto generate build info file : https://www.npmjs.com/package/ionic-build-info
 
 

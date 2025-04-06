@@ -1,16 +1,16 @@
 <template>
   <ion-page>
-    <header-template pageTitle="Onboarding"></header-template>
+    <header-component pageTitle="Onboarding"></header-component>
     <ion-content :fullscreen="true" class="ion-padding">
       <refresher-component></refresher-component>
       <ion-card>
-        <ion-card-header v-if="userStore.profile.rejectionReason">
+        <ion-card-header v-if="currentUser && currentUser.rejectionReason">
           <ion-card-title>Aille !</ion-card-title>
           <p>
             Il semblerait que ta demande d'accès ait été refusée.
-            <br><br>
-            {{ userStore.profile.rejectionReason }}
-            <br><br>
+            <br /><br />
+            {{ currentUser.rejectionReason }}
+            <br /><br />
             Est-ce que tu peux recommencer stp ?
           </p>
         </ion-card-header>
@@ -18,211 +18,219 @@
           <ion-card-title>Bienvenue !</ion-card-title>
           <p>Avant d'aller plus loin, faisons connaissance.</p>
         </ion-card-header>
-        <form @submit.prevent="submitForm"  @keydown.enter="submitForm">
+        <form @submit.prevent="submitForm" @keydown.enter="submitForm">
           <ion-list class="ion-no-padding">
-          <ion-item>
-            <ion-label position="floating" color="primary">Totem</ion-label>
-            <ion-input v-model="totem" name="totem" type="text" autocorrect="off" @ionChange="handleNameChange"></ion-input>
-            <ion-note v-if="nameError" slot="error">Mentionne au minium ton totem ou ton nom</ion-note>
-          </ion-item>
-          <ion-item>
-            <ion-label position="floating" color="primary">Nom</ion-label>
-            <ion-input v-model="name" name="name" type="text" autocorrect="off" @ionChange="handleNameChange"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label position="floating" color="primary">Quel sera ton role durant la BB ?</ion-label>
-            <ion-select v-model="selectedRole" required interface="popover" @ionChange="handleRoleChange">
-              <ion-select-option v-for="(value, roleName) in roles" :key="value" :value="value">{{ roleName }}</ion-select-option>
-            </ion-select>
-          </ion-item>
-  
-          <ion-item v-if="isParticipant">
-            <ion-label position="floating" color="primary">Type de section</ion-label>
-            <ion-select v-model="selectedSectionType" interface="popover" required>
-              <ion-select-option v-for="sectionType in sectionTypes" :key="sectionType" :value="sectionType">{{ sectionType }}</ion-select-option>
-            </ion-select>
-          </ion-item>  
-          <ion-item v-if="isParticipant && selectedSectionType">
-            <ion-label position="floating" color="primary">Section</ion-label>
-            <ion-select v-model="selectedSectionId" interface="popover" required>
-              <ion-select-option v-for="s in sections.values()" :key="s.id" :value="s.id"> {{ s.name }} ({{ s.city }}) </ion-select-option>
-            </ion-select>
-          </ion-item>
-  
-          <ion-item v-if="isLeader">
-            <ion-label position="floating" color="primary">Section</ion-label>
-            <ion-select v-model="selectedLeaderSectionId" interface="popover" required>
-              <ion-select-option v-for="s in leaderSections.values()" :key="s.id" :value="s.id"> {{ s.name }} ({{ s.city }}) </ion-select-option>
-            </ion-select>
-          </ion-item>
+            <ion-item>
+              <ion-label position="floating" color="primary">Totem / Nom</ion-label>
+              <ion-input
+                v-model="name"
+                name="name"
+                type="text"
+                autocorrect="off"
+                @ionChange="handleNameChange"
+                required
+              ></ion-input>
+              <ion-note v-if="nameError" slot="error">Mentionne ton totem ou ton nom</ion-note>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating" color="primary">Quel sera ton role durant la Baden Battle ?</ion-label>
+              <ion-select v-model="selectedRole" required interface="popover" @ionChange="handleRoleChange">
+                <ion-select-option v-for="(value, roleName) in selectableRoles" :key="value" :value="value">
+                  {{ roleName }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
 
-        </ion-list>
-          <ion-button type="submit" expand="block" class="ion-margin" :disabled="!canSubmit">
-            Continuer
-          </ion-button>
+            <ion-item v-if="isParticipant">
+              <ion-label position="floating" color="primary">Type de section</ion-label>
+              <ion-select v-model="selectedgroupCategoryId" interface="popover" required>
+                <ion-select-option v-for="(groupCategory, id) in appConfig?.groupCategories" :key="id" :value="id">
+                  {{ groupCategory.name }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item v-if="isParticipant && selectedgroupCategoryId">
+              <ion-label position="floating" color="primary">Section</ion-label>
+              <ion-spinner v-if="isLoadingPlayerGroups"></ion-spinner>
+              <div v-else-if="errorLoadingGroups">Erreur : {{ errorLoadingGroups.message }}</div>
+              <ion-select v-else v-model="selectedGroupId" interface="popover" required>
+                <ion-select-option v-for="playerGroup in playerGroups" :key="playerGroup.id" :value="playerGroup.id">
+                  {{ playerGroup.name }} ({{ playerGroup.city }})
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+
+            <ion-item v-if="isAttendant">
+              <ion-label position="floating" color="primary">Section</ion-label>
+              <ion-spinner v-if="isLoadingAttendantGroups"></ion-spinner>
+              <div v-else-if="errorLoadingAttendantGroups">Erreur : {{ errorLoadingAttendantGroups.message }}</div>
+              <ion-select v-else v-model="selectedGroupId" interface="popover" required>
+                <ion-select-option
+                  v-for="attendantgroup in attendantGroups"
+                  :key="attendantgroup.id"
+                  :value="attendantgroup.id"
+                >
+                  {{ attendantgroup.name }} ({{ attendantgroup.city }})
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-list>
+          <ion-button type="submit" expand="block" class="ion-margin" :disabled="!canSubmit"> Continuer </ion-button>
         </form>
-
       </ion-card>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonLabel, IonSelect, IonSelectOption, IonItem, IonInput, IonButton, IonCard, IonCardHeader, IonCardTitle, 
-  IonNote, IonList } from "@ionic/vue";
-import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { useRouter } from 'vue-router';
-import { computed, ref, watch } from "vue";
-import { ROLES, useAuthStore } from "@/services/users";
-import { confirmPopup, errorPopup, toastPopup } from "@/services/popup";
-import { getSectionTypes } from "@/services/settings";
-import { streamSection, getSectionsBySectionType, Section } from "@/services/sections";
-import { streamLeaderSection, getLeaderSections, getStaffSectionId, LeaderSection } from "@/services/leaderSections";
-import RefresherComponent from "@/components/RefresherComponent.vue";
+import HeaderComponent from "@/components/HeaderComponent.vue"
+import RefresherComponent from "@/components/RefresherComponent.vue"
+import { useAppConfig } from "@/composables/app"
+import { useAttendantGroups } from "@/composables/attendantGroup"
+import { usePlayerGroups } from "@/composables/playerGroup"
+import { useCurrentUserProfile } from "@/composables/userProfile"
+import { DEFAULT_GROUP_CATEGORY_ID, DEFAULT_GROUP_ID, DEFAULT_USER_ROLE_VALUE, USER_ROLES } from "@/constants"
+import { UserProfile } from "@/types"
+import { Group } from "@/types/Group"
+import { sanitizeInput } from "@/utils/form"
+import { getGroup } from "@/utils/playerGroup"
+import { confirmPopup, errorPopup, toastPopup } from "@/utils/popup"
+import { updateUserProfile } from "@/utils/userProfile"
+// prettier-ignore
+import { IonButton, IonCard, IonCardHeader, IonCardTitle, IonContent, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue";
+import { computed, ref } from "vue"
+import { useRouter } from "vue-router"
 
-const router = useRouter();
-const userStore = useAuthStore();
+const router = useRouter()
 
-// Strip Anonyme & Newbie from ROLES
-const roles = Object.fromEntries(Object.entries(ROLES).filter(([, value]) => value !== ROLES.Anonyme && value !== ROLES.Newbie));
+// Strip Erreur, Anonyme & Newbie from ROLES
+const selectableRoles = Object.fromEntries(
+  Object.entries(USER_ROLES).filter(
+    ([, value]) => ![USER_ROLES.Erreur, USER_ROLES.Anonyme, USER_ROLES.Newbie].includes(value)
+  )
+)
 
 // reactive data
 
-const name = ref('');
-const totem = ref('');
-const selectedRole = ref(-1);
-const selectedSectionType = ref('');
-const selectedSectionId = ref(-1);
-const selectedLeaderSectionId = ref(-1);
-const nameError = ref(false);
-const isLoadingSections = ref(false);
-const isUpdatingProfile = ref(false);
+const name = ref("")
+const selectedRole = ref(DEFAULT_USER_ROLE_VALUE)
+const selectedgroupCategoryId = ref(DEFAULT_GROUP_CATEGORY_ID)
+const selectedGroupId = ref(DEFAULT_GROUP_ID)
+const nameError = ref(false)
+const isUpdatingProfile = ref(false)
 
-// watchers 
+// composables & computed data
 
-watch(selectedSectionType, (newVal) => {
-  if (newVal) {
-    isLoadingSections.value = true;
-    setTimeout(() => {
-      isLoadingSections.value = false;
-    }, 5000);
-  }
-});
+const currentUser = useCurrentUserProfile()
+const appConfig = useAppConfig()
+const {
+  data: playerGroups,
+  pending: isLoadingPlayerGroups,
+  error: errorLoadingGroups
+} = usePlayerGroups(selectedgroupCategoryId)
 
-// computed data
+const isParticipant = computed(() => selectedRole.value === USER_ROLES.Participant)
+const isAttendant = computed(() => selectedRole.value >= USER_ROLES.Animateur)
+const loadStaffGroups = computed(() => (selectedRole.value >= USER_ROLES.Organisateur ? "only" : "exclude"))
+const {
+  data: attendantGroups,
+  pending: isLoadingAttendantGroups,
+  error: errorLoadingAttendantGroups
+} = useAttendantGroups(isAttendant, loadStaffGroups, true)
 
-const sectionTypes = computed(() => {
-  return getSectionTypes();
-});
-const sections = computed((): Map<string, Section> => {
-  return getSectionsBySectionType(selectedSectionType.value); 
-});
-const leaderSections = computed((): Map<string, LeaderSection> => {
-  return getLeaderSections();
-});
-const isParticipant = computed(() => selectedRole.value === ROLES.Participant && !nameError.value);
-const isLeader = computed(() => (selectedRole.value === ROLES.Animateur || selectedRole.value === ROLES.Chef) && !nameError.value);
 const canSubmit = computed(() => {
-  if (isParticipant.value && selectedSectionType.value && selectedSectionId.value > 0) return true
-  if (isLeader.value && selectedLeaderSectionId.value > 0) return true
-  if (selectedRole.value >= ROLES.Organisateur) return true
-  return false;
-});
+  if (!name.value) return false
+  if (
+    isParticipant.value &&
+    selectedgroupCategoryId.value != DEFAULT_GROUP_CATEGORY_ID &&
+    selectedGroupId.value != DEFAULT_GROUP_ID
+  )
+    return true
+  if (isAttendant.value && selectedGroupId.value != DEFAULT_GROUP_ID) return true
+  if (selectedRole.value >= USER_ROLES.Organisateur) return true
+  return false
+})
 
 // methods
 
 const handleRoleChange = () => {
-    // Reset section and leaderSection values when changing the role
-    selectedSectionType.value = ''
-    selectedSectionId.value = -1
-    selectedLeaderSectionId.value = -1
-    if (!name.value && !totem.value) nameError.value = true;
+  // Reset category, player group and attendant group values when changing the role
+  selectedgroupCategoryId.value = DEFAULT_GROUP_CATEGORY_ID
+  selectedGroupId.value = DEFAULT_GROUP_ID
+  if (!name.value) nameError.value = true
 }
 const handleNameChange = () => {
-    if (name.value || totem.value) nameError.value = false;
+  nameError.value = name.value ? false : true
 }
 
-const processForm = () => {
-  isUpdatingProfile.value = true;
-  let newProfile = {};
-  if (selectedRole.value === ROLES.Participant) {
-    newProfile = {
-      totem: totem.value,
-      name: name.value,
-      role: ROLES.Participant,
-      sectionId: selectedSectionId.value,
-      sectionName: streamSection(selectedSectionId.value)?.name,
-      hasDoneOnboarding: true,
-    };
-  } else {
-    newProfile = {
-      totem: totem.value,
-      name: name.value,
-      requestedRole: selectedRole.value,
-      requestedSectionId: selectedLeaderSectionId.value,
-      requestedSectionName: streamLeaderSection(selectedLeaderSectionId.value)?.name,
-      hasDoneOnboarding: true,
-    }
+const processForm = (groupData: Group) => {
+  isUpdatingProfile.value = true
+  let newProfile: Partial<UserProfile>
+  newProfile = {
+    name: sanitizeInput(name.value),
+    requestedRole: selectedRole.value,
+    requestedGroupId: selectedGroupId.value,
+    requestedGroupName: groupData.name,
+    hasDoneOnboarding: true
   }
-  userStore
-    .updateProfile(userStore.uid, newProfile)
+  if (!currentUser.value) return errorPopup("currentUser not found", "Impossible de mettre à jour le profil")
+  updateUserProfile(currentUser.value.id, newProfile)
     .then(() => {
-      toastPopup("Ton profil a été mis à jour");
-      isUpdatingProfile.value = false;
+      toastPopup("Ton profil a été mis à jour")
+      isUpdatingProfile.value = false
     })
     .catch((error: any) => {
-      errorPopup(`Le profile n'a pas pu être mis à jour : ${error.message}`);
-      isUpdatingProfile.value = false;
+      errorPopup(error.message, `Le profile n'a pas pu être mis à jour`)
+      isUpdatingProfile.value = false
     })
     .finally(() => {
-      router.replace({ name: "home" });
-    });
-  console.log("Profile udpated", newProfile);
+      router.replace({ name: "home" })
+    })
+  console.log("Profile udpated", newProfile)
 }
 
 const submitForm = async () => {
-  if (!name.value && !totem.value) return errorPopup('Mentionne au minium ton totem ou ton nom');
-  if (selectedRole.value < ROLES.Participant) return errorPopup('Choisis un role');
-  if (selectedRole.value === ROLES.Participant){
-    if (selectedSectionId.value) return processForm();
-    else return errorPopup('Choisis une section');
-  }
+  let message = ""
+  let groupData: Group
 
-  let message="";
-  if (selectedRole.value === ROLES.Animateur) {
-    if (selectedLeaderSectionId.value){
-      const leaderSectionName = streamLeaderSection(selectedLeaderSectionId.value)?.name;
+  // Check if all required fields are filled
+  if (!name.value) return errorPopup("Mentionne ton totem ou ton nom")
+  if (selectedRole.value < USER_ROLES.Participant) return errorPopup("Choisis un role")
+  if (!selectedGroupId.value) return errorPopup("Choisis une section")
+
+  try {
+    groupData = await getGroup(selectedGroupId.value)
+  } catch (error: any) {
+    return errorPopup(error.message, `Une erreur est survenue`)
+  }
+  switch (selectedRole.value) {
+    case USER_ROLES.Participant:
+      message = `Tu as choisi le role de participant. 
+      Cela signifie que tu participeras à la Baden Battle avec la section ${groupData.name}.`
+      break
+    case USER_ROLES.Animateur:
       message = `Tu as choisi le role d'animateur. 
-      Cela signifie qu'un des chefs de la section ${leaderSectionName} ou un organisateur de la Baden Battle devra
-      <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
-    } else return errorPopup('Choisis une section');
-  }
-  if (selectedRole.value === ROLES.Chef) {
-    if (selectedLeaderSectionId.value){
-      const leaderSectionName = streamLeaderSection(selectedLeaderSectionId.value)?.name;
+      Cela signifie qu'un•e des chefs de la section ${groupData.name} ou un•e organisateur/organisatrice de la Baden Battle devra
+      <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`
+      break
+    case USER_ROLES.Chef:
       message = `Tu as choisi le role de chef. 
-      Cela signifie qu'un des chefs de la section ${leaderSectionName} ou un organisateur de la Baden Battle devra
-      <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
-    } else return errorPopup('Choisis une section');
-  }
-  if (selectedRole.value === ROLES.Organisateur) {
-    selectedLeaderSectionId.value = await getStaffSectionId();
-    message = `Tu as choisi le role d'organisateur de la Baden Battle. 
-    Cela signifie qu'un autre organisateur de la Baden Battle devra <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
-  }
-  if (selectedRole.value === ROLES.Administrateur) {
-    selectedLeaderSectionId.value = await getStaffSectionId();
-    message = `Tu as choisi le role d'administrateur de l'application. 
-    Cela signifie qu'un autre administrateur devra <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
+      Cela signifie qu'un•e des chefs de la section ${groupData.name} ou un•e organisateur/organisatrice de la Baden Battle devra
+      <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`
+      break
+    case USER_ROLES.Organisateur:
+      message = `Tu as choisi le role d'organisateur de la Baden Battle. 
+      Cela signifie qu'une autre personne avec le rôle d'organisateur de la Baden Battle devra <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`
+      break
+    case USER_ROLES.Administrateur:
+      message = `Tu as choisi le role d'administrateur de l'application. 
+      Cela signifie qu'une autre personne avec le rôle d'administrateur devra <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`
+      break
   }
   message += ` Veux-tu continuer ?`
-  const handler = () => processForm();
-  return confirmPopup(message, handler, null, 'Attention');
-  // Handle form submission
-
-  }
-
+  const handler = () => processForm(groupData)
+  return confirmPopup(message, handler, null, "Attention")
+}
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

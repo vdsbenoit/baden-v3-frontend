@@ -1,153 +1,138 @@
-import { toastPopup } from './../services/popup';
-import { isRankingPublic } from './../services/settings';
-import { ROLES, getRoleByValue } from './../services/users';
-import { createRouter, createWebHistory } from '@ionic/vue-router';
-import { RouteRecordRaw } from 'vue-router';
-import { useAuthStore } from "@/services/users";
-import HomePageVue from '../views/HomePage.vue';
-import GuestHomePageVue from '../views/GuestHomePage.vue';
-import Nprogress from 'nprogress';
-import OnboardingPage from '@/views/OnboardingPage.vue';
+import { USER_ROLES } from "@/constants"
+import { isRankingPublic } from "@/utils/app"
+import { getRoleByValue, getUserProfile } from "@/utils/userProfile"
+import OnboardingPage from "@/views/OnboardingPage.vue"
+import { createRouter, createWebHistory } from "@ionic/vue-router"
+import { RouteRecordRaw } from "vue-router"
+import { getCurrentUser } from "vuefire"
+import HomePageVue from "../views/HomePage.vue"
+import { toastPopup } from "../utils/popup"
 
 const routes: Array<RouteRecordRaw> = [
-  { 
-    path: '', 
-    redirect: '/guest'
+  {
+    path: "",
+    redirect: "/guest"
   },
   {
-    name: 'guest',
-    path: '/guest',
-    component: GuestHomePageVue
+    name: "guest",
+    path: "/guest",
+    component: () => import("../views/GuestHomePage.vue"),
+    meta: { noAuth: true }
   },
   {
-    name: 'login',
-    path: '/login',
-    component: () => import ('../views/LoginPage.vue'),
+    name: "login",
+    path: "/login",
+    component: () => import("../views/LoginPage.vue"),
+    meta: { noAuth: true }
+  },
+  // todo: remove this once the feature/refactor_and_use_vuefire branch is merged and deployed in prod
+  {
+    name: "validation",
+    path: "/validation",
+    redirect: "/login"
   },
   {
-    name: 'redirectLogin',
-    path: '/redirectLogin',
-    component: () => import ('../views/LoginPage.vue'),
-    props: { redirect: true }
-  },
-  {
-    name: 'validation',
-    path: '/validation',
-    component: () => import ('../views/LoginPage.vue'),
-    props: { validation: true }
-  },
-  {
-    name: 'home',
-    path: '/home',
+    name: "home",
+    path: "/home",
     component: HomePageVue,
-    meta: { minimumRole: ROLES.Newbie }
+    meta: { minimumRole: USER_ROLES.Newbie }
   },
   {
-    name: 'onboarding',
-    path: '/onboarding',
+    name: "onboarding",
+    path: "/onboarding",
     component: OnboardingPage,
-    meta: { minimumRole: ROLES.Newbie }
+    meta: { minimumRole: USER_ROLES.Newbie }
   },
   {
-    name: 'myProfile',
-    path: '/profile',
-    component: () => import ('../views/ProfilePage.vue'),
-    meta: { minimumRole: ROLES.Newbie }
+    name: "myProfile",
+    path: "/profile",
+    component: () => import("../views/ProfilePage.vue"),
+    meta: { minimumRole: USER_ROLES.Newbie }
   },
   {
-    name: 'profile',
-    path: '/profile/:userId',
-    component: () => import ('../views/ProfilePage.vue'),
-    meta: { minimumRole: ROLES.Participant }
+    name: "profile",
+    path: "/profile/:userId",
+    component: () => import("../views/ProfilePage.vue"),
+    meta: { minimumRole: USER_ROLES.Participant }
   },
   {
-    name: 'teams',
-    path: '/team/:teamId?',
-    component: () => import ('../views/TeamPage.vue'),
-    meta: { minimumRole: ROLES.Participant }
+    name: "team",
+    path: "/team/:teamId",
+    component: () => import("../views/PlayerTeamPage.vue"),
+    meta: { minimumRole: USER_ROLES.Participant }
   },
   {
-    name: 'game',
-    path: '/game/:gameId',
-    component: () => import ('../views/GamePage.vue'),
-    meta: { minimumRole: ROLES.Participant }
+    name: "game",
+    path: "/game/:gameId",
+    component: () => import("../views/GamePage.vue"),
+    meta: { minimumRole: USER_ROLES.Participant }
   },
   {
-    name: 'games',
-    path: '/games',
-    component: () => import ('../views/GamesPage.vue'),
-    meta: { minimumRole: ROLES.Participant }
+    name: "games",
+    path: "/games",
+    component: () => import("../views/GamesPage.vue"),
+    meta: { minimumRole: USER_ROLES.Participant }
   },
   {
-    name: 'match',
-    path: '/match/:matchId',
-    component: () => import ('../views/MatchPage.vue'),
-    meta: { minimumRole: ROLES.Participant }
+    name: "match",
+    path: "/match/:matchId",
+    component: () => import("../views/MatchPage.vue"),
+    meta: { minimumRole: USER_ROLES.Participant }
   },
   {
-    name: 'sections',
-    path: '/sections',
-    component: () => import ('../views/SectionsPage.vue'),
-    meta: { minimumRole: ROLES.Participant }
+    name: "player-group",
+    path: "/player-group/:groupId?",
+    component: () => import("../views/PlayerGroupsPage.vue"),
+    meta: { minimumRole: USER_ROLES.Participant }
   },
   {
-    name: 'section',
-    path: '/section/:sectionId',
-    component: () => import ('../views/SectionsPage.vue'),
-    meta: { minimumRole: ROLES.Participant }
+    name: "attendant-group",
+    path: "/attendant-group/:groupId?",
+    component: () => import("../views/AttendantGroupsPage.vue"),
+    meta: { minimumRole: USER_ROLES.Animateur }
   },
   {
-    name: 'leaders',
-    path: '/leaders',
-    component: () => import ('../views/LeadersPage.vue'),
-    meta: { minimumRole: ROLES.Animateur }
-  },
-  {
-    name: 'leader',
-    path: '/leader/:sectionId',
-    component: () => import ('../views/LeadersPage.vue'),
-    meta: { minimumRole: ROLES.Animateur }
-  },
-  {
-    name: 'requests',
-    path: '/requests',
+    name: "applicants",
+    path: "/applicants",
     props: true,
-    component: () => import ('../views/RequestsPage.vue'),
-    meta: { minimumRole: ROLES.Chef }
+    component: () => import("../views/ApplicantsPage.vue"),
+    meta: { minimumRole: USER_ROLES.Chef }
   },
   {
-    name: 'matches',
-    path: '/matches',
-    component: () => import ('../views/MatchesPage.vue'),
-    meta: { minimumRole: ROLES.Organisateur }
+    name: "checkScores",
+    path: "/check-scores",
+    component: () => import("../views/CheckScoresPage.vue"),
+    meta: { minimumRole: USER_ROLES.Organisateur }
   },
   {
-    name: 'ranking',
-    path: '/ranking',
-    component: () => import ('../views/RankingPage.vue'),
-    meta: { minimumRole: ROLES.Organisateur }
+    name: "ranking",
+    path: "/ranking",
+    component: () => import("../views/RankingPage.vue"),
+    meta: { minimumRole: USER_ROLES.Organisateur }
   },
   {
-    name: 'settings',
-    path: '/settings',
-    component: () => import ('../views/SettingsPage.vue'),
-    meta: { minimumRole: ROLES.Administrateur }
+    name: "settings",
+    path: "/settings",
+    component: () => import("../views/SettingsPage.vue"),
+    meta: { minimumRole: USER_ROLES.Administrateur }
   },
   {
-    name: 'users',
-    path: '/users/:userFilter?',
+    name: "users",
+    path: "/users",
     props: true,
-    component: () => import ('../views/UsersPage.vue'),
-    meta: { minimumRole: ROLES.Administrateur }
+    component: () => import("../views/LatestUsersPage.vue"),
+    meta: { minimumRole: USER_ROLES.Administrateur }
   },
   {
-    name: 'about',
-    path: '/about',
-    component: () => import ('../views/AboutPage.vue'),
+    name: "about",
+    path: "/about",
+    component: () => import("../views/AboutPage.vue"),
+    meta: { noAuth: true }
   },
-  { 
+  {
     path: "/:catchAll(.*)",
-    component: () => import ('../views/NotFoundPage.vue')
+    component: () => import("../views/NotFoundPage.vue"),
+    meta: { minimumRole: USER_ROLES.Anonyme }
   }
 ]
 
@@ -156,52 +141,65 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach(async (to, from, next) => {
-  // If this isn't an initial page load.
-  if (to.name) {
-    // Start the route progress bar.
-    Nprogress.start()
-  }
-  const user = useAuthStore();
-  if (user.isLoggedIn) {
-    if (to.name === "guest") return next('/home');
-    if (to.name === "login"){
-      toastPopup("Tu es déjà connecté");
-      return next('/home');
-    }
-    if (to.name === "ranking" && isRankingPublic()) return next();
-    if (user.profile.role === -1) await user.forceFetchCurrentUserProfile();
-    if (to.name === "onboarding"){
-      if (user.profile.hasDoneOnboarding) {
-        toastPopup("Tu as déjà fait l'onboarding");
-        return next('/home');
+router.beforeEach(async to => {
+  if (to.meta.minimumRole && to.meta.minimumRole === USER_ROLES.Anonyme) return true
+  const currentUser = await getCurrentUser()
+  // if the user is not connected
+  if (!currentUser) {
+    // if the pages does not require authentication, let the user access it
+    if (to.meta.noAuth) return true
+    // else, redirect to login
+    console.log("User is not connected, redirecting to login")
+    toastPopup("Tu dois être connecté pour accéder à cette page")
+    return {
+      path: "/login",
+      query: {
+        // we keep the current path in the query so we can
+        // redirect to it after login with `router.push(route.query.redirect || '/')`
+        redirect: to.fullPath
       }
     }
-    if (to.meta.minimumRole){
-      if (!user.profile.hasDoneOnboarding && to.name !== "onboarding" && to.name !== "myProfile") {
-        console.log("User is newbie, redirecting to onboarding instead of ", to.name);
-        return next('/onboarding');
-      }
-      if (user.profile.role >= +to.meta.minimumRole) return next();
-      else {
-        toastPopup(`Tu n'as pas le droit d'accéder à la page ${to.name?.toString()} avec ton role (${getRoleByValue(user.profile.role)})`);
-        return next('/home');
-      }
-    } else return next();
   }
-  else {
-    if (!to.meta.minimumRole) return next();
-    if(to.meta.minimumRole === ROLES.Anonyme) return next();
-    if (to.name === "ranking" && isRankingPublic()) return next(); // this does not work because settings are loaded only when logged in
-    toastPopup("Tu dois être connecté pour accéder à cette page");
-    return next('/guest');
+  // if the user is connected and try to open the guest page, redirect to home
+  if (to.name === "guest") return "/home"
+  // if the user is connected and try to open the login page, redirect to home
+  if (to.name === "login") {
+    toastPopup("Tu es déjà connecté")
+    return "/home"
   }
-})
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-router.afterEach((to, from) => {
-  // Complete the animation of the route progress bar.
-  Nprogress.done()
+  if (to.name === "ranking") {
+    const _isRankingPublic = await isRankingPublic()
+    if (_isRankingPublic) return true
+  }
+  const userProfile = await getUserProfile(currentUser.uid) // fixme : limit the number of calls to the db
+  if (!userProfile) {
+    toastPopup("Nous n'avons pas retrouvé ton profil dans la base de données")
+    console.error("Could not find user profile in the db")
+    return false
+  }
+  if (to.name === "onboarding") {
+    if (userProfile.hasDoneOnboarding) {
+      toastPopup("Tu as déjà fait l'onboarding")
+      return "/home"
+    }
+  }
+  if (!userProfile.hasDoneOnboarding && to.name !== "onboarding") {
+    console.log("User is newbie, redirecting to onboarding instead of ", to.name)
+    return "/onboarding"
+  }
+  if (!to.meta.minimumRole) return true
+  if (userProfile.role >= +to.meta.minimumRole) return true
+  toastPopup(
+    `Tu n'as pas le droit d'accéder à la page ${to.name?.toString()} avec ton role (${getRoleByValue(
+      userProfile.role
+    )})`
+  )
+  console.error(
+    `The user ${userProfile.email} with the role ${
+      userProfile.role
+    } tried to access ${to.name?.toString()} which requires the role ${getRoleByValue(+to.meta?.minimumRole)}`
+  )
+  return false
 })
 
 export default router

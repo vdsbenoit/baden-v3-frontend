@@ -8,17 +8,16 @@
 </template>
 
 <script setup lang="ts">
-import { IonCol, IonRippleEffect } from "@ionic/vue";
-import { defineProps } from "vue";
-import { useRouter } from "vue-router";
-const props = defineProps(["target"]);
-const router = useRouter();
+import { IonCol, IonRippleEffect } from "@ionic/vue"
+import { defineProps } from "vue"
+import { useRouter } from "vue-router"
+const props = defineProps(["target"])
+const router = useRouter()
 </script>
 <style scoped>
 .tile {
   border-radius: 15px;
-  /* background-color: var(--ion-color-primary); */
-  background-color: #ff2c2c;
+  background-color: var(--ion-color-primary);
   aspect-ratio: 1;
   display: flex;
   align-items: center;
@@ -33,14 +32,6 @@ const router = useRouter();
   border-radius: 15px;
 }
 .tile span {
-  /* color: var(--ion-color-light) */
-  color: var(--ion-color-dark)
-}
-body.dark .tile {
-  /* background-color: var(--ion-color-light); */
-}
-body.dark .tile span {
-  /* color: var(--ion-color-primary); */
   color: var(--ion-color-light);
 }
 </style>

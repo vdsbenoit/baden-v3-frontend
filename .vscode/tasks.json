@@ -1,0 +1,34 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "start ionic dev server",
+      "type": "shell",
+      "command": "ionic serve --no-open",
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "pattern": [
+            {
+              "regexp": ".",
+              "file": 1,
+              "location": 2,
+              "message": 3
+            }
+          ],
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": ".",
+            "endsPattern": "Development server running",
+
+          }
+        }
+      ]
+    },
+    {
+      "label": "kill ionic",
+      "type": "shell",
+      "command": "kill -9 $(pgrep ionic)"
+    }
+  ]
+}
