@@ -3,7 +3,7 @@
     <header-component pageTitle="Accueil"></header-component>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
-      <div class="logo">
+      <div class="homepage-logo">
         <img src="@/assets/img/logo-bb.png" alt="Logo Baden Battle" />
       </div>
       <div class="container ion-padding">
@@ -24,25 +24,6 @@ const router = useRouter()
 </script>
 
 <style scoped>
-.logo {
-  background-color: var(--ion-background-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: min(1%, 20px);
-  width: 100%;
-  height: 30%;
-  margin-bottom: 20px;
-  margin-top: 10px;
-}
-.logo img {
-  max-width: 100%;
-  max-height: 100%;
-}
-body.dark .logo img {
-  filter: invert(1);
-}
 .container {
   text-align: center;
 }
