@@ -60,7 +60,7 @@
                 <ion-card-title>Membres</ion-card-title>
               </ion-card-header>
               <ion-card-content>
-                <ion-item v-if="nbApplicants" routerLink="/applicants">
+                <ion-item v-if="nbApplicants != '0'" routerLink="/applicants">
                   <ion-label>Membres en attente de validation</ion-label>
                   <ion-badge slot="end" color="warning">{{ nbApplicants }}</ion-badge>
                 </ion-item>
@@ -176,9 +176,9 @@ const groupLeaders = computed(() => {
 })
 
 const nbApplicants = computed((): string => {
-  if (!applicants.value) return ""
-  if (applicants.value.length <= 50) return applicants.value.length.toString()
-  return "50+"
+  if (!applicants.value) return "0"
+  if (applicants.value.length <= 9) return applicants.value.length.toString()
+  return "9+"
 })
 const maxGames = computed(() => appConfig.value?.attendantSchedule?.length ?? 0)
 
