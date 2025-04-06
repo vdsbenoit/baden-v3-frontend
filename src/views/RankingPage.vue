@@ -1,7 +1,6 @@
 <template>
   <ion-page>
     <header-component pageTitle="Classement">
-      <ion-label v-if="canPrint"> Printable </ion-label>
       <ion-toggle v-if="canPrint" @IonChange="togglePrintable" :checked="showPrintableScores"></ion-toggle>
       <ion-button @click="setLimit"
         ><ion-icon slot="icon-only" :ios="settingsOutline" :md="settingsSharp"></ion-icon
@@ -50,7 +49,7 @@ import { useAppConfig } from "@/composables/app"
 import { useCurrentUserProfile } from "@/composables/userProfile"
 import { USER_ROLES } from "@/constants"
 // prettier-ignore
-import { alertController, AlertInput, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonLabel, IonPage, IonRow, IonToggle } from "@ionic/vue";
+import { alertController, AlertInput, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonPage, IonRow, IonToggle } from "@ionic/vue";
 import { settingsOutline, settingsSharp } from "ionicons/icons"
 import { computed, ref } from "vue"
 
