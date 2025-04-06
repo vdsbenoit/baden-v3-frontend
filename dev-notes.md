@@ -35,8 +35,8 @@ Check que tu n'importes pas d'autres services dans `users.ts` car ce module est 
 - ionic 6 : UI 
 - firebase : auth & db
 - pinia : state management
-- magnetar: firestore 
-- Volar plugin (VS Code): I applied [this config](https://github.com/johnsoncodehk/volar/discussions/471).
+- vuefire : firestore interface
+- [Vue extension box (VS Code)](https://marketplace.visualstudio.com/items/?itemName=MisterJ.vue-volar-extention-pack)
 - Auto generate build info file : https://www.npmjs.com/package/ionic-build-info
 
 
