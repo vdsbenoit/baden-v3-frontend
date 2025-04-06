@@ -17,15 +17,15 @@ const routes: Array<RouteRecordRaw> = [
     name: "guest",
     path: "/guest",
     component: () => import("../views/GuestHomePage.vue"),
-    meta: { notAuthenticated: true }
+    meta: { noAuth: true }
   },
   {
     name: "login",
     path: "/login",
     component: () => import("../views/LoginPage.vue"),
-    meta: { notAuthenticated: true }
+    meta: { noAuth: true }
   },
-  // todo: remove this once in prod
+  // todo: remove this once the feature/refactor_and_use_vuefire branch is merged and deployed in prod
   {
     name: "validation",
     path: "/validation",
@@ -147,7 +147,7 @@ router.beforeEach(async to => {
   // if the user is not connected
   if (!currentUser) {
     // if the pages does not require authentication, let the user access it
-    if (to.meta.notAuthenticated) return true
+    if (to.meta.noAuth) return true
     // else, redirect to login
     console.log("User is not connected, redirecting to login")
     toastPopup("Tu dois être connecté pour accéder à cette page")
