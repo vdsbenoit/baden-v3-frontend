@@ -127,7 +127,7 @@ const routes: Array<RouteRecordRaw> = [
     name: "about",
     path: "/about",
     component: () => import("../views/AboutPage.vue"),
-    meta: { minimumRole: USER_ROLES.Anonyme }
+    meta: { noAuth: true }
   },
   {
     path: "/:catchAll(.*)",
