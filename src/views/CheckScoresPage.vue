@@ -4,8 +4,7 @@
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
       <ion-item color="primary">
-        <ion-label>Choisir un horaire</ion-label>
-        <ion-select v-model="selectedTime" interface="popover">
+        <ion-select v-model="selectedTime" interface="popover" placeholder="Choisir un horaire">
           <ion-select-option v-for="(timeSlot, index) in schedules" :value="index + 1" :key="index"
             >{{ timeSlot.start }} - {{ timeSlot.stop }}</ion-select-option
           >
@@ -104,5 +103,11 @@ const isScoreRecorded = (match: Match) => {
   --padding-end: 0px;
   --inner-padding-start: 0px;
   --inner-padding-end: 0px;
+}
+ion-select {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  --placeholder-opacity: 1;
 }
 </style>
