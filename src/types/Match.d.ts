@@ -6,6 +6,7 @@ export type Match = {
   gameNumber: number
   gameName: string
   time: number
+  GroupCategoryId: string
   playerTeamIds: string[]
   playerNumbers: number[]
   winnerTeamId: string
