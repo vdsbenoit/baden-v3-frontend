@@ -5,29 +5,33 @@
       <refresher-component></refresher-component>
       <ion-item color="primary">
         <ion-select v-model="selectedTime" interface="popover" placeholder="Choisir un horaire">
-          <ion-select-option v-for="(timeSlot, index) in schedules" :value="index + 1" :key="index"
-            >{{ timeSlot.start }} - {{ timeSlot.stop }}</ion-select-option
-          >
+          <ion-select-option v-for="(timeSlot, index) in schedules" :value="index" :key="index">
+            {{ timeSlot.start }} - {{ timeSlot.stop }}
+          </ion-select-option>
         </ion-select>
       </ion-item>
-      <ion-item v-if="isFilled" color="warning">
-        <ion-label class="ion-text-center">Complet</ion-label>
+      <ion-item v-if="isFilled" color="success" class="">
+        <ion-icon slot="end" :ios="checkmarkCircle" :md="checkmarkCircleSharp"></ion-icon>
+        <ion-label>Tous les scores ont été enregistrés</ion-label>
       </ion-item>
       <div v-if="selectedTime === DEFAULT_TIME_VALUE" class="not-found">
         <h2 class="ion-text-center ion-align-items-center">
           Sélectionne un horaire <ion-icon :ios="arrowUpOutline" :md="arrowUpSharp"></ion-icon>
         </h2>
       </div>
+      <div v-else-if="isLoadingMatches" class="ion-text-center">
+        <ion-spinner></ion-spinner>
+      </div>
+      <div v-else-if="errorLoadingMatches" class="not-found">
+        <strong class="capitalize">Erreur</strong>
+        <ion-text color="error">{{ errorLoadingMatches.message }}</ion-text>
+      </div>
+      <div v-else-if="matches && matches.length === 0" class="not-found">
+        <strong class="capitalize">Il n'y a pas de duels pour cet horaire</strong>
+      </div>
       <ion-list v-else>
-        <div v-if="isLoadingMatches" class="ion-text-center">
-          <ion-spinner></ion-spinner>
-        </div>
-        <div v-else-if="errorLoadingMatches" class="not-found">
-          <strong class="capitalize">Erreur</strong>
-          <ion-text color="error">{{ errorLoadingMatches.message }}</ion-text>
-        </div>
         <div v-if="matches && matches.length > 0">
-          <ion-item v-for="match in matches.values()" :key="match.id" :routerLink="`/match/${match.id}`" class="">
+          <ion-item v-for="match in matches" :key="match.id" :routerLink="`/match/${match.id}`" class="">
             <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ match.gameId }}</ion-badge>
             <ion-label>
               {{ match.gameName }}
@@ -41,9 +45,6 @@
             ></ion-icon>
             <ion-icon v-else color="danger" slot="end" :ios="closeCircle" :md="closeCircleSharp"></ion-icon>
           </ion-item>
-        </div>
-        <div v-else class="not-found">
-          <strong class="capitalize">Nous n'avons pas trouvé de matches pour cet horaire...</strong>
         </div>
       </ion-list>
     </ion-content>
