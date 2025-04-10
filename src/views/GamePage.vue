@@ -191,30 +191,44 @@
               <strong class="capitalize">Erreur</strong>
               <ion-text color="error">{{ errorLoadingMatches.message }}</ion-text>
             </div>
-            <ion-list v-else-if="matches && matches.length > 0">
-              <ion-item
-                v-for="[i, match] in matches.entries()"
-                :key="match.id"
-                :routerLink="`/match/${match.id}`"
-                class="item-no-padding"
-              >
-                <ion-label>
-                  <ion-icon :ios="timeOutline" :md="timeSharp" style="vertical-align: middle"></ion-icon>
-                  <ion-text>&nbsp;{{ playerSchedule[i].start }} - {{ playerSchedule[i].stop }} : </ion-text>
-                  <ion-text color="primary" style="font-weight: bold">{{ match.playerTeamIds[0] }}</ion-text>
-                  <ion-text> vs </ion-text>
-                  <ion-text color="primary" style="font-weight: bold">{{ match.playerTeamIds[1] }}</ion-text>
-                </ion-label>
-                <ion-badge
-                  slot="end"
-                  class="ion-no-margin"
-                  :color="match.draw ? 'warning' : 'success'"
-                  v-if="getWinner(match)"
-                  >{{ getWinner(match) }}</ion-badge
-                >
-              </ion-item>
+            <ion-list-header v-else-if="matches && matches.length == 0"><h2>Aucun duel trouvé</h2></ion-list-header>
+            <ion-list v-else>
+              <div v-for="[i, timeSlot] in playerSchedule.entries()" :key="i">
+                <ion-item v-if="Object.keys(breaks).includes(i.toString())" class="item-no-padding">
+                  <ion-label>
+                    <ion-icon
+                      :ios="pauseCircleOutline"
+                      :md="pauseCircleSharp"
+                      style="vertical-align: middle"
+                      class="ion-margin-end"
+                    ></ion-icon>
+                    <ion-text class="ion-margin-end">{{ timeSlot.start }} - {{ timeSlot.stop }} </ion-text>
+                    <ion-text color="primary" style="font-weight: bold">Pause {{ breaks[i] }}</ion-text>
+                  </ion-label>
+                </ion-item>
+                <ion-item v-else :routerLink="`/match/${getMatch(i)?.id}`" class="item-no-padding">
+                  <ion-label>
+                    <ion-icon
+                      :ios="diceOutline"
+                      :md="diceSharp"
+                      style="vertical-align: middle"
+                      class="ion-margin-end"
+                    ></ion-icon>
+                    <ion-text class="ion-margin-end">{{ timeSlot.start }} - {{ timeSlot.stop }} </ion-text>
+                    <ion-text color="primary" style="font-weight: bold">{{ getMatch(i)?.playerTeamIds[0] }}</ion-text>
+                    <ion-text> vs </ion-text>
+                    <ion-text color="primary" style="font-weight: bold">{{ getMatch(i)?.playerTeamIds[1] }}</ion-text>
+                  </ion-label>
+                  <ion-badge
+                    slot="end"
+                    class="ion-no-margin"
+                    :color="getMatch(i)?.draw ? 'warning' : 'success'"
+                    v-if="getWinner(i)"
+                    >{{ getWinner(i) }}</ion-badge
+                  >
+                </ion-item>
+              </div>
             </ion-list>
-            <ion-list-header v-else><h2>Aucun duel trouvé</h2></ion-list-header>
           </ion-card-content>
         </ion-card>
       </div>
@@ -234,7 +248,7 @@ import { useGameMatches } from "@/composables/match"
 import { useCanEditGames, useCanRegister, useCanSeeModerationStuff } from "@/composables/rights"
 import { useCurrentUserProfile, useMembersOfGroup } from "@/composables/userProfile"
 import { DEFAULT_GAME_ID, DEFAULT_GROUP_ID, USER_ROLES } from "@/constants"
-import { AttendantTimeSlot, Match, VueFireUserProfile } from "@/types"
+import { AttendantTimeSlot, VueFireUserProfile } from "@/types"
 import { addAttendant, removeAttendant, setGameNoScores } from "@/utils/game"
 import { setMatchNoScores } from "@/utils/match"
 import { confirmPopup, errorPopup, toastPopup } from "@/utils/popup"
@@ -244,7 +258,7 @@ import { getRoleByValue, getUserName } from "@/utils/userProfile"
 import { IonBadge, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner, IonText, useIonRouter } from "@ionic/vue";
 import { computed, reactive, ref, toRef } from "@vue/reactivity"
 import { useRouteParams } from "@vueuse/router"
-import { closeOutline, closeSharp, timeOutline, timeSharp } from "ionicons/icons"
+import { closeOutline, closeSharp, diceOutline, diceSharp, pauseCircleOutline, pauseCircleSharp } from "ionicons/icons"
 import { onMounted, toValue } from "vue"
 
 // reactive data
@@ -268,6 +282,15 @@ const { data: matches, pending: isLoadingMatches, error: errorLoadingMatches } =
 const canRegister = useCanRegister()
 const canEditGameSettings = useCanEditGames()
 const canSeeModerationStuff = useCanSeeModerationStuff()
+
+const breaks = computed(() => {
+  if (!appConfig.value || !game.value) return []
+  return appConfig.value.groupCategories[game.value.groupCategoryId].breaks
+})
+const getMatch = (time: number) => {
+  if (!matches.value) return null
+  return matches.value.find(match => match.time === time)
+}
 
 const {
   data: attendantGroups,
@@ -340,18 +363,18 @@ const register = async (result: any, payload: any) => {
     // applicability checks
     if (!isCurrentUser && !canRegister.group)
       throw new Error(`
-      Tu n'as pas le droit d'inscrire quelqu'un d'autre à une épreuve. 
+      Tu n'as pas le droit d'inscrire quelqu'un d'autre à une épreuve.
       Le rôle minimum pour inscrire quelqu'un est ${getRoleByValue(USER_ROLES.Chef)}
     `)
     if (_targetUser.groupId != _currentUser.groupId && !canRegister.anyone)
       throw new Error(`
-      L'utilisateur ${getUserName(_targetUser)} ne fait pas partie de ta section. 
+      L'utilisateur ${getUserName(_targetUser)} ne fait pas partie de ta section.
       Seuls les organisateurs peuvent assigner n'importe qui à une épreuve
     `)
     // if target user is not an attendant
     if (!canBeRegistered(_targetUser))
       throw new Error(`
-      Le rôle de ${getUserName(_targetUser)} est ${getRoleByValue(_targetUser.role)}. 
+      Le rôle de ${getUserName(_targetUser)} est ${getRoleByValue(_targetUser.role)}.
       Seuls les ${getRoleByValue(USER_ROLES.Animateur)} et les ${getRoleByValue(
         USER_ROLES.Chef
       )} peuvent être inscrit à une épreuve
@@ -413,9 +436,11 @@ const unregister = async () => {
   }
 }
 
-const getWinner = (match: Match) => {
+const getWinner = (time: number) => {
+  const match = getMatch(time)
+  if (!match) return ""
   if (match.winnerTeamId) return match.winnerTeamId
-  if (match.draw === true) return "Égalité"
+  if (match.draw === true) return "="
   return ""
 }
 
