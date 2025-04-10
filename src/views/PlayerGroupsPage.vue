@@ -38,7 +38,7 @@
                   placeholder="Section"
                   interface="popover"
                 >
-                  <ion-select-option color="dark" v-for="group in groups.values()" :value="group.id" :key="group.id">
+                  <ion-select-option color="dark" v-for="group in groups" :value="group.id" :key="group.id">
                     {{ group.id }} - {{ group.name }} ({{ group.city }})
                   </ion-select-option>
                 </ion-select>

@@ -5,9 +5,6 @@ interface TimeSlot {
   start: string
   stop: string
 }
-interface Break extends TimeSlot {
-  name: string
-}
 // check the backend before changing this interface (especially generate_game_roadmaps)
 export interface AttendantTimeSlot extends TimeSlot {
   id: string
@@ -17,14 +14,12 @@ export type GroupCategory = {
   name: string
   minPlayersPerTeam: number
   maxPlayersPerTeam: number
+  breaks: { [time: number]: string } // time is the index of the break in the playerSchedule. the string is the name of the break
 }
-
 export type AppConfig = {
   groupCategories: { [id: string]: GroupCategory }
   circuits: { [id: string]: string } // for instance { "A": groupCategoryId }
-  nbGamesPerCircuit: number
   playerSchedule: TimeSlot[]
-  breaks: { [position: number]: Break[] }
   attendantSchedule: AttendantTimeSlot[]
 }
 export type RefAppConfig = Ref<VueFirestoreDocumentData<AppConfig> | undefined>

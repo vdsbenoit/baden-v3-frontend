@@ -9,7 +9,7 @@
             <ion-row>
               <ion-col size="12" size-sm="6">
                 <ion-select v-if="groups" v-model="selectedGroupId" placeholder="Section" interface="popover">
-                  <ion-select-option color="dark" v-for="group in groups.values()" :value="group.id" :key="group.id">
+                  <ion-select-option color="dark" v-for="group in groups" :value="group.id" :key="group.id">
                     {{ group.name }} ({{ group.city }})
                   </ion-select-option>
                 </ion-select>
@@ -164,13 +164,13 @@ const applicants = useGroupApplicants(50, selectedGroupId.value)
 
 const groupMembers = computed(() => {
   if (!attendants.value) return []
-  return Array.from(attendants.value.values()).filter(
+  return attendants.value.filter(
     user => user.role !== USER_ROLES.Chef && user.role !== USER_ROLES.Administrateur
   )
 })
 const groupLeaders = computed(() => {
   if (!attendants.value) return []
-  return Array.from(attendants.value.values()).filter(
+  return attendants.value.filter(
     user => user.role === USER_ROLES.Chef || user.role === USER_ROLES.Administrateur
   )
 })
