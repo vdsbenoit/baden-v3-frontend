@@ -9,7 +9,7 @@ export function useAttendantGroup(rGroupId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
     const groupId = toValue(rGroupId)
     if (groupId === DEFAULT_GROUP_ID) return null
-    console.log(`Fetching attendant group ${groupId}`)
+    console.debug(`Fetching attendant group ${groupId}`)
     return doc(GROUPS_COLLECTION_REF, groupId)
   })
   return useDocument<AttendantGroup>(dbRef)
@@ -31,13 +31,13 @@ export function useAttendantGroups(
     const staffGroups = toValue(rStaffGroups)
     const queryParams = []
     if (!toValue(rShouldLoad)) return null
-    console.log(`Fetching attendant groups`)
+    console.debug(`Fetching attendant groups`)
     if (staffGroups === "exclude") {
-      console.log(`Excluding staff group in the query`)
+      console.debug(`Excluding staff group in the query`)
       queryParams.push(where("role", "<", GROUP_ROLES.Staff))
     }
     if (staffGroups === "only") {
-      console.log(`Returning only staff group in the query`)
+      console.debug(`Returning only staff group in the query`)
       queryParams.push(where("role", ">=", GROUP_ROLES.Staff))
     } else {
       queryParams.push(where("role", ">=", GROUP_ROLES.Attendant))
@@ -46,7 +46,7 @@ export function useAttendantGroups(
     if (!toValue(rShowAllAttendantGroups)) {
       const currentUser = useCurrentUserProfile()
       if (!currentUser.value) return null
-      console.log(`Filtering to current user group : ${currentUser.value.groupId}`)
+      console.debug(`Filtering to current user group : ${currentUser.value.groupId}`)
       queryParams.push(where(documentId(), "==", currentUser.value.groupId))
     }
     queryParams.push(orderBy("name"))

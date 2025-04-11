@@ -8,7 +8,7 @@ export function usePlayerGroup(rGroupId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
     const groupId = toValue(rGroupId)
     if (groupId === DEFAULT_GROUP_ID) return null
-    console.log(`Fetching player group ${groupId}`)
+    console.debug(`Fetching player group ${groupId}`)
     return doc(GROUPS_COLLECTION_REF, groupId)
   })
   return useDocument<PlayerGroup>(dbRef)
@@ -18,7 +18,7 @@ export function usePlayerGroups(rGroupCategoryId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
     const groupCategoryId = toValue(rGroupCategoryId)
     if (groupCategoryId === DEFAULT_GROUP_CATEGORY_ID) return null
-    console.log(`Fetching player player groups from category ${groupCategoryId}`)
+    console.debug(`Fetching player player groups from category ${groupCategoryId}`)
     // prettier-ignore
     return query(
       GROUPS_COLLECTION_REF, 
@@ -34,7 +34,7 @@ export function useTopPlayerGroups(rGroupCategoryId: MaybeRefOrGetter<string>, r
     const groupCategoryId = toValue(rGroupCategoryId)
     const limit = toValue(rLimit)
     if (groupCategoryId === DEFAULT_GROUP_CATEGORY_ID) return null
-    console.log(`Fetching the ${limit} top player groups from category ${groupCategoryId}`)
+    console.debug(`Fetching the ${limit} top player groups from category ${groupCategoryId}`)
     // prettier-ignore
     return query(
       GROUPS_COLLECTION_REF, 

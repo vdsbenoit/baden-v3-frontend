@@ -8,7 +8,7 @@ export function useGame(rGameId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
     const id = toValue(rGameId)
     if (id === DEFAULT_GAME_ID) return null
-    console.log(`Fetching game ${id}`)
+    console.debug(`Fetching game ${id}`)
     return doc(GAMES_COLLECTION_REF, id)
   })
   return useDocument<Game>(dbRef)
@@ -17,7 +17,7 @@ export function useGame(rGameId: MaybeRefOrGetter<string>) {
 export function useGames(rShouldLoad: MaybeRefOrGetter<boolean> = true) {
   const dbRef = computed(() => {
     if (!toValue(rShouldLoad)) return null
-    console.log(`Fetching all games`)
+    console.debug(`Fetching all games`)
     return query(GAMES_COLLECTION_REF, orderBy("number"))
   })
   return useCollection<Game>(dbRef)
@@ -27,7 +27,7 @@ export function useCircuitGames(rCircuit: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
     const circuit = toValue(rCircuit)
     if (circuit === DEFAULT_CIRCUIT_VALUE) return null
-    console.log(`Fetching games from circuit ${circuit}`)
+    console.debug(`Fetching games from circuit ${circuit}`)
     // prettier-ignore
     return query(
       GAMES_COLLECTION_REF, 
