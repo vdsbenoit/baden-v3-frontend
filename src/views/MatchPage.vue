@@ -321,8 +321,8 @@ const winHandler = async (winnerTeamId: string) => {
     await Promise.all(promises)
     toastPopup("Le score a été enregistré")
   } catch (error: any) {
-    errorPopup(error.message, `L'enregistrement du score a échoué`)
-    console.log(error)
+    errorPopup("Veuillez contacter l'administrateur de l'app", `L'enregistrement du score a échoué`)
+    console.error("Cannot set score.", error.message)
   }
   isSettingScore.value = false
 }
@@ -375,7 +375,7 @@ const setScore = () => {
     console.error(`match is undefined`)
     return errorPopup("Le match n'a pas encore été chargé")
   }
-  if (appSettings.value?.canSetScores) {
+  if (!appSettings.value?.canSetScores) {
     errorPopup("Il n'est pas ou plus possible d'enregistrer des scores")
     return
   }
@@ -414,7 +414,7 @@ const resetScore = async () => {
     console.error(`userProfile is undefined`)
     return errorPopup("L'utilisateur n'est pas connecté")
   }
-  if (appSettings.value?.canSetScores) {
+  if (!appSettings.value?.canSetScores) {
     errorPopup("Il n'est pas ou plus possible de modifier des scores")
     return
   }

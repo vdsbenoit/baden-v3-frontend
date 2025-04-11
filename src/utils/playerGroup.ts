@@ -68,25 +68,25 @@ export const updateGroupMeanScore = async (playerGroupId: string) => {
   )
 }
 export const addGroupWin = async (playerGroupId: string) => {
-  if (playerGroupId) throw Error("Cannot update score : group is undefined")
+  if (!playerGroupId) throw Error("Cannot update score (addGroupWin) : group is undefined")
   console.debug(`Adding 2 points to player group ${playerGroupId}`)
   await incrementDocField(GROUPS_COLLECTION_NAME, playerGroupId, "score", 2)
   await updateGroupMeanScore(playerGroupId)
 }
 export const removeGroupWin = async (playerGroupId: string) => {
-  if (playerGroupId) throw Error("Cannot update score : group is undefined")
+  if (!playerGroupId) throw Error("Cannot update score (removeGroupWin) : group is undefined")
   console.debug(`Removing 2 points to player group ${playerGroupId}`)
   await incrementDocField(GROUPS_COLLECTION_NAME, playerGroupId, "score", -2)
   await updateGroupMeanScore(playerGroupId)
 }
 export const addGroupDraw = async (playerGroupId: string) => {
-  if (playerGroupId) throw Error("Cannot update score : group is undefined")
+  if (!playerGroupId) throw Error("Cannot update score (addGroupDraw) : group is undefined")
   console.debug(`Adding 1 points to player group ${playerGroupId}`)
   await incrementDocField(GROUPS_COLLECTION_NAME, playerGroupId, "score", 1)
   await updateGroupMeanScore(playerGroupId)
 }
 export const removeGroupDraw = async (playerGroupId: string) => {
-  if (playerGroupId) throw Error("Cannot update score : group is undefined")
+  if (!playerGroupId) throw Error("Cannot update score (removeGroupDraw) : group is undefined")
   console.debug(`Removing 1 points to player group ${playerGroupId}`)
   await incrementDocField(GROUPS_COLLECTION_NAME, playerGroupId, "score", -1)
   await updateGroupMeanScore(playerGroupId)
