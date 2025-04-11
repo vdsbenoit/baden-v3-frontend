@@ -96,32 +96,48 @@
               <strong class="capitalize">Erreur</strong>
               <ion-text color="error">{{ errorLoadingMatches.message }}</ion-text>
             </ion-list-header>
-            <ion-list v-else-if="matches && matches.length > 0">
-              <ion-item
-                v-for="[i, match] in matches.entries()"
-                :key="match.id"
-                :routerLink="`/match/${match.id}`"
-                class="ion-no-padding"
-              >
-                <ion-label>
-                  <span>{{ match.gameName }}</span>
-                  <p>
-                    <ion-icon :ios="locationOutline" :md="locationSharp" style="vertical-align: middle"></ion-icon
-                    ><span>{{ playerSchedule[i].start }} - {{ playerSchedule[i].stop }}</span>
-                    <span> | </span>
-                    <ion-icon :ios="timeOutline" :md="timeSharp" style="vertical-align: middle"></ion-icon
-                    ><span>&nbsp;Jeu n° {{ match.gameId }}</span>
-                  </p>
-                </ion-label>
-                <ion-icon
-                  :ios="statusIcon(match).ios"
-                  :md="statusIcon(match).md"
-                  :color="statusIcon(match).color"
-                  slot="end"
-                ></ion-icon>
-              </ion-item>
+            <ion-list-header v-else-if="matches && matches.length == 0"><h2>Aucun duel trouvé</h2></ion-list-header>
+            <ion-list v-else>
+              <div v-for="[i, timeSlot] in playerSchedule.entries()" :key="i">
+                <ion-item v-if="Object.keys(breaks).includes(i.toString())" class="ion-no-padding">
+                  <ion-icon
+                    class="schedule-icon ion-margin-end"
+                    slot="start"
+                    :ios="pauseCircleOutline"
+                    :md="pauseCircleSharp"
+                    style="vertical-align: middle"
+                  />
+                  <ion-label>
+                    <span>Pause {{ breaks[i] }}</span>
+                    <p>
+                      <span class="time-slot">{{ timeSlot.start }} - {{ timeSlot.stop }}</span>
+                    </p>
+                  </ion-label>
+                </ion-item>
+                <ion-item v-else :routerLink="`/match/${getMatch(i)?.id}`" class="ion-no-padding">
+                  <ion-icon
+                    class="schedule-icon ion-margin-end"
+                    slot="start"
+                    :ios="diceOutline"
+                    :md="diceSharp"
+                    style="vertical-align: middle"
+                  />
+                  <ion-label>
+                    <span>{{ getMatch(i)?.gameName }}</span>
+                    <p>
+                      <span class="time-slot">{{ timeSlot.start }} - {{ timeSlot.stop }}</span>
+                      <span class="ion-margin-start">Jeu n°{{ getMatch(i)?.gameId }}</span>
+                    </p>
+                  </ion-label>
+                  <ion-icon
+                    :ios="getMatchStatusIcon(i).ios"
+                    :md="getMatchStatusIcon(i).md"
+                    :color="getMatchStatusIcon(i).color"
+                    slot="end"
+                  ></ion-icon>
+                </ion-item>
+              </div>
             </ion-list>
-            <ion-list-header v-else><h2>Aucun jeu trouvé</h2></ion-list-header>
           </ion-card-content>
         </ion-card>
       </div>
@@ -138,15 +154,14 @@ import { usePlayerGroup } from "@/composables/playerGroup"
 import { useTeam } from "@/composables/team"
 import { useCurrentUserProfile } from "@/composables/userProfile"
 import { DEFAULT_GROUP_ID, DEFAULT_TEAM_ID, USER_ROLES } from "@/constants"
-import { Match } from "@/types"
 import { errorPopup, toastPopup } from "@/utils/popup"
 import { updateUserProfile } from "@/utils/userProfile"
 // prettier-ignore
-import { IonText, IonButton, IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonNote, IonPage, IonRow, IonSpinner, useIonRouter } from "@ionic/vue";
+import { IonBadge, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonNote, IonPage, IonRow, IonSpinner, IonText, useIonRouter } from "@ionic/vue"
 import { computed, ref } from "@vue/reactivity"
 import { useRouteParams } from "@vueuse/router"
 // prettier-ignore
-import { closeOutline, closeSharp, locationOutline, locationSharp, reorderTwoOutline, reorderTwoSharp, star, starOutline, timeOutline, timeSharp, trophyOutline, trophySharp } from "ionicons/icons";
+import { closeOutline, closeSharp, diceOutline, diceSharp, pauseCircleOutline, pauseCircleSharp, reorderTwoOutline, reorderTwoSharp, star, starOutline, trophyOutline, trophySharp } from "ionicons/icons"
 import { onMounted } from "vue"
 
 // reactive data
@@ -209,10 +224,20 @@ const playerGroupMeanScore = computed(() => {
   if (nbTeams == undefined || nbTeams === 0) return 0
   return (playerGroup.value.score / nbTeams).toFixed(2)
 })
+const breaks = computed(() => {
+  if (!appConfig.value || !team.value) return []
+  return appConfig.value.groupCategories[team.value.groupCategoryId].breaks
+})
+const getMatch = (time: number) => {
+  if (!matches.value) return null
+  return matches.value.find(match => match.time === time)
+}
 
 // Methods
 
-const statusIcon = (match: Match) => {
+const getMatchStatusIcon = (time: number) => {
+  const match = getMatch(time)
+  if (!match) return { md: undefined, ios: undefined, color: "" }
   if (match.draw) return { ios: reorderTwoOutline, md: reorderTwoSharp, color: "warning" }
   if (match.winnerTeamId === teamId.value) return { ios: trophyOutline, md: trophySharp, color: "success" }
   if (match.loserTeamId === teamId.value) return { ios: closeOutline, md: closeSharp, color: "danger" }
