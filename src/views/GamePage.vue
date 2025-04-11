@@ -194,7 +194,10 @@
             <ion-list-header v-else-if="matches && matches.length == 0"><h2>Aucun duel trouvé</h2></ion-list-header>
             <ion-list v-else>
               <div v-for="[i, timeSlot] in playerSchedule.entries()" :key="i">
-                <ion-item v-if="Object.keys(breaks).includes(i.toString())" class="item-no-padding">
+                <ion-item
+                  v-if="Object.keys(breaks).includes(i.toString())"
+                  :class="{ 'item-no-padding': isPlatform('ios') }"
+                >
                   <ion-label>
                     <ion-icon
                       :ios="pauseCircleOutline"
@@ -203,10 +206,14 @@
                       class="schedule-icon ion-margin-end"
                     />
                     <ion-text class="time-slot ion-margin-end">{{ timeSlot.start }} - {{ timeSlot.stop }} </ion-text>
-                    <ion-text color="primary" style="font-weight: bold">Pause {{ breaks[i] }}</ion-text>
+                    <ion-text color="primary" class="team-id pause">Pause {{ breaks[i] }}</ion-text>
                   </ion-label>
                 </ion-item>
-                <ion-item v-else :routerLink="`/match/${getMatch(i)?.id}`" class="item-no-padding">
+                <ion-item
+                  v-else
+                  :routerLink="`/match/${getMatch(i)?.id}`"
+                  :class="{ 'item-no-padding': isPlatform('ios') }"
+                >
                   <ion-label>
                     <ion-icon
                       :ios="peopleOutline"
@@ -215,17 +222,14 @@
                       class="schedule-icon ion-margin-end"
                     />
                     <ion-text class="time-slot ion-margin-end">{{ timeSlot.start }} - {{ timeSlot.stop }} </ion-text>
-                    <ion-text color="primary" style="font-weight: bold">{{ getMatch(i)?.playerTeamIds[0] }}</ion-text>
-                    <ion-text> vs </ion-text>
-                    <ion-text color="primary" style="font-weight: bold">{{ getMatch(i)?.playerTeamIds[1] }}</ion-text>
+                    <ion-text :class="['team-id', getTeamIdClass(i, 0)]">
+                      {{ getMatch(i)?.playerTeamIds[0] }}
+                    </ion-text>
+                    <ion-text class="separator"> {{ getMatch(i)?.draw ? " = " : " vs " }} </ion-text>
+                    <ion-text :class="['team-id', getTeamIdClass(i, 1)]">
+                      {{ getMatch(i)?.playerTeamIds[1] }}
+                    </ion-text>
                   </ion-label>
-                  <ion-badge
-                    slot="end"
-                    class="ion-no-margin"
-                    :color="getMatch(i)?.draw ? 'warning' : 'success'"
-                    v-if="getWinner(i)"
-                    >{{ getWinner(i) }}</ion-badge
-                  >
                 </ion-item>
               </div>
             </ion-list>
@@ -255,7 +259,7 @@ import { confirmPopup, errorPopup, toastPopup } from "@/utils/popup"
 import { canBeRegistered } from "@/utils/rights"
 import { getRoleByValue, getUserName } from "@/utils/userProfile"
 // prettier-ignore
-import { IonBadge, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner, IonText, useIonRouter } from "@ionic/vue";
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner, IonText, isPlatform, useIonRouter } from "@ionic/vue";
 import { computed, reactive, ref, toRef } from "@vue/reactivity"
 import { useRouteParams } from "@vueuse/router"
 import {
@@ -458,12 +462,13 @@ const unregister = async () => {
   }
 }
 
-const getWinner = (time: number) => {
+const getTeamIdClass = (time: number, playerIndex: number): string => {
   const match = getMatch(time)
-  if (!match) return ""
-  if (match.winnerTeamId) return match.winnerTeamId
-  if (match.draw === true) return "="
-  return ""
+  if (!match) return "no-score"
+  if (match.draw) return "draw has-score"
+  if (match.winnerTeamId === match.playerTeamIds[playerIndex]) return "winner has-score"
+  if (match.loserTeamId === match.playerTeamIds[playerIndex]) return "loser has-score"
+  return "no-score"
 }
 
 const toggleEditMode = () => {
@@ -489,9 +494,7 @@ const toggleNoScores = async () => {
         toastPopup(`Les scores de l'épreuve ${gameId.value} ont été ${newValue ? "activés" : "désactivés"}`)
       })
       .catch(e => {
-        errorPopup(
-          `Impossible de ${newValue ? "réactiver" : "désactiver"} les scores de l'épreuve ${gameId.value}`
-        )
+        errorPopup(`Impossible de ${newValue ? "réactiver" : "désactiver"} les scores de l'épreuve ${gameId.value}`)
         console.error(`Error : cannot update game ${gameId.value} `, e)
       })
   )
@@ -517,5 +520,37 @@ ion-select {
   --placeholder-color: var(--ion-color-dark);
   /* Set full opacity on the placeholder */
   --placeholder-opacity: 1;
+}
+.team-id {
+  font-weight: bold;
+  font-size: 15px;
+  min-width: 42px;
+  display: inline-block;
+  border-radius: 10px;
+  text-align: center;
+}
+.no-score {
+  color: var(--ion-color-primary);
+}
+.has-score {
+  color: var(--ion-color-light);
+}
+.winner {
+  /* this class is applied to an ion-text to make it look like an ion-badge with a success background */
+  background-color: var(--ion-color-success);
+}
+.loser {
+  background-color: var(--ion-color-danger);
+}
+.draw {
+  background-color: var(--ion-color-warning);
+}
+.separator {
+  min-width: 25px;
+  display: inline-block;
+  text-align: center;
+}
+.pause {
+  margin-left: 8px;
 }
 </style>
