@@ -44,13 +44,13 @@ export async function createUserProfile(uid: string, email: string) {
     teamId: DEFAULT_TEAM_ID
   }
   const docRef = doc(USER_PROFILES_COLLECTION_REF, uid)
-  return setDoc(docRef, newProfile).then(() => console.log(`Created new user profile : ${uid}`))
+  return setDoc(docRef, newProfile).then(() => console.debug(`Created new user profile : ${uid}`))
 }
 
 export async function updateUserProfile(uid: string, profileData: Partial<UserProfile>) {
-  console.log(`Updating user ${uid} profile with data :`, profileData)
+  console.debug(`Updating user ${uid} profile with data :`, profileData)
   const dbRef = doc(db, USER_PROFILES_COLLECTION_NAME, uid)
-  return updateDoc(dbRef, profileData).then(() => console.log(`User ${uid} profile updated`))
+  return updateDoc(dbRef, profileData).then(() => console.debug(`User ${uid} profile updated`))
 }
 
 export async function signOut() {
@@ -69,5 +69,5 @@ export async function removeFirebaseAccount(uid: string) {
   return Promise.all([
     deleteDocPromise,
     deleteUserPromise
-  ]).then(() => console.log(`Removed user ${uid}`))
+  ]).then(() => console.debug(`Removed user ${uid}`))
 }

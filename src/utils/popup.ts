@@ -32,14 +32,14 @@ export const confirmPopup = async (text: string, confirmHandler: any, declineHan
         role: "cancel",
         cssClass: "choice-popup",
         handler: () => {
-          console.log('User chose "no" to prompt "' + text + '"')
+          console.debug('User chose "no" to prompt "' + text + '"')
           if (declineHandler) declineHandler()
         }
       },
       {
         text: "Oui",
         handler: () => {
-          console.log('User chose "yes" to prompt "' + text + '"')
+          console.debug('User chose "yes" to prompt "' + text + '"')
           confirmHandler()
         }
       }
@@ -63,7 +63,7 @@ export const choicePopup = async (title: string, options: string[], handler: any
     buttons.push({
       text: option,
       handler: () => {
-        console.log(`User chose "${option}" to prompt "${title}"`)
+        console.debug(`User chose "${option}" to prompt "${title}"`)
         handler(option)
       }
     })
@@ -116,13 +116,13 @@ export const textInputPopup = async (message: string, handler: any, title = "", 
         role: "cancel",
         cssClass: "choice-popup",
         handler: () => {
-          console.log('User chose "cancel" to prompt "' + message + '"')
+          console.debug('User chose "cancel" to prompt "' + message + '"')
         }
       },
       {
         text: "OK",
         handler: data => {
-          console.log('User chose "ok" to prompt "' + message + '"')
+          console.debug('User chose "ok" to prompt "' + message + '"')
           handler(data.text)
         }
       }
