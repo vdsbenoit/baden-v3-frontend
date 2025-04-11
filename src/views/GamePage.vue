@@ -481,12 +481,19 @@ const toggleNoScores = async () => {
     return
   }
   isTogglingNoScores.value = true
-  const newValue = !!game.value.noScores
+  const newValue = !game.value.noScores
   const promises = []
   promises.push(
-    setGameNoScores(gameId.value, newValue).then(() => {
-      toastPopup(`Les scores de l'épreuve ${gameId.value} ont été ${newValue ? "activés" : "désactivés"}`)
-    })
+    setGameNoScores(gameId.value, newValue)
+      .then(() => {
+        toastPopup(`Les scores de l'épreuve ${gameId.value} ont été ${newValue ? "activés" : "désactivés"}`)
+      })
+      .catch(e => {
+        errorPopup(
+          `Impossible de ${newValue ? "réactiver" : "désactiver"} les scores de l'épreuve ${gameId.value}`
+        )
+        console.error(`Error : cannot update game ${gameId.value} `, e)
+      })
   )
   game.value.matches.forEach(matchId => promises.push(setMatchNoScores(matchId, newValue)))
   await Promise.all(promises).then(() =>
