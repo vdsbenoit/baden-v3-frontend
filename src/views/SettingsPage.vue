@@ -26,7 +26,7 @@
           </div>
           <div v-else-if="errorLoadingAppSettings" class="not-found">
             <strong class="capitalize">Erreur</strong>
-            <ion-text color="error">{{ errorLoadingAppSettings.message }}</ion-text>
+            <ion-text color="error">Impossible de charger les paramètres</ion-text>
             <p>Retour à <a @click="router.back()">la page précédente</a></p>
           </div>
           <div v-else-if="!appSettings" class="not-found">
@@ -114,7 +114,11 @@ const formData = reactive({
 
 const router = useIonRouter()
 const { data: appSettings, pending: isLoadingAppSettings, error: errorLoadingAppSettings } = useAppSettings()
-
+watch(errorLoadingAppSettings, error => {
+  if (error) {
+    console.error("Error loading app settings:", error)
+  }
+})
 /**
  * Update formData with the current appSettings values
  * Does not update the form data if the user is editting the field

@@ -50,10 +50,10 @@
 </template>
 
 <script setup lang="ts">
-import { useTopTeams } from "@/composables/team"
+import { useTopTeams } from "@/composables/team";
 // prettier-ignore
 import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonLabel, IonList, IonSpinner, IonText } from "@ionic/vue";
-import { defineProps } from "vue"
+import { defineProps, watch } from "vue";
 const props = defineProps<{
   groupCategoryId: string
   limit: number
@@ -62,4 +62,9 @@ const props = defineProps<{
 
 // composable
 const { data: teams, pending: isLoading, error: errorLoading } = useTopTeams(props.groupCategoryId, props.limit)
+watch(errorLoading, (error) => {
+  if (error) {
+    console.error("Error loading teams:", error)
+  }
+})
 </script>

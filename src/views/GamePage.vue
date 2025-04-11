@@ -8,7 +8,7 @@
       </div>
       <div v-else-if="errorLoadingGame" class="not-found">
         <strong class="capitalize">Erreur</strong>
-        <ion-text color="error">{{ errorLoadingGame.message }}</ion-text>
+        <ion-text color="error">Impossible de charger le jeu</ion-text>
         <p>Retour à <a @click="router.back()">la page précédente</a></p>
       </div>
       <div v-else-if="!game" class="not-found">
@@ -119,7 +119,7 @@
                   <ion-spinner v-if="isLoadingAttendantGroups"></ion-spinner>
                   <div v-if="errorLoadingAttendantGroups" class="ion-text-center">
                     <strong class="capitalize ion-text-center">Erreur</strong>
-                    <ion-text color="error">{{ errorLoadingAttendantGroups.message }}</ion-text>
+                    <ion-text color="error">Impossible de charger les groupes d'animateurs</ion-text>
                   </div>
                   <ion-select
                     v-else-if="attendantGroups && attendantGroups.length > 0"
@@ -137,7 +137,7 @@
                   <ion-spinner v-if="isLoadingAttendants"></ion-spinner>
                   <div v-if="errorLoadingAttendants" class="ion-text-center">
                     <strong class="capitalize ion-text-center">Erreur</strong>
-                    <ion-text color="error">{{ errorLoadingAttendants.message }}</ion-text>
+                    <ion-text color="error">Impossible de charger les animateurs</ion-text>
                   </div>
                   <ion-select
                     v-else-if="attendants && attendants.length > 0"
@@ -189,7 +189,7 @@
             </div>
             <div v-else-if="errorLoadingMatches" class="ion-text-center">
               <strong class="capitalize">Erreur</strong>
-              <ion-text color="error">{{ errorLoadingMatches.message }}</ion-text>
+              <ion-text color="error">Impossible de charger les duels</ion-text>
             </div>
             <ion-list-header v-else-if="matches && matches.length == 0"><h2>Aucun duel trouvé</h2></ion-list-header>
             <ion-list v-else>
@@ -259,7 +259,7 @@ import { IonBadge, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSub
 import { computed, reactive, ref, toRef } from "@vue/reactivity"
 import { useRouteParams } from "@vueuse/router"
 import { closeOutline, closeSharp, diceOutline, diceSharp, pauseCircleOutline, pauseCircleSharp } from "ionicons/icons"
-import { onMounted, toValue } from "vue"
+import { onMounted, toValue, watch } from "vue"
 
 // reactive data
 
@@ -302,6 +302,26 @@ const {
   pending: isLoadingAttendants,
   error: errorLoadingAttendants
 } = useMembersOfGroup(toRef(edit, "selectedAttendantGroupId"))
+
+watch([
+  errorLoadingGame,
+  errorLoadingMatches,
+  errorLoadingAttendantGroups,
+  errorLoadingAttendants
+], errors => {
+  if (errors[0]) {
+    console.error("Error loading game:", errors[0])
+  }
+  if (errors[1]) {
+    console.error("Error loading matches:", errors[1])
+  }
+  if (errors[2]) {
+    console.error("Error loading attendant groups:", errors[2])
+  }
+  if (errors[3]) {
+    console.error("Error loading attendants:", errors[3])
+  }
+})
 
 // lifecycle hooks
 

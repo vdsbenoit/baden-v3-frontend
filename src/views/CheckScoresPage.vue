@@ -24,7 +24,7 @@
       </div>
       <div v-else-if="errorLoadingMatches" class="not-found">
         <strong class="capitalize">Erreur</strong>
-        <ion-text color="error">{{ errorLoadingMatches.message }}</ion-text>
+        <ion-text color="error">Impossible de charger les duels</ion-text>
       </div>
       <div v-else-if="matches && matches.length === 0" class="not-found">
         <strong class="capitalize">Il n'y a pas de duels pour cet horaire</strong>
@@ -63,6 +63,7 @@ import { IonText, IonBadge, IonContent, IonIcon, IonItem, IonLabel, IonList, Ion
 import { computed, ref } from "@vue/reactivity"
 // prettier-ignore
 import { arrowUpOutline, arrowUpSharp, checkmarkCircle, checkmarkCircleSharp, closeCircle, closeCircleSharp } from "ionicons/icons";
+import { watch } from "vue"
 
 // reactive data
 const selectedTime = ref(DEFAULT_TIME_VALUE)
@@ -70,6 +71,12 @@ const selectedTime = ref(DEFAULT_TIME_VALUE)
 // Composables
 const appConfig = useAppConfig()
 const { data: matches, pending: isLoadingMatches, error: errorLoadingMatches } = useTimeMatches(selectedTime)
+
+watch(errorLoadingMatches, (error) => {
+  if (error) {
+    console.error("Error loading matches:", error)
+  }
+})
 
 // Computed
 const schedules = computed(() => {

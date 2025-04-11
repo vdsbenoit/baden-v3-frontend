@@ -9,7 +9,7 @@
       </div>
       <div v-else-if="errorLoadingApplicants" class="not-found">
         <strong class="capitalize">Erreur</strong>
-        <ion-text color="error">{{ errorLoadingApplicants.message }}</ion-text>
+        <ion-text color="error">Impossible de charger les candidats</ion-text>
       </div>
       <ion-list lines="full">
         <ion-item v-for="applicant in applicants" :key="applicant.id" @click="handleRequest(applicant)">

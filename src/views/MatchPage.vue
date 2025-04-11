@@ -5,7 +5,7 @@
       <refresher-component></refresher-component>
       <div v-if="errorLoadingMatch" class="not-found">
         <strong class="capitalize">Erreur</strong>
-        <ion-text color="error">{{ errorLoadingMatch.message }}</ion-text>
+        <ion-text color="error">Impossible de charger les informations du match</ion-text>
         <p>Retour à <a @click="router.back()">la page précédente</a></p>
       </div>
       <div v-else-if="!match" class="not-found">
@@ -473,6 +473,12 @@ watch(errorLoadingGame, (error: FirestoreError | undefined) => {
   if (error) {
     toastPopup("Erreur lors du chargement du jeu")
     console.error(`Error loading game: ${error.message}`)
+  }
+})
+watch(errorLoadingMatch, (error: FirestoreError | undefined) => {
+  if (error) {
+    toastPopup("Erreur lors du chargement du match")
+    console.error(`Error loading match: ${error.message}`)
   }
 })
 watch(errorLoadingFirstPlayer, (error: FirestoreError | undefined) => {

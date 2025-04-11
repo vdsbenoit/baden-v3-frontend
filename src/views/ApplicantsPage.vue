@@ -14,7 +14,7 @@
         </div>
         <div v-else-if="errorLoadingAttendantGroups" class="not-found">
           <strong class="capitalize">Erreur</strong>
-          <ion-text color="error">{{ errorLoadingAttendantGroups.message }}</ion-text>
+          <ion-text color="error">Impossible de charger les sections</ion-text>
         </div>
         <applicant-card
           v-else
@@ -33,8 +33,7 @@
           <ion-spinner></ion-spinner>
         </div>
         <div v-else-if="errorCurrentUserData" class="not-found">
-          <strong class="capitalize">Erreur</strong>
-          <ion-text color="error">{{ errorCurrentUserData.message }}</ion-text>
+          <strong class="capitalize">Erreur lors du chargement des données</strong>
         </div>
         <applicant-card
           v-else-if="currentUserAttendantGroup"
@@ -67,6 +66,7 @@ import { DEFAULT_GROUP_ID } from "@/constants"
 import { alertController, AlertInput, IonButton, IonContent, IonIcon, IonPage, IonSpinner, IonText } from "@ionic/vue";
 import { computed, ref } from "@vue/reactivity"
 import { settingsOutline, settingsSharp } from "ionicons/icons"
+import { watch } from "vue"
 
 // reactive data
 
@@ -95,6 +95,18 @@ const {
   pending: isLoadingCurrentUserAttendantGroup,
   error: errorLoadingCurrentUserAttendantGroup
 } = useAttendantGroup(currentUserGroupId)
+
+watch([errorLoadingAttendantGroups, errorLoadingCurrentUser, errorLoadingCurrentUserAttendantGroup], (errors) => {
+  if (errors[0]) {
+    console.error("Error loading attendant groups:", errors[0])
+  }
+  if (errors[1]) {
+    console.error("Error loading current user data:", errors[1])
+  }
+  if (errors[2]) {
+    console.error("Error loading current user attendant group:", errors[2])
+  }
+})
 
 // Computed
 

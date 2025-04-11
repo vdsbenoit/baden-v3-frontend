@@ -29,7 +29,7 @@
         </div>
         <div v-else-if="errorLoadingGames" class="not-found">
           <strong class="capitalize">Erreur</strong>
-          <ion-text color="error">{{ errorLoadingGames.message }}</ion-text>
+          <ion-text color="error">Impossible de charger les jeux</ion-text>
         </div>
         <ion-list v-else-if="games && games.length > 0" lines="full">
           <div v-for="game in games" :key="game.id">
@@ -90,6 +90,7 @@ import { IonBadge, IonButton, IonContent, IonIcon, IonInput, IonItem, IonLabel, 
 import { computed, ref } from "@vue/reactivity"
 // prettier-ignore
 import { arrowUpOutline, arrowUpSharp, checkmarkOutline, checkmarkSharp, closeOutline, closeSharp, pencilOutline, pencilSharp } from "ionicons/icons";
+import { watch } from "vue"
 
 // reactive data
 const editMode = ref(false)
@@ -105,6 +106,15 @@ const { data: games, pending: isLoadingGames, error: errorLoadingGames } = useCi
 const { data: appConfig, pending: isLoadingAppConfig, error: errorLoadingConfig } = useAppConfig()
 const appSettings = useAppSettings()
 const canEditGames = useCanEditGames()
+
+watch([errorLoadingGames, errorLoadingConfig], errors => {
+  if (errors[0]) {
+    console.error("Error loading games:", errors[0])
+  }
+  if (errors[1]) {
+    console.error("Error loading app config:", errors[1])
+  }
+})
 
 // Computed
 const circuits = computed(() => {

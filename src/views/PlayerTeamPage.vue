@@ -15,7 +15,7 @@
       </div>
       <div v-else-if="errorLoadingTeam" class="not-found">
         <strong class="capitalize">Erreur</strong>
-        <ion-text color="error">{{ errorLoadingTeam.message }}</ion-text>
+        <ion-text color="error">Impossible de charger l'équipe</ion-text>
         <p>Retour à <a @click="router.back()">la page précédente</a></p>
       </div>
       <div v-else-if="!team" class="not-found">
@@ -49,9 +49,9 @@
               >
               <ion-item class="ion-no-padding">
                 <ion-label>Score de la section</ion-label>
-                <ion-badge v-if="errorLoadingPlayerGroup" slot="end" class="ion-no-margin" color="danger"
-                  >error</ion-badge
-                >
+                <ion-badge v-if="errorLoadingPlayerGroup" slot="end" class="ion-no-margin" color="danger">
+                  error
+                </ion-badge>
                 <ion-note v-else slot="end">
                   <ion-spinner v-if="isLoadingPlayerGroup"></ion-spinner>
                   <span v-else>{{ playerGroup?.score }}</span>
@@ -59,9 +59,9 @@
               </ion-item>
               <ion-item class="ion-no-padding">
                 <ion-label>Moyenne de la section</ion-label>
-                <ion-badge v-if="errorLoadingPlayerGroup" slot="end" class="ion-no-margin" color="danger"
-                  >error</ion-badge
-                >
+                <ion-badge v-if="errorLoadingPlayerGroup" slot="end" class="ion-no-margin" color="danger">
+                  error
+                </ion-badge>
                 <ion-note v-else slot="end">
                   <ion-spinner v-if="isLoadingPlayerGroup"></ion-spinner>
                   <span v-else>{{ playerGroupMeanScore }}</span>
@@ -94,7 +94,7 @@
             </div>
             <ion-list-header v-else-if="errorLoadingMatches">
               <strong class="capitalize">Erreur</strong>
-              <ion-text color="error">{{ errorLoadingMatches.message }}</ion-text>
+              <ion-text color="error">Impossible de charger les duels</ion-text>
             </ion-list-header>
             <ion-list-header v-else-if="matches && matches.length == 0"><h2>Aucun duel trouvé</h2></ion-list-header>
             <ion-list v-else>
@@ -162,7 +162,7 @@ import { computed, ref } from "@vue/reactivity"
 import { useRouteParams } from "@vueuse/router"
 // prettier-ignore
 import { closeOutline, closeSharp, diceOutline, diceSharp, pauseCircleOutline, pauseCircleSharp, reorderTwoOutline, reorderTwoSharp, star, starOutline, trophyOutline, trophySharp } from "ionicons/icons"
-import { onMounted } from "vue"
+import { onMounted, watch } from "vue"
 
 // reactive data
 
@@ -182,6 +182,18 @@ const {
   error: errorLoadingPlayerGroup
 } = usePlayerGroup(() => team.value?.groupId ?? DEFAULT_GROUP_ID)
 const { data: matches, pending: isLoadingMatches, error: errorLoadingMatches } = useTeamMatches(teamId)
+
+watch([errorLoadingTeam, errorLoadingPlayerGroup, errorLoadingMatches], errors => {
+  if (errors[0]) {
+    console.error("Error loading team:", errors[0])
+  }
+  if (errors[1]) {
+    console.error("Error loading player group:", errors[1])
+  }
+  if (errors[2]) {
+    console.error("Error loading matches:", errors[2])
+  }
+})
 
 // lifecycle hooks
 

@@ -10,7 +10,7 @@
               <ion-col size="12" size-sm="6">
                 <ion-spinner v-if="isLoadingAppConfig"></ion-spinner>
                 <div v-else-if="errorLoadingAppConfig">
-                  Erreur au chargement des catégories de sections : {{ errorLoadingAppConfig.message }}
+                  Erreur au chargement des catégories de sections
                 </div>
                 <ion-select
                   v-else-if="appConfig && appConfig.groupCategories"
@@ -30,7 +30,7 @@
               <ion-col size="12" size-sm="6" v-if="selectedGroupCategoryId">
                 <ion-spinner v-if="isLoadingGroups"></ion-spinner>
                 <div v-else-if="errorLoadingGroups">
-                  Erreur au chargement des sections : {{ errorLoadingGroups.message }}
+                  Erreur au chargement des sections
                 </div>
                 <ion-select
                   v-else-if="groups && groups.length > 0"
@@ -60,7 +60,7 @@
                   <ion-spinner></ion-spinner>
                 </div>
                 <ion-list-header v-else-if="errorLoadingGroup" class="ion-text-center ion-align-items-center">
-                  <p>Erreur lors du chargement de la section : {{ errorLoadingGroup.message }}</p>
+                  <p>Erreur lors du chargement de la section</p>
                 </ion-list-header>
                 <ion-list v-else-if="selectedGroup">
                   <ion-item> <ion-label>Numéro</ion-label>{{ selectedGroup.id }} </ion-item>
@@ -164,7 +164,7 @@
                   <ion-spinner></ion-spinner>
                 </div>
                 <div v-else-if="errorLoadingMembers" class="ion-text-center ion-align-items-center">
-                  <p>Erreur lors du chargement des membres : {{ errorLoadingMembers.message }}</p>
+                  <p>Erreur lors du chargement des membres</p>
                 </div>
                 <ion-list v-else-if="groupMembers && groupMembers.length > 0">
                   <ion-item v-for="member in groupMembers" :key="member.id" :routerLink="`/profile/${member.id}`">
@@ -253,6 +253,24 @@ watchEffect(() => {
 watch(selectedGroupId, () => {
   shouldLoadMembers.value = false
 })
+
+watch(
+  [errorLoadingGroup, errorLoadingGroups, errorLoadingMembers, errorLoadingAppConfig],
+  (errors) => {
+    if (errors[0]) {
+      console.error("Error loading group data:", errors[0])
+    }
+    if (errors[1]) {
+      console.error("Error loading groups:", errors[1])
+    }
+    if (errors[2]) {
+      console.error("Error loading members:", errors[2])
+    }
+    if (errors[3]) {
+      console.error("Error loading app config:", errors[3])
+    }
+  }
+)
 
 // Computed
 

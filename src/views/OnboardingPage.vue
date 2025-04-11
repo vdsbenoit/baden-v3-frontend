@@ -52,7 +52,7 @@
             <ion-item v-if="isParticipant && selectedgroupCategoryId">
               <ion-label position="floating" color="primary">Section</ion-label>
               <ion-spinner v-if="isLoadingPlayerGroups"></ion-spinner>
-              <div v-else-if="errorLoadingGroups">Erreur : {{ errorLoadingGroups.message }}</div>
+              <div v-else-if="errorLoadingGroups">Erreur</div>
               <ion-select v-else v-model="selectedGroupId" interface="popover" required>
                 <ion-select-option v-for="playerGroup in playerGroups" :key="playerGroup.id" :value="playerGroup.id">
                   {{ playerGroup.name }} ({{ playerGroup.city }})
@@ -63,7 +63,7 @@
             <ion-item v-if="isAttendant">
               <ion-label position="floating" color="primary">Section</ion-label>
               <ion-spinner v-if="isLoadingAttendantGroups"></ion-spinner>
-              <div v-else-if="errorLoadingAttendantGroups">Erreur : {{ errorLoadingAttendantGroups.message }}</div>
+              <div v-else-if="errorLoadingAttendantGroups">Erreur</div>
               <ion-select v-else v-model="selectedGroupId" interface="popover" required>
                 <ion-select-option
                   v-for="attendantgroup in attendantGroups"
@@ -97,8 +97,8 @@ import { getGroup } from "@/utils/playerGroup"
 import { confirmPopup, errorPopup, toastPopup } from "@/utils/popup"
 import { updateUserProfile } from "@/utils/userProfile"
 // prettier-ignore
-import { IonButton, IonCard, IonCardHeader, IonCardTitle, IonContent, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue";
-import { computed, ref } from "vue"
+import { IonButton, IonCard, IonCardHeader, IonCardTitle, IonContent, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue"
+import { computed, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 
 const router = useRouter()
@@ -137,6 +137,15 @@ const {
   pending: isLoadingAttendantGroups,
   error: errorLoadingAttendantGroups
 } = useAttendantGroups(isAttendant, loadStaffGroups, true)
+
+watch([errorLoadingGroups, errorLoadingAttendantGroups], (errors) => {
+  if (errors[0]) {
+    console.error("Error loading player groups:", errors[0])
+  }
+  if (errors[1]) {
+    console.error("Error loading attendant groups:", errors[1])
+  }
+})
 
 const canSubmit = computed(() => {
   if (!name.value) return false

@@ -15,7 +15,7 @@
                 </ion-select>
                 <ion-spinner v-else-if="isLoadingGroups"></ion-spinner>
                 <div v-else-if="errorLoadingGroups">
-                  Erreur au chargement des sections : {{ errorLoadingGroups.message }}
+                  Erreur au chargement des sections
                 </div>
                 <div v-else>Pas de section configurée</div>
               </ion-col>
@@ -46,7 +46,7 @@
                 </div>
                 <div v-else-if="errorLoadingGroup" class="not-found">
                   <strong class="capitalize">Erreur</strong>
-                  <ion-text color="error">{{ errorLoadingGroup.message }}</ion-text>
+                  <ion-text color="error">Impossible de charger les sections</ion-text>
                 </div>
                 <ion-list-header v-else>
                   <h2>Aucune section trouvée</h2>
@@ -69,7 +69,7 @@
                 </div>
                 <div v-else-if="errorLoadingAttendants" class="not-found">
                   <strong class="capitalize">Erreur</strong>
-                  <ion-text color="error">{{ errorLoadingAttendants.message }}</ion-text>
+                  <ion-text color="error">Impossible de charger les animateurs</ion-text>
                 </div>
                 <ion-list v-else-if="groupMembers && groupMembers.length > 0">
                   <ion-item v-for="user in groupMembers" :key="user.id" :routerLink="`/profile/${user.id}`">
@@ -102,7 +102,7 @@
                 </div>
                 <div v-else-if="errorLoadingAttendants" class="not-found">
                   <strong class="capitalize">Erreur</strong>
-                  <ion-text color="error">{{ errorLoadingAttendants.message }}</ion-text>
+                  <ion-text color="error">Impossible de charger les animateurs</ion-text>
                 </div>
                 <ion-list v-else-if="groupLeaders && groupLeaders.length > 0">
                   <ion-item v-for="user in groupLeaders" :key="user.id" :routerLink="`/profile/${user.id}`">
@@ -145,7 +145,9 @@ import { getUserName } from "@/utils/userProfile"
 import { IonText, IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue";
 import { computed } from "@vue/reactivity"
 import { useRouteParams } from "@vueuse/router"
+import { error } from "console"
 import { arrowUpOutline, arrowUpSharp } from "ionicons/icons"
+import { watch } from "vue"
 
 // composables
 
@@ -159,6 +161,18 @@ const {
 } = useMembersOfGroup(selectedGroupId)
 const { data: groups, pending: isLoadingGroups, error: errorLoadingGroups } = useAttendantGroups(true, "include", true)
 const applicants = useGroupApplicants(50, selectedGroupId.value)
+
+watch([errorLoadingAttendants, errorLoadingGroups, errorLoadingGroup], (errors) => {
+  if (errors[0]) {
+    console.error("Error loading attendants:", errors[0])
+  }
+  if (errors[1]) {
+    console.error("Error loading groups:", errors[1])
+  }
+  if (errors[2]) {
+    console.error("Error loading group data:", errors[2])
+  }
+})
 
 // Computed data
 

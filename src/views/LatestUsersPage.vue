@@ -80,11 +80,6 @@ const { data: latestUsers, pending: isLoadingUsers, error: errorLoadingUsers } =
 
 // Watchers
 
-watch(errorLoadingUsers, error => {
-  if (error) {
-    console.error(error)
-  }
-})
 watch(errorLoadingUsers, (error: FirestoreError | undefined) => {
   if (error) {
     toastPopup("Erreur lors du chargement des utilisateurs")
