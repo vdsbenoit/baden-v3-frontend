@@ -374,6 +374,13 @@ ion-item.selected {
 ion-label p {
   color: var(--ion-color-medium) !important;
 }
+.time-slot {
+  font-family: monospace;
+  font-size: 0.9em;  
+}
+.schedule-icon {
+  font-size: 1.4em;
+}
 .numberCircle {
   border-radius: 50%;
   width: 60px;

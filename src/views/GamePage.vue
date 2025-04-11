@@ -200,9 +200,9 @@
                       :ios="pauseCircleOutline"
                       :md="pauseCircleSharp"
                       style="vertical-align: middle"
-                      class="ion-margin-end"
-                    ></ion-icon>
-                    <ion-text class="ion-margin-end">{{ timeSlot.start }} - {{ timeSlot.stop }} </ion-text>
+                      class="schedule-icon ion-margin-end"
+                    />
+                    <ion-text class="time-slot ion-margin-end">{{ timeSlot.start }} - {{ timeSlot.stop }} </ion-text>
                     <ion-text color="primary" style="font-weight: bold">Pause {{ breaks[i] }}</ion-text>
                   </ion-label>
                 </ion-item>
@@ -212,9 +212,9 @@
                       :ios="diceOutline"
                       :md="diceSharp"
                       style="vertical-align: middle"
-                      class="ion-margin-end"
-                    ></ion-icon>
-                    <ion-text class="ion-margin-end">{{ timeSlot.start }} - {{ timeSlot.stop }} </ion-text>
+                      class="schedule-icon ion-margin-end"
+                    />
+                    <ion-text class="time-slot ion-margin-end">{{ timeSlot.start }} - {{ timeSlot.stop }} </ion-text>
                     <ion-text color="primary" style="font-weight: bold">{{ getMatch(i)?.playerTeamIds[0] }}</ion-text>
                     <ion-text> vs </ion-text>
                     <ion-text color="primary" style="font-weight: bold">{{ getMatch(i)?.playerTeamIds[1] }}</ion-text>
