@@ -151,7 +151,7 @@ import { watch } from "vue"
 // composables
 
 const appConfig = useAppConfig()
-const selectedGroupId = useRouteParams("groupId", DEFAULT_GROUP_ID)
+const selectedGroupId = useRouteParams<string>("groupId", DEFAULT_GROUP_ID)
 const { data: selectedGroup, pending: isLoadingGroup, error: errorLoadingGroup } = useAttendantGroup(selectedGroupId)
 const {
   data: attendants,

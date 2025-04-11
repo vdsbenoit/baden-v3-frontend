@@ -280,7 +280,7 @@ const edit = reactive({
 // composables
 
 const router = useIonRouter()
-const gameId = useRouteParams("gameId", DEFAULT_GAME_ID)
+const gameId = useRouteParams<string>("gameId", DEFAULT_GAME_ID)
 const currentUser = useCurrentUserProfile()
 const appSettings = useAppSettings()
 const appConfig = useAppConfig()
@@ -485,12 +485,12 @@ const toggleNoScores = async () => {
   const promises = []
   promises.push(
     setGameNoScores(gameId.value, newValue).then(() => {
-      toastPopup(`Les scores de l'épreuve ${gameId} ont été ${newValue ? "activés" : "désactivés"}`)
+      toastPopup(`Les scores de l'épreuve ${gameId.value} ont été ${newValue ? "activés" : "désactivés"}`)
     })
   )
   game.value.matches.forEach(matchId => promises.push(setMatchNoScores(matchId, newValue)))
   await Promise.all(promises).then(() =>
-    console.log(`Les scores des matchs de l'épreuve ${gameId} ont été ${newValue ? "activés" : "désactivés"}`)
+    console.log(`Les scores des matchs de l'épreuve ${gameId.value} ont été ${newValue ? "activés" : "désactivés"}`)
   )
   isTogglingNoScores.value = false
 }

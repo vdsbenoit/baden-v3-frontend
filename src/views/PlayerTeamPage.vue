@@ -174,7 +174,7 @@ const router = useIonRouter()
 const user = useCurrentUserProfile()
 const appConfig = useAppConfig()
 const settings = useAppSettings()
-const teamId = useRouteParams("teamId", DEFAULT_TEAM_ID)
+const teamId = useRouteParams<string>("teamId", DEFAULT_TEAM_ID)
 const { data: team, pending: isLoadingTeam, error: errorLoadingTeam } = useTeam(teamId)
 const {
   data: playerGroup,

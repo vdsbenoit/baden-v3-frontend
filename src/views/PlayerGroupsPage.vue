@@ -224,7 +224,7 @@ const shouldLoadMembers = ref(false) // true after clicking on the show button
 // Composables
 
 const currentUserProfile = useCurrentUserProfile()
-const selectedGroupId = useRouteParams("groupId", DEFAULT_GROUP_ID)
+const selectedGroupId = useRouteParams<string>("groupId", DEFAULT_GROUP_ID)
 const { data: selectedGroup, pending: isLoadingGroup, error: errorLoadingGroup } = usePlayerGroup(selectedGroupId)
 const { data: appConfig, pending: isLoadingAppConfig, error: errorLoadingAppConfig } = useAppConfig()
 const { data: groups, pending: isLoadingGroups, error: errorLoadingGroups } = usePlayerGroups(selectedGroupCategoryId)

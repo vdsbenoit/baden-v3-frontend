@@ -412,7 +412,7 @@ const appConfig = useAppConfig()
 const appSettings = useAppSettings()
 const attendantSchedule = computed(() => appConfig.value?.attendantSchedule ?? [])
 const currentUserProfile = useCurrentUserProfile()
-const queryUserId = useRouteParams("userId", DEFAULT_USER_ID)
+const queryUserId = useRouteParams<string>("userId", DEFAULT_USER_ID)
 const userId = computed(() => {
   if (!currentUserProfile.value) return DEFAULT_USER_ID
   return queryUserId.value === DEFAULT_USER_ID ? currentUserProfile.value.id : queryUserId.value

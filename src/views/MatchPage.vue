@@ -210,7 +210,7 @@ import { onMounted, watch } from "vue"
 // Composables
 
 const router = useIonRouter()
-const matchId = useRouteParams("matchId", DEFAULT_MATCH_ID)
+const matchId = useRouteParams<string>("matchId", DEFAULT_MATCH_ID)
 const { data: match, pending: isLoadingMatch, error: errorLoadingMatch } = useMatch(matchId)
 const gameId = computed(() => match.value?.gameId ?? DEFAULT_GAME_ID)
 const { data: game, pending: isLoadingGame, error: errorLoadingGame } = useGame(gameId)
