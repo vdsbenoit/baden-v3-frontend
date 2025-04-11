@@ -8,11 +8,11 @@
 - [x] use isStaff to define Team bb team
 - [x] Mettre tous les checks de rôles au même endroit (dans un service dédidé). C'est parfois fait au niveau service (setMorningLeaders) et parfois pas (setGameScore). 
   - [ ] Essayer de centraliser tout ce qui est lié aux rôles (`App.vue` vs `router/index.ts`, plein de `showRanking` dans différents components)
-- [ ] Remove totem from UserProfile type
+- [x] Remove totem from UserProfile type
 - [x] use useRouteParams from vueUse
 - [x] Refactor morningGame & afternonGame into something generic : attendantTimings (similar to playerTimings)
 - [x] Remove id from documents and custom types : use the built-in id from vuefire
-- [ ] Merge section & leaderSection collections
+- [x] Merge section & leaderSection collections
 - [ ] Edit the game roadmap template (on Windows)
   - [ ] Add attendantTime1
   - [ ] Add attendantTime2
