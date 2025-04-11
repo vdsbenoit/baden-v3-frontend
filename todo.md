@@ -95,6 +95,7 @@
 - [ ] Ensure users cannot exists without required UserProfile properties (redirect to onboarding if needed)
 - [ ] Create AppSettings & AppConfig in the init process
 - [ ] Remove id from the backend classes (python)
+- [ ] Retirer groupName des profiels (créer une function getGroupName(groupId: string)) 
 
 ## Nice to have
 
