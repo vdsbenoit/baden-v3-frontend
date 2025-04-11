@@ -10,9 +10,9 @@ export function useUserProfile(rUid: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
     const uid = toValue(rUid)
     if (uid === DEFAULT_USER_ID) {
-      console.log(`User profile not fetched because the provided uid is the default one`)
+      console.debug(`User profile not fetched because the provided uid is the default one`)
       return null
-    } else console.log(`Fetching user profile ${uid}`)
+    } else console.debug(`Fetching user profile ${uid}`)
     return doc(USER_PROFILES_COLLECTION_REF, uid)
   })
   return useDocument<UserProfile>(dbRef)
@@ -22,7 +22,7 @@ export function useCurrentUserProfile() {
   const currentUser = useCurrentUser()
   const uid = computed(() => {
     if (currentUser.value === undefined) {
-      console.log(`Cannot fetch current user profile because the Auth module is still loading`)
+      console.debug(`Cannot fetch current user profile because the Auth module is still loading`)
       return DEFAULT_USER_ID
     }
     if (currentUser.value === null) {
@@ -39,7 +39,7 @@ export function useMembersOfGroup(rGroupId: MaybeRefOrGetter<string>, rShouldLoa
     const groupId = toValue(rGroupId)
     if (!toValue(rShouldLoad)) return null
     if (groupId === DEFAULT_GROUP_ID) return null
-    console.log(`Fetching users from group ${groupId}`)
+    console.debug(`Fetching users from group ${groupId}`)
     // prettier-ignore
     return query(
       USER_PROFILES_COLLECTION_REF, 
@@ -61,7 +61,7 @@ export function useGroupApplicants(rLimit: MaybeRefOrGetter<number>, rGroupId: M
     const groupId = toValue(rGroupId)
     if (groupId === DEFAULT_GROUP_ID) return null
     const limit = toValue(rLimit)
-    console.log(`Fetching pending applicants for group ${groupId}`)
+    console.debug(`Fetching pending applicants for group ${groupId}`)
     const queryParams = []
     queryParams.push(where("requestedGroupId", "==", toValue(rGroupId)))
     queryParams.push(orderBy("requestedRole", "asc"))
@@ -81,7 +81,7 @@ export function useApplicants(rLimit: MaybeRefOrGetter<number>) {
   const dbRef = computed(() => {
     if (!canAcceptApplicants.value) return null
     const limit = toValue(rLimit)
-    console.log(`Fetching pending applicants for a ${getRoleByValue(maxApplicantRole.value)}`)
+    console.debug(`Fetching pending applicants for a ${getRoleByValue(maxApplicantRole.value)}`)
     const queryParams = []
     queryParams.push(orderBy("requestedGroupId", "asc"))
     if (applicantGroupIdFilter.value != DEFAULT_GROUP_ID) {
@@ -98,7 +98,7 @@ export function useApplicants(rLimit: MaybeRefOrGetter<number>) {
 export function useLatestUsers(rLimit: MaybeRefOrGetter<number>) {
   const dbRef = computed(() => {
     const limit = toValue(rLimit)
-    console.log(`Fetching latest registered users`)
+    console.debug(`Fetching latest registered users`)
     // prettier-ignore
     return query(
       USER_PROFILES_COLLECTION_REF, 
