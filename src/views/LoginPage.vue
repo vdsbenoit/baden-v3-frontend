@@ -29,7 +29,7 @@
             <ion-checkbox slot="start" class="ion-no-margin ion-margin-end" v-model="dgprChecked"></ion-checkbox>
             <ion-label class="">J'accepte les <a @click="showPrivacyNotice">conditions d'utilisation</a></ion-label>
           </ion-item>
-          <ion-button expand="block" @click="sendEmail" :color="sendButtonColor" :disabled="!dgprChecked">
+          <ion-button expand="block" @click="sendEmail" :color="sendButtonColor">
             <ion-spinner v-if="isSendingEmail"></ion-spinner>
             <span v-else>{{ sendButtonText }}</span>
           </ion-button>
@@ -89,7 +89,12 @@ const sendButtonColor = computed(() => {
 // methods
 
 const sendEmail = async () => {
-  if (!dgprChecked.value || !email.value) return
+  if (!dgprChecked.value) {
+    dgprChecked.value = true
+    await new Promise(resolve => setTimeout(resolve, 300))
+    setTimeout
+  }
+  if (!email.value) return
   isSendingEmail.value = true
   try {
     await sendSignInEmail(email.value, `https://${location.host}${redirect.value}`)
