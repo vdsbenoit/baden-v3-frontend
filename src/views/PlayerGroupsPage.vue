@@ -9,9 +9,7 @@
             <ion-row>
               <ion-col size="12" size-sm="6">
                 <ion-spinner v-if="isLoadingAppConfig"></ion-spinner>
-                <div v-else-if="errorLoadingAppConfig">
-                  Erreur au chargement des catégories de sections
-                </div>
+                <div v-else-if="errorLoadingAppConfig">Erreur au chargement des catégories de sections</div>
                 <ion-select
                   v-else-if="appConfig && appConfig.groupCategories"
                   v-model="selectedGroupCategoryId"
@@ -29,9 +27,7 @@
               </ion-col>
               <ion-col size="12" size-sm="6" v-if="selectedGroupCategoryId">
                 <ion-spinner v-if="isLoadingGroups"></ion-spinner>
-                <div v-else-if="errorLoadingGroups">
-                  Erreur au chargement des sections
-                </div>
+                <div v-else-if="errorLoadingGroups">Erreur au chargement des sections</div>
                 <ion-select
                   v-else-if="groups && groups.length > 0"
                   v-model="selectedGroupId"
@@ -126,15 +122,21 @@
                 </div>
                 <div v-else-if="selectedGroup">
                   <ion-list v-if="selectedGroup.teams.length > 0">
-                    <ion-item v-for="teamId in selectedGroup.teams" :key="teamId" :routerLink="`/team/${teamId}`" button>
+                    <ion-item
+                      v-for="teamId in selectedGroup.teams"
+                      :key="teamId"
+                      :routerLink="`/team/${teamId}`"
+                      button
+                    >
                       <ion-label>{{ teamId }}</ion-label>
                       <ion-badge
                         v-if="currentUserProfile && teamId === currentUserProfile.teamId"
                         slot="end"
                         color="primary"
                         class="ion-padding-horizontal"
-                        >Ton équipe</ion-badge
                       >
+                        Ton équipe
+                      </ion-badge>
                     </ion-item>
                   </ion-list>
                   <ion-list-header v-else><h2>Aucune équipe trouvée</h2></ion-list-header>
@@ -254,23 +256,20 @@ watch(selectedGroupId, () => {
   shouldLoadMembers.value = false
 })
 
-watch(
-  [errorLoadingGroup, errorLoadingGroups, errorLoadingMembers, errorLoadingAppConfig],
-  (errors) => {
-    if (errors[0]) {
-      console.error("Error loading group data:", errors[0])
-    }
-    if (errors[1]) {
-      console.error("Error loading groups:", errors[1])
-    }
-    if (errors[2]) {
-      console.error("Error loading members:", errors[2])
-    }
-    if (errors[3]) {
-      console.error("Error loading app config:", errors[3])
-    }
+watch([errorLoadingGroup, errorLoadingGroups, errorLoadingMembers, errorLoadingAppConfig], errors => {
+  if (errors[0]) {
+    console.error("Error loading group data:", errors[0])
   }
-)
+  if (errors[1]) {
+    console.error("Error loading groups:", errors[1])
+  }
+  if (errors[2]) {
+    console.error("Error loading members:", errors[2])
+  }
+  if (errors[3]) {
+    console.error("Error loading app config:", errors[3])
+  }
+})
 
 // Computed
 
