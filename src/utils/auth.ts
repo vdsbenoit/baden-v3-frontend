@@ -30,8 +30,8 @@ export async function processSignInLink(href: string) {
       }
     }
     const message = `On dirait que tu n'as pas ouvert le lien depuis le même navigateur que là où tu as essayé.e de te connecter.\n\n
-    Il devrait y avoir une option dans pour ouvrir le lien dans ton navigateur internet plutôt que ton app de mail. 
-    Si pas, essaie de copier/coller le lien dans ton navigateur.`
+    Il devrait y avoir une bouton dans pour ouvrir le lien dans ton navigateur habituel plutôt que ton app de mail. 
+    Si pas, copie l'adresse du lien, puis de clique sur "J'ai déjà reçu un mail".`
     await choicePopup("Oops", ["Je veux quand même essayer ici", "D'accord"], choiceHandler, "", message)
   }
   if (!email) {

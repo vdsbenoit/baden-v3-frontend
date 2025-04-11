@@ -25,12 +25,6 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/LoginPage.vue"),
     meta: { noAuth: true }
   },
-  // todo: remove this once the feature/refactor_and_use_vuefire branch is merged and deployed in prod
-  {
-    name: "validation",
-    path: "/validation",
-    redirect: "/login"
-  },
   {
     name: "home",
     path: "/home",

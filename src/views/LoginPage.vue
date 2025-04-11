@@ -51,16 +51,16 @@ import { USER_ROLES } from "@/constants"
 import { processSignInLink, sendSignInEmail } from "@/utils/auth"
 import { errorPopup, infoPopup, toastPopup } from "@/utils/popup"
 // prettier-ignore
-import { IonButton, IonCheckbox, IonContent, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonSpinner, IonText } from "@ionic/vue";
+import { IonButton, IonCheckbox, IonContent, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonSpinner, IonText } from "@ionic/vue"
 import { computed } from "@vue/reactivity"
 import { useRouteQuery } from "@vueuse/router"
-import { ref, watch } from "vue"
+import { onMounted, ref } from "vue"
 import { useRouter } from "vue-router"
 
 const router = useRouter()
 const userProfile = useCurrentUserProfile()
-const mode = useRouteQuery("mode", "newLogin")
-const redirect = useRouteQuery("redirect", `/home`)
+const mode = useRouteQuery<string>("mode", "newLogin")
+const redirect = useRouteQuery<string>("redirect", `/home`)
 
 // reactive data
 
@@ -71,8 +71,8 @@ const dgprChecked = ref(false)
 const isValidating = ref(false)
 
 // Watcher
-watch(mode, (newValue: string) => {
-  if (newValue === "signIn") {
+onMounted(() => {
+  if (mode.value && mode.value == "signIn") {
     signIn(window.location.href)
   }
 })
