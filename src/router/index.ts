@@ -5,8 +5,8 @@ import OnboardingPage from "@/views/OnboardingPage.vue"
 import { createRouter, createWebHistory } from "@ionic/vue-router"
 import { RouteRecordRaw } from "vue-router"
 import { getCurrentUser } from "vuefire"
-import HomePageVue from "../views/HomePage.vue"
 import { toastPopup } from "../utils/popup"
+import HomePageVue from "../views/HomePage.vue"
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -137,7 +137,13 @@ const router = createRouter({
 
 router.beforeEach(async to => {
   if (to.meta.minimumRole && to.meta.minimumRole === USER_ROLES.Anonyme) return true
-  const currentUser = await getCurrentUser()
+  let currentUser
+  try {
+    currentUser = await getCurrentUser()
+  } catch (e) {
+    console.error("Error while getting current user: ", e)
+    currentUser = null
+  }
   // if the user is not connected
   if (!currentUser) {
     // if the pages does not require authentication, let the user access it
