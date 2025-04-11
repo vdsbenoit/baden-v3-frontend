@@ -142,10 +142,9 @@ import { DEFAULT_GROUP_ID, GROUP_ROLES, USER_ROLES } from "@/constants"
 import { UserProfile } from "@/types"
 import { getUserName } from "@/utils/userProfile"
 // prettier-ignore
-import { IonText, IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue";
+import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner, IonText } from "@ionic/vue"
 import { computed } from "@vue/reactivity"
 import { useRouteParams } from "@vueuse/router"
-import { error } from "console"
 import { arrowUpOutline, arrowUpSharp } from "ionicons/icons"
 import { watch } from "vue"
 
