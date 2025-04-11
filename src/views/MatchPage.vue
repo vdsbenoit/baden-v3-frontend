@@ -81,8 +81,8 @@
               <!-- Score icons -->
               <ion-row v-if="match.draw" class="ion-align-items-center ion-text-center">
                 <ion-col size="11">
-                  <div class="score-div draw-color">
-                    <span class="draw-span ion-text-uppercase">égalité</span>
+                  <div class="score-div draw">
+                    <span class="draw ion-text-uppercase">égalité</span>
                   </div>
                 </ion-col>
               </ion-row>
@@ -519,12 +519,15 @@ watch(errorLoadingReporter, (error: FirestoreError | undefined) => {
 .loser-color {
   background-color: var(--ion-color-danger);
 }
-.draw-color {
+div.draw {
   background-color: var(--ion-color-warning);
+  color: var(--ion-color-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
 }
-.draw-span {
-  display: inline-block;
-  vertical-align: middle;
+span.draw {
   line-height: normal;
   font-weight: bolder;
 }
