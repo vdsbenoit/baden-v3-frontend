@@ -72,7 +72,7 @@
                   <ion-text color="error">Impossible de charger les animateurs</ion-text>
                 </div>
                 <ion-list v-else-if="groupMembers && groupMembers.length > 0">
-                  <ion-item v-for="user in groupMembers" :key="user.id" :routerLink="`/profile/${user.id}`">
+                  <ion-item v-for="user in groupMembers" :key="user.id" :routerLink="`/profile/${user.id}`" button>
                     <ion-label>{{ getUserName(user) }}</ion-label>
                     <div v-if="user.role <= USER_ROLES.Chef">
                       <ion-badge v-if="countGames(user) === 0" slot="end" color="danger">Pas inscrit</ion-badge>
@@ -105,7 +105,7 @@
                   <ion-text color="error">Impossible de charger les animateurs</ion-text>
                 </div>
                 <ion-list v-else-if="groupLeaders && groupLeaders.length > 0">
-                  <ion-item v-for="user in groupLeaders" :key="user.id" :routerLink="`/profile/${user.id}`">
+                  <ion-item v-for="user in groupLeaders" :key="user.id" :routerLink="`/profile/${user.id}`" button>
                     <ion-label>{{ getUserName(user) }}</ion-label>
                     <div v-if="user.role <= USER_ROLES.Chef">
                       <ion-badge v-if="countGames(user) === 0" slot="end" color="danger">Pas inscrit</ion-badge>

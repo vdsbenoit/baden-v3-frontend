@@ -63,14 +63,14 @@
               <ion-toggle @IonChange="showRanking" :checked="appSettings.isRankingPublic"></ion-toggle>
             </ion-item>
             <ion-item>
-              <ion-label>Inscriptions aux épreuves</ion-label>
+              <ion-label class="ion-text-wrap">Inscriptions aux épreuves</ion-label>
               <ion-toggle
                 @IonChange="setAttendantRegistration"
                 :checked="appSettings.isAttendantRegistrationOpen"
               ></ion-toggle>
             </ion-item>
             <ion-item>
-              <ion-label>Afficher la disponibilités des épreuves</ion-label>
+              <ion-label class="ion-text-wrap">Afficher la disponibilités des épreuves</ion-label>
               <ion-toggle
                 @IonChange="setGameAvailabilites"
                 :checked="appSettings.isGameAvailabilitiesDisplayed"
@@ -78,7 +78,7 @@
             </ion-item>
             <ion-item>
               <ion-label class="ion-text-wrap">
-                <h2>Autoriser l'enregistrement de scores dans n'importe quelle épreuve</h2>
+                <h2>Autoriser l'enregistrement de scores partout</h2>
                 <p>Ne pas tenir compte des inscriptions aux épreuves</p>
               </ion-label>
               <ion-toggle @IonChange="setCanSetAnyScores" :checked="appSettings.canSetAnyScores"></ion-toggle>

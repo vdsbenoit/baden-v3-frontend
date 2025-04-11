@@ -68,8 +68,8 @@
                 </ion-note>
               </ion-item>
             </ion-list>
-            <ion-button expand="block" color="medium" :router-link="`/player-group/${team.groupId}`">
-              Voir section
+            <ion-button expand="block" color="medium" class="ion-margin-top" :router-link="`/player-group/${team.groupId}`" router-direction="back">
+              Voir la section
             </ion-button>
           </ion-card-content>
         </ion-card>
@@ -123,7 +123,7 @@
                     style="vertical-align: middle"
                   />
                   <ion-label>
-                    <span>{{ getMatch(i)?.gameName }}</span>
+                    <span class="ion-text-wrap">{{ getMatch(i)?.gameName }}</span>
                     <p>
                       <span class="time-slot">{{ timeSlot.start }} - {{ timeSlot.stop }}</span>
                       <span class="ion-margin-start">Jeu n°{{ getMatch(i)?.gameId }}</span>

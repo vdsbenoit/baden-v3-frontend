@@ -113,8 +113,9 @@
               color="medium"
               class="ion-margin-top ion-margin-horizontal"
               :router-link="`/game/${match.gameId}`"
+              router-direction="back"
             >
-              Voir jeu
+              Voir le jeu
             </ion-button>
           </ion-card-content>
         </ion-card>

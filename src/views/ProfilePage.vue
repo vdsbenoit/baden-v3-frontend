@@ -314,7 +314,7 @@
             <p v-else class="field-error">Erreur: impossible de charger l'adresse email</p>
           </ion-item>
         </ion-list>
-        <ion-grid class="ion-no-padding">
+        <ion-grid class="ion-no-padding ion-margin-top">
           <ion-row>
             <ion-col v-if="isOwnProfile" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
               <ion-button expand="block" class="" color="warning" @click="logOut"> Se déconnecter </ion-button>

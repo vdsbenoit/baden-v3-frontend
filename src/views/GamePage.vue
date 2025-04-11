@@ -209,8 +209,8 @@
                 <ion-item v-else :routerLink="`/match/${getMatch(i)?.id}`" class="item-no-padding">
                   <ion-label>
                     <ion-icon
-                      :ios="diceOutline"
-                      :md="diceSharp"
+                      :ios="peopleOutline"
+                      :md="peopleSharp"
                       style="vertical-align: middle"
                       class="schedule-icon ion-margin-end"
                     />
@@ -258,7 +258,14 @@ import { getRoleByValue, getUserName } from "@/utils/userProfile"
 import { IonBadge, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner, IonText, useIonRouter } from "@ionic/vue";
 import { computed, reactive, ref, toRef } from "@vue/reactivity"
 import { useRouteParams } from "@vueuse/router"
-import { closeOutline, closeSharp, diceOutline, diceSharp, pauseCircleOutline, pauseCircleSharp } from "ionicons/icons"
+import {
+  closeOutline,
+  closeSharp,
+  pauseCircleOutline,
+  pauseCircleSharp,
+  peopleOutline,
+  peopleSharp
+} from "ionicons/icons"
 import { onMounted, toValue, watch } from "vue"
 
 // reactive data
@@ -303,12 +310,7 @@ const {
   error: errorLoadingAttendants
 } = useMembersOfGroup(toRef(edit, "selectedAttendantGroupId"))
 
-watch([
-  errorLoadingGame,
-  errorLoadingMatches,
-  errorLoadingAttendantGroups,
-  errorLoadingAttendants
-], errors => {
+watch([errorLoadingGame, errorLoadingMatches, errorLoadingAttendantGroups, errorLoadingAttendants], errors => {
   if (errors[0]) {
     console.error("Error loading game:", errors[0])
   }
