@@ -112,11 +112,11 @@ const handleRequest = (applicant: VueFireUserProfile) => {
   }
   let message = ""
   if (applicant.requestedRole === USER_ROLES.Animateur || applicant.requestedRole === USER_ROLES.Chef) {
-    message = `Tu es sur le point d'ajouter ${getUserName(applicant)}
+    message = `Veux-tu ajouter ${getUserName(applicant)}
     comme <b>${getRoleByValue(applicant.requestedRole)}</b> de la section ${props.attendantGroupName}.`
   }
   if (applicant.requestedRole >= USER_ROLES.Organisateur) {
-    message = `Tu es sur le point d'ajouter ${getUserName(applicant)}
+    message = `Veux-tu ajouter ${getUserName(applicant)}
     comme <b>${getRoleByValue(applicant.requestedRole)}</b> de la Baden Battle.`
   }
   if (!message) {
@@ -136,7 +136,7 @@ const handleRequest = (applicant: VueFireUserProfile) => {
     })
   }
   const rejectHandler = (reason: string) => {
-    const fullReason = `${getUserName(currentUser)} (${getRoleByValue(currentUser.value?.role ?? -1)}) : "${reason}"`
+    const fullReason = `${getUserName(currentUser)} (${getRoleByValue(currentUser.value?.role ?? -1)}) dit : ${reason}`
     updateUserProfile(applicant.id, {
       requestedRole: -1,
       requestedGroupId: "",

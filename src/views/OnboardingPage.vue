@@ -5,13 +5,13 @@
       <refresher-component></refresher-component>
       <ion-card>
         <ion-card-header v-if="currentUser && currentUser.rejectionReason">
-          <ion-card-title>Aille !</ion-card-title>
-          <p>
-            Il semblerait que ta demande d'accès ait été refusée.
+          <ion-card-title>Outch !</ion-card-title>
+          <p style="color: var(--ion-color-dark)">
+            Ta demande d'accès a été refusée.
             <br /><br />
             {{ currentUser.rejectionReason }}
             <br /><br />
-            Est-ce que tu peux recommencer stp ?
+            Tu peux réessayer ci-dessous.
           </p>
         </ion-card-header>
         <ion-card-header v-else>
@@ -138,7 +138,7 @@ const {
   error: errorLoadingAttendantGroups
 } = useAttendantGroups(isAttendant, loadStaffGroups, true)
 
-watch([errorLoadingGroups, errorLoadingAttendantGroups], (errors) => {
+watch([errorLoadingGroups, errorLoadingAttendantGroups], errors => {
   if (errors[0]) {
     console.error("Error loading player groups:", errors[0])
   }
