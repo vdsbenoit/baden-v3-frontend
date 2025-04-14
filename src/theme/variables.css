@@ -33,12 +33,12 @@
   --ion-color-success-tint: #408740;
 
   /** warning **/
-	--ion-color-warning: #e6a800;
-	--ion-color-warning-rgb: 230,168,0;
-	--ion-color-warning-contrast: #000000;
-	--ion-color-warning-contrast-rgb: 0,0,0;
-	--ion-color-warning-shade: #ca9400;
-	--ion-color-warning-tint: #e9b11a;
+  --ion-color-warning: #e6a800;
+  --ion-color-warning-rgb: 230, 168, 0;
+  --ion-color-warning-contrast: #000000;
+  --ion-color-warning-contrast-rgb: 0, 0, 0;
+  --ion-color-warning-shade: #ca9400;
+  --ion-color-warning-tint: #e9b11a;
 
   /** danger **/
   --ion-color-danger: #b22222;
@@ -183,10 +183,10 @@ body.dark .md {
 }
 
 /* Fixes for ionic dark theme */
-.alert-radio-label.sc-ion-alert-md {
+.dark .alert-radio-label.sc-ion-alert-md {
   color: var(--ion-color-dark);
 }
-.alert-radio-label.sc-ion-alert-ios {
+.dark .alert-radio-label.sc-ion-alert-ios {
   color: var(--ion-color-light);
 }
 
