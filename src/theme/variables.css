@@ -116,3 +116,15 @@ ion-popover {
 body.dark .homepage-logo img {
   filter: invert(1);
 }
+
+.toast-popup {
+  margin-top: 60px;
+  font-size: 1rem;
+  --background: var(--ion-color-light);
+  --color: var(--ion-color-dark);
+  --border-radius: 10px;
+  --border-style: solid;
+  --border-width: 1px;
+  --border-color: var(--ion-color-medium);
+  --box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+}
