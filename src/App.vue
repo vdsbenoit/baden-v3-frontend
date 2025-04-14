@@ -1,7 +1,7 @@
 <template>
   <ion-app>
     <ion-split-pane content-id="main-content">
-      <ion-menu content-id="main-content" type="overlay" side="start">
+      <ion-menu content-id="main-content" type="overlay" side="start" :swipe-gesture="false">
         <ion-content style="height: 100%">
           <ion-list id="menu-list">
             <ion-list-header>Baden Battle</ion-list-header>
@@ -376,7 +376,7 @@ ion-label p {
 }
 .time-slot {
   font-family: monospace;
-  font-size: 0.9em;  
+  font-size: 0.9em;
 }
 .schedule-icon {
   font-size: 1.4em;
