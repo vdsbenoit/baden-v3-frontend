@@ -20,11 +20,6 @@
                 <ion-label>{{ p.title }}</ion-label>
               </ion-item>
             </ion-menu-toggle>
-            <ion-item lines="none" class="no-pointer ion-margin-bottom hydrated" :detail="false">
-              <ion-icon slot="start" :ios="moonOutline" :md="moonSharp"></ion-icon>
-              <ion-label> Dark Mode </ion-label>
-              <ion-toggle slot="end" v-model="isDarkModeEnabled"></ion-toggle>
-            </ion-item>
           </ion-list>
         </ion-content>
         <ion-menu-toggle :auto-hide="false">
@@ -45,8 +40,7 @@
 
 <script setup lang="ts">
 // prettier-ignore
-import { IonApp, IonContent, IonFooter, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, IonSplitPane, IonText, IonToggle } from "@ionic/vue";
-import { useDark } from "@vueuse/core"
+import { IonApp, IonContent, IonFooter, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, IonSplitPane, IonText } from "@ionic/vue";
 import {
   checkmarkCircleOutline,
   checkmarkCircleSharp,
@@ -56,8 +50,6 @@ import {
   homeSharp,
   informationCircleOutline,
   informationCircleSharp,
-  moonOutline,
-  moonSharp,
   optionsOutline,
   optionsSharp,
   peopleCircleOutline,
@@ -83,14 +75,6 @@ const route = useRoute()
 const appSettings = useAppSettings()
 const appConfig = useAppConfig()
 const userProfile = useCurrentUserProfile()
-
-// reactive data
-
-const isDarkModeEnabled = useDark({
-  valueLight: "",
-  valueDark: "dark",
-  selector: "body"
-})
 
 // Computed
 
