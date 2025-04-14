@@ -125,15 +125,15 @@
           </ion-card-header>
           <ion-card-content>
             <ion-list lines="none" v-if="reporterId" class="no-pointer">
-              <ion-item class="">
+              <ion-item class="ion-no-padding" style="--padding-start: 8px">
                 <ion-label>
-                  <span>Modififé par : </span>
+                  <ion-text>Modififé par : </ion-text>
                   <ion-spinner v-if="isLoadingReporter"></ion-spinner>
-                  <span v-else-if="reporter">{{ reporter.name }} ({{ reporter.groupName }})</span>
-                  <ion-text color="error">Impossible de charger le profil</ion-text>
+                  <ion-text v-else-if="reporter">{{ reporter.name }} ({{ reporter.groupName }})</ion-text>
+                  <ion-text v-else color="error">Impossible de charger le profil</ion-text>
                 </ion-label>
               </ion-item>
-              <ion-item class="">
+              <ion-item class="ion-no-padding" style="--padding-start: 8px">
                 <ion-label> Modifié à : {{ formatedDate }} </ion-label>
               </ion-item>
             </ion-list>
