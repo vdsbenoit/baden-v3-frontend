@@ -88,6 +88,7 @@ export function useApplicants(rLimit: MaybeRefOrGetter<number>) {
       queryParams.push(where("requestedGroupId", "==", applicantGroupIdFilter.value))
     }
     queryParams.push(orderBy("requestedRole", "asc"))
+    queryParams.push(where("requestedRole", ">", 0))
     queryParams.push(where("requestedRole", "<=", maxApplicantRole.value))
     queryParams.push(fbLimit(limit))
     return query(USER_PROFILES_COLLECTION_REF, ...queryParams)
