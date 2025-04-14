@@ -1,24 +1,24 @@
 module.exports = {
   devServer: {
-    host: '127.0.0.1'
+    host: "127.0.0.1"
   },
   configureWebpack: {
-    devtool: 'source-map'
+    devtool: "source-map"
   },
-  chainWebpack: (config) => {
-    config.plugin('define').tap((definitions) => {
+  chainWebpack: config => {
+    config.plugin("define").tap(definitions => {
       Object.assign(definitions[0], {
-        __VUE_OPTIONS_API__: 'true',
-        __VUE_PROD_DEVTOOLS__: 'false',
-        __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'false'
+        __VUE_OPTIONS_API__: "true",
+        __VUE_PROD_DEVTOOLS__: "false",
+        __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: "false"
       })
       return definitions
     })
   },
   pwa: {
     name: "Baden Battle Score App",
-    themeColor: "#ff2c2c",
-    msTileColor: "#ff2c2c",
+    themeColor: "#3880ff",
+    msTileColor: "#F1F6FA",
     appleMobileWebAppCapable: "yes",
     manifestOptions: {
       short_name: "Baden Battle",
