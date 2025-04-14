@@ -99,7 +99,7 @@ const sendEmail = async () => {
   try {
     await sendSignInEmail(email.value, `https://${location.host}${redirect.value}`)
     isEmailSent.value = true
-    toastPopup("On t'a envoyé un email<br/>Clique sur le lien qui s'y trouve pour te connecter", 10000)
+    toastPopup("On t'a envoyé un email<br/>Clique sur le lien qui s'y trouve pour te connecter", 20000)
   } catch (error: any) {
     errorPopup(error.message, `Impossible de se connecter`)
   }
