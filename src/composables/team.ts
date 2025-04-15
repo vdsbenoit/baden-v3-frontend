@@ -25,7 +25,7 @@ export function useTopTeams(rGroupCategoryId: MaybeRefOrGetter<string>, rLimit: 
     // prettier-ignore
     return query(
       TEAMS_COLLECTION_REF, 
-      where("groupCategory", "==", groupCategory),
+      where("groupCategoryId", "==", groupCategory),
       orderBy("score", "desc"),
       fbLimit(limit),
     )
