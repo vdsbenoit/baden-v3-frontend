@@ -16,7 +16,7 @@
                 class="hydrated"
                 :class="{ selected: isSelected(p.url) }"
               >
-                <ion-icon slot="start" :ios="p.iosIcon" :md="p.mdIcon"></ion-icon>
+                <ion-icon slot="start" :ios="p.iosIcon" :md="p.mdIcon" :color="p.color ?? 'medium'"></ion-icon>
                 <ion-label>{{ p.title }}</ion-label>
               </ion-item>
             </ion-menu-toggle>
@@ -92,7 +92,8 @@ const appPages = computed(() => {
         title: "Mon Equipe",
         url: `/team/${userProfile.value.teamId}`,
         iosIcon: peopleCircleOutline,
-        mdIcon: peopleCircleSharp
+        mdIcon: peopleCircleSharp,
+        color: "success"
       }
     ]
   if (userProfile.value.role >= USER_ROLES.Animateur) {
@@ -105,7 +106,8 @@ const appPages = computed(() => {
             title: `Mon épreuve (${timeSlot.name})`,
             url: `/game/${userProfile.value.games[timeSlot.id].id}`,
             iosIcon: footballOutline,
-            mdIcon: footballSharp
+            mdIcon: footballSharp,
+            color: "secondary"
           }
         ]
       }
@@ -117,7 +119,8 @@ const appPages = computed(() => {
           title: "Ma section",
           url: `/attendant-group/${userProfile.value.groupId}`,
           iosIcon: peopleSharp,
-          mdIcon: peopleSharp
+          mdIcon: peopleSharp,
+          color: "secondary"
         }
       ]
   }
@@ -128,7 +131,8 @@ const appPages = computed(() => {
         title: "Ma section",
         url: `/player-group/${userProfile.value.groupId}`,
         iosIcon: peopleSharp,
-        mdIcon: peopleSharp
+        mdIcon: peopleSharp,
+        color: "secondary"
       }
     ]
   if (userProfile.value.role >= USER_ROLES.Organisateur) pages = [...pages, checkScoresPage]
@@ -153,73 +157,85 @@ const checkScoresPage = {
   title: "Check Scores",
   url: "/check-scores",
   iosIcon: checkmarkCircleOutline,
-  mdIcon: checkmarkCircleSharp
+  mdIcon: checkmarkCircleSharp,
+  color: "success"
 }
 const rankingPage = {
   title: "Classement",
   url: "/ranking",
   iosIcon: trophyOutline,
-  mdIcon: trophySharp
+  mdIcon: trophySharp,
+  color: "warning"
 }
 const settingsPage = {
   title: "Paramètres",
   url: "/settings",
   iosIcon: optionsOutline,
-  mdIcon: optionsSharp
+  mdIcon: optionsSharp,
+  color: "primary"
 }
 const homePage = {
   title: "Accueil",
   url: "/home",
   iosIcon: homeOutline,
-  mdIcon: homeSharp
+  mdIcon: homeSharp,
+  color: "primary"
 }
 const guestHomePage = {
   title: "Accueil",
   url: "/guest",
   iosIcon: homeOutline,
-  mdIcon: homeSharp
+  mdIcon: homeSharp,
+  color: "primary"
 }
 const loginPage = {
   title: "Connexion",
   url: "/login",
   iosIcon: personCircleOutline,
-  mdIcon: personCircleSharp
+  mdIcon: personCircleSharp,
+  color: "primary"
 }
 const profilePage = {
   title: "Profil",
   url: "/profile",
   iosIcon: personCircleOutline,
-  mdIcon: personCircleSharp
+  mdIcon: personCircleSharp,
+  color: "primary"
 }
 const aboutPage = {
   title: "A propos",
   url: "/about",
   iosIcon: informationCircleOutline,
-  mdIcon: informationCircleSharp
+  mdIcon: informationCircleSharp,
+  color: "medium"
 }
 const playerGroupsPage = {
   title: "Joueurs",
   url: "/player-group",
   iosIcon: peopleOutline,
-  mdIcon: peopleOutline
+  mdIcon: peopleOutline,
+  color: "success"
 }
 const attendantGroupsPage = {
   title: "Animateurs",
   url: "/attendant-group",
   iosIcon: peopleOutline,
-  mdIcon: peopleOutline
+  mdIcon: peopleOutline,
+  color: "danger"
 }
 const gamesPage = {
   title: "Épreuves",
   url: "/games",
   iosIcon: footballOutline,
-  mdIcon: footballSharp
+  mdIcon: footballSharp,
+  color: "ternary"
 }
 const applicantsPage = {
   title: "Demandes d'accès",
   url: "/applicants",
   iosIcon: personAddOutline,
-  mdIcon: personAddSharp
+  mdIcon: personAddSharp,
+  color: "ternary"
 }
 </script>
 
