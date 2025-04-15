@@ -829,7 +829,12 @@ const setGame = async (timeSlotId: string) => {
 const resetOnboarding = async () => {
   const loading = await loadingPopup("Réinitialisation de l'onboarding")
   try {
-    await updateUserProfile(userId.value, { hasDoneOnboarding: false })
+    await updateUserProfile(userId.value, { 
+      role: USER_ROLES.Newbie,
+      groupId: DEFAULT_GROUP_ID,
+      groupName: "",
+      hasDoneOnboarding: false
+    })
   } catch (error: any) {
     errorPopup(error.message, `L'onboarding n'a pas pu être réinitialisée`)
   }
