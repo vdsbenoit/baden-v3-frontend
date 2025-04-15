@@ -9,7 +9,7 @@
 
 <script setup lang="ts">
 import { toastPopup } from "@/utils/popup"
-import { actionSheetController } from "@ionic/vue"
+import { actionSheetController, IonButton, IonSpinner } from "@ionic/vue"
 import { defineProps, ref } from "vue"
 
 const props = defineProps<{
