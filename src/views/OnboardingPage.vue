@@ -136,7 +136,7 @@ const {
   data: attendantGroups,
   pending: isLoadingAttendantGroups,
   error: errorLoadingAttendantGroups
-} = useAttendantGroups(isAttendant, loadStaffGroups, true)
+} = useAttendantGroups(isAttendant, loadStaffGroups, true, currentUser)
 
 watch([errorLoadingGroups, errorLoadingAttendantGroups], errors => {
   if (errors[0]) {

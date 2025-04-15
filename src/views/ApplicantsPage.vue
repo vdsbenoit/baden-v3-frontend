@@ -80,12 +80,12 @@ const isNoApplicants = computed(() => {
 // composables
 
 const canSeeModerationStuff = useCanSeeModerationStuff()
+const { data: currentUser, pending: isLoadingCurrentUser, error: errorLoadingCurrentUser } = useCurrentUserProfile()
 const {
   data: attendantGroups,
   pending: isLoadingAttendantGroups,
   error: errorLoadingAttendantGroups
-} = useAttendantGroups(canSeeModerationStuff, "include", true)
-const { data: currentUser, pending: isLoadingCurrentUser, error: errorLoadingCurrentUser } = useCurrentUserProfile()
+} = useAttendantGroups(canSeeModerationStuff, "include", true, currentUser)
 const currentUserGroupId = computed(() => {
   if (!currentUser.value || !currentUser.value.groupId) return DEFAULT_GROUP_ID
   return currentUser.value.groupId
@@ -110,7 +110,7 @@ watch([errorLoadingAttendantGroups, errorLoadingCurrentUser, errorLoadingCurrent
 
 // Computed
 
-const isLoadingCurrentUserData = computed(() => isLoadingCurrentUser || isLoadingCurrentUserAttendantGroup)
+const isLoadingCurrentUserData = computed(() => isLoadingCurrentUser.value || isLoadingCurrentUserAttendantGroup.value)
 const errorCurrentUserData = computed(
   () => errorLoadingCurrentUser.value ?? errorLoadingCurrentUserAttendantGroup.value
 )

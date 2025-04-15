@@ -137,7 +137,7 @@ import HeaderComponent from "@/components/HeaderComponent.vue"
 import RefresherComponent from "@/components/RefresherComponent.vue"
 import { useAppConfig } from "@/composables/app"
 import { useAttendantGroup, useAttendantGroups } from "@/composables/attendantGroup"
-import { useGroupApplicants, useMembersOfGroup } from "@/composables/userProfile"
+import { useCurrentUserProfile, useGroupApplicants, useMembersOfGroup } from "@/composables/userProfile"
 import { DEFAULT_GROUP_ID, GROUP_ROLES, USER_ROLES } from "@/constants"
 import { UserProfile } from "@/types"
 import { getUserName } from "@/utils/userProfile"
@@ -158,7 +158,8 @@ const {
   pending: isLoadingAttendants,
   error: errorLoadingAttendants
 } = useMembersOfGroup(selectedGroupId)
-const { data: groups, pending: isLoadingGroups, error: errorLoadingGroups } = useAttendantGroups(true, "include", true)
+const currentUser = useCurrentUserProfile()
+const { data: groups, pending: isLoadingGroups, error: errorLoadingGroups } = useAttendantGroups(true, "include", true, currentUser)
 const applicants = useGroupApplicants(50, selectedGroupId.value)
 
 watch([errorLoadingAttendants, errorLoadingGroups, errorLoadingGroup], (errors) => {

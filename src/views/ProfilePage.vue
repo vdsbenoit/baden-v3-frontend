@@ -481,7 +481,7 @@ const games = useGames(shouldLoadGames)
 // They are only loaded after the user starts editting the field
 const shouldLoadAttendantGroups = ref(false)
 const loadStaffGroups = computed(() => (formData.role.value >= USER_ROLES.Organisateur ? "only" : "exclude"))
-const attendantGroups = useAttendantGroups(shouldLoadAttendantGroups, loadStaffGroups, true)
+const attendantGroups = useAttendantGroups(shouldLoadAttendantGroups, loadStaffGroups, true, currentUserProfile)
 
 /**
  * Update formData with selected user profile data

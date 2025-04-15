@@ -308,7 +308,7 @@ const {
   data: attendantGroups,
   pending: isLoadingAttendantGroups,
   error: errorLoadingAttendantGroups
-} = useAttendantGroups(toRef(edit, "isOn"), "exclude", canSeeModerationStuff)
+} = useAttendantGroups(toRef(edit, "isOn"), "exclude", canSeeModerationStuff, currentUser)
 const {
   data: attendants,
   pending: isLoadingAttendants,
