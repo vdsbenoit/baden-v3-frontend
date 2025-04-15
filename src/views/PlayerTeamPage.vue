@@ -108,13 +108,9 @@
             <ion-list v-else>
               <div v-for="[i, timeSlot] in playerSchedule.entries()" :key="i">
                 <ion-item v-if="Object.keys(breaks).includes(i.toString())" class="ion-no-padding">
-                  <ion-icon
-                    class="schedule-icon ion-margin-end"
-                    slot="start"
-                    :ios="pauseCircleOutline"
-                    :md="pauseCircleSharp"
-                    style="vertical-align: middle"
-                  />
+                  <ion-avatar class="ion-margin-end" slot="start">
+                    <ion-icon :icon="pauseSharp" />
+                  </ion-avatar>
                   <ion-label>
                     <span>Pause {{ breaks[i] }}</span>
                     <p>
@@ -128,18 +124,13 @@
                   router-direction="forward"
                   class="ion-no-padding"
                 >
-                  <ion-icon
-                    class="schedule-icon ion-margin-end"
-                    slot="start"
-                    :ios="diceOutline"
-                    :md="diceSharp"
-                    style="vertical-align: middle"
-                  />
+                  <ion-avatar class="ion-margin-end" slot="start">
+                    {{ getMatch(i)?.gameId }}
+                  </ion-avatar>
                   <ion-label>
                     <span class="ion-text-wrap">{{ getMatch(i)?.gameName }}</span>
                     <p>
                       <span class="time-slot">{{ timeSlot.start }} - {{ timeSlot.stop }}</span>
-                      <span class="ion-margin-start">Jeu n°{{ getMatch(i)?.gameId }}</span>
                     </p>
                   </ion-label>
                   <ion-icon
@@ -170,11 +161,11 @@ import { DEFAULT_GROUP_ID, DEFAULT_TEAM_ID, USER_ROLES } from "@/constants"
 import { errorPopup, toastPopup } from "@/utils/popup"
 import { updateUserProfile } from "@/utils/userProfile"
 // prettier-ignore
-import { IonBadge, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonNote, IonPage, IonRow, IonSpinner, IonText, useIonRouter } from "@ionic/vue"
+import { IonAvatar, IonBadge, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonNote, IonPage, IonRow, IonSpinner, IonText, useIonRouter } from "@ionic/vue"
 import { computed, ref } from "@vue/reactivity"
 import { useRouteParams } from "@vueuse/router"
 // prettier-ignore
-import { closeOutline, closeSharp, diceOutline, diceSharp, pauseCircleOutline, pauseCircleSharp, reorderTwoOutline, reorderTwoSharp, star, starOutline, trophyOutline, trophySharp } from "ionicons/icons"
+import { closeOutline, closeSharp, pauseSharp, reorderTwoOutline, reorderTwoSharp, star, starOutline, trophyOutline, trophySharp } from "ionicons/icons"
 import { onMounted, watch } from "vue"
 
 // reactive data
@@ -312,4 +303,16 @@ const unRegisterPlayer = async () => {
   }
 }
 </script>
-<style scoped></style>
+<style scoped>
+ion-avatar {
+  border-color: var(--ion-color-primary);
+  color: var(--ion-color-primary);
+  border-width: 1px;
+  border-style: solid;
+  font-size: 1rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>
