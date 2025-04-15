@@ -1,12 +1,11 @@
 // prettier-ignore
-import { DEFAULT_GROUP_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID, USER_ROLES, USER_PROFILES_COLLECTION_NAME, USER_PROFILES_COLLECTION_REF } from "@/constants";
-import { db, fbSignOut } from "@/services/firebase"
-import { RefUserProfile, UserProfile } from "@/types"
-import { Timestamp } from "@firebase/firestore"
-import { deleteUser } from "firebase/auth"
-import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
-import { MaybeRefOrGetter, toValue } from "vue"
-import { useFirebaseAuth } from "vuefire"
+import { DEFAULT_GROUP_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID, USER_PROFILES_COLLECTION_NAME, USER_PROFILES_COLLECTION_REF, USER_ROLES } from "@/constants";
+import { db, fbSignOut, getAuthInstance } from "@/services/firebase";
+import { RefUserProfile, UserProfile } from "@/types";
+import { Timestamp } from "@firebase/firestore";
+import { deleteUser } from "firebase/auth";
+import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { MaybeRefOrGetter, toValue } from "vue";
 
 // getters
 
@@ -59,7 +58,7 @@ export async function signOut() {
 
 export async function removeFirebaseAccount(uid: string) {
   const dbRef = doc(db, USER_PROFILES_COLLECTION_NAME, uid)
-  const auth = useFirebaseAuth()
+  const auth = getAuthInstance()
   if (!auth) throw Error("Cannot access the firebase auth object")
   const user = auth.currentUser
   if (!user) throw Error("User not found in the auth db")

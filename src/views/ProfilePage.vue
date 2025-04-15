@@ -882,7 +882,7 @@ const removeAccount = async () => {
     try {
       await removeFirebaseAccount(userProfile.value.id)
     } catch (error: any) {
-      errorPopup(error.message, `Erreur Lors de la suppression de l'utilisateur ${userProfile.value.id}`)
+      errorPopup(error.message, `Erreur Lors de la suppression de l'utilisateur ${userProfile.value.email}`)
     }
     if (wasOwnProfile) {
       await signOut()

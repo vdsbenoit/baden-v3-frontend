@@ -32,6 +32,10 @@ const dbId = process.env.NODE_ENV === "production" ? "(default)" : "development"
 export const db = getFirestore(app, dbId)
 const auth = getAuth(app)
 
+export const getAuthInstance = () => {
+  return auth
+}
+
 /**
  * A helper function that generates a random Firestore ID
  * This function is used when you execute `insert` without specifying an ID
