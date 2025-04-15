@@ -6,6 +6,7 @@ export type PlayerTeam = {
   number: number // this is used by the distribution script
   groupCategoryId: string
   groupId: string
+  groupNumber: number
   groupName: string
   groupCity: string
   nbPlayers: number
