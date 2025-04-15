@@ -17,8 +17,8 @@ module.exports = {
   },
   pwa: {
     name: "Baden Battle Score App",
-    themeColor: "#3880ff",
-    msTileColor: "#F1F6FA",
+    themeColor: "#003F87",
+    msTileColor: "#f2f2f2",
     appleMobileWebAppCapable: "yes",
     manifestOptions: {
       short_name: "Baden Battle",
