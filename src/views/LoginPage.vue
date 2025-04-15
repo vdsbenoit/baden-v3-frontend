@@ -35,7 +35,7 @@
           </ion-button>
           <ion-button expand="block" @click="signInWithClipboard" color="tertiary">
             <ion-spinner v-if="isValidating"></ion-spinner>
-            <span v-else>J'ai déjà reçu un mail</span>
+            <span v-else>J'ai copié le lien de l'email</span>
           </ion-button>
         </ion-list>
       </form>
@@ -107,11 +107,15 @@ const sendEmail = async () => {
 }
 
 const signIn = async (href: string) => {
-  const success = await processSignInLink(href)
-  if (success) {
+  try {
+    await processSignInLink(href)
     if (!userProfile.value || (userProfile.value.role === USER_ROLES.Newbie && !userProfile.value.hasDoneOnboarding)) {
       router.replace("/onboarding")
-    } else router.replace("/home")
+    } else {
+      router.replace("/home")
+    }
+  } catch (error: any) {
+    errorPopup(error.message)
   }
 }
 
@@ -147,17 +151,23 @@ async function signInWithClipboard() {
   }
 
   // Read the content of the clipboard
-  const clipboardText = await navigator.clipboard.readText()
-  console.log(`clipboardText: ${clipboardText}`)
-  // Sanitize the clipboard content
-  const sanitizedLink = sanitizeClipboardContent(clipboardText)
-  console.log(`Sanitized link: ${sanitizedLink}`)
-  if (!sanitizedLink) {
-    errorPopup("Copie le lien qui t'as été envoyé par email", "Le lien dans le presse-papier n'est pas valide")
-    return
+  try {
+    const clipboardText = await navigator.clipboard.readText()
+    const sanitizedLink = sanitizeClipboardContent(clipboardText)
+    if (!sanitizedLink) {
+      console.error("Invalid link from clipboard : ", sanitizedLink)
+      errorPopup("Copie le lien qui t'as été envoyé par email", "Le lien dans le presse-papier n'est pas valide")
+      return
+    }
+    signIn(clipboardText)
+  } catch (error: any) {
+    if (error.name === "NotAllowedError") {
+      errorPopup("Tu dois authoriser l'accès au presse-papier", "Impossible de lire le presse-papier")
+      // request permission again
+    } else {
+      errorPopup("Assure-toi que le lien a bien été copié", "Impossible de lire le presse-papier")
+    }
   }
-
-  signIn(clipboardText)
 }
 
 const showPrivacyNotice = () => {
