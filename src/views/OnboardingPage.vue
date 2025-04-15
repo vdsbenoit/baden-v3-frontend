@@ -175,12 +175,22 @@ const handleNameChange = () => {
 const processForm = (groupData: Group) => {
   isUpdatingProfile.value = true
   let newProfile: Partial<UserProfile>
-  newProfile = {
-    name: sanitizeInput(name.value),
-    requestedRole: selectedRole.value,
-    requestedGroupId: selectedGroupId.value,
-    requestedGroupName: groupData.name,
-    hasDoneOnboarding: true
+  if (selectedRole.value === USER_ROLES.Participant) {
+    newProfile = {
+      name: sanitizeInput(name.value),
+      role: selectedRole.value,
+      groupId: selectedGroupId.value,
+      groupName: groupData.name,
+      hasDoneOnboarding: true
+    }
+  } else {
+    newProfile = {
+      name: sanitizeInput(name.value),
+      requestedRole: selectedRole.value,
+      requestedGroupId: selectedGroupId.value,
+      requestedGroupName: groupData.name,
+      hasDoneOnboarding: true
+    }
   }
   if (!currentUser.value) return errorPopup("currentUser not found", "Impossible de mettre à jour le profil")
   updateUserProfile(currentUser.value.id, newProfile)
@@ -214,31 +224,30 @@ const submitForm = async () => {
   }
   switch (selectedRole.value) {
     case USER_ROLES.Participant:
-      message = `Tu as choisi le role de participant. 
+      message = `Tu as choisi le role de participant.<br /><br />
       Cela signifie que tu participeras à la Baden Battle avec la section ${groupData.name}.`
       break
     case USER_ROLES.Animateur:
-      message = `Tu as choisi le role d'animateur. 
+      message = `Tu as choisi le role d'animateur.<br /><br />
       Cela signifie qu'un•e des chefs de la section ${groupData.name} ou un•e organisateur/organisatrice de la Baden Battle devra
       <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`
       break
     case USER_ROLES.Chef:
-      message = `Tu as choisi le role de chef. 
+      message = `Tu as choisi le role de chef.<br /><br />
       Cela signifie qu'un•e des chefs de la section ${groupData.name} ou un•e organisateur/organisatrice de la Baden Battle devra
       <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`
       break
     case USER_ROLES.Organisateur:
-      message = `Tu as choisi le role d'organisateur de la Baden Battle. 
+      message = `Tu as choisi le role d'organisateur de la Baden Battle.<br /><br />
       Cela signifie qu'une autre personne avec le rôle d'organisateur de la Baden Battle devra <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`
       break
     case USER_ROLES.Administrateur:
-      message = `Tu as choisi le role d'administrateur de l'application. 
+      message = `Tu as choisi le role d'administrateur de l'application.<br /><br />
       Cela signifie qu'une autre personne avec le rôle d'administrateur devra <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`
       break
   }
-  message += ` Veux-tu continuer ?`
   const handler = () => processForm(groupData)
-  return confirmPopup(message, handler, null, "Attention")
+  return confirmPopup(message, handler, null, "Continuer ?")
 }
 </script>
 
