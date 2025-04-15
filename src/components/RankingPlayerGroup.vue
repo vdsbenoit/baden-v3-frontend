@@ -50,10 +50,11 @@
 </template>
 
 <script setup lang="ts">
-import { useTopPlayerGroups } from "@/composables/playerGroup";
+import { useTopPlayerGroups } from "@/composables/playerGroup"
+import { errorPopup } from "@/utils/popup"
 // prettier-ignore
 import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonLabel, IonList, IonSpinner, IonText } from "@ionic/vue";
-import { defineProps, watch } from "vue";
+import { defineProps, watch } from "vue"
 const props = defineProps<{
   groupCategoryId: string
   limit: number
@@ -62,9 +63,10 @@ const props = defineProps<{
 
 // composable
 const { data: groups, pending: isLoading, error: errorLoading } = useTopPlayerGroups(props.groupCategoryId, props.limit)
-watch(errorLoading, (error) => {
+watch(errorLoading, error => {
   if (error) {
-    console.error("Error loading player groups:", error);
+    errorPopup("Erreur lors du chargement des sections")
+    console.error("Error loading player groups:", error)
   }
-});
+})
 </script>
