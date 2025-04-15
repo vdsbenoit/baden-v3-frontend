@@ -12,7 +12,7 @@
             <ion-item router-link="/new-users" router-direction="forward" button>
               <ion-label>Nouveaux utilisateurs</ion-label>
             </ion-item>
-            <ion-item router-link="/login-users" router-direction="forward" button class="ion-text-wrap">
+            <ion-item router-link="/login-users" router-direction="forward" button class="ion-text-wrap" lines="none">
               <ion-label>Utilisateurs récemment connectés</ion-label>
             </ion-item>
           </ion-list>
@@ -78,7 +78,7 @@
                 :checked="appSettings.isGameAvailabilitiesDisplayed"
               ></ion-toggle>
             </ion-item>
-            <ion-item>
+            <ion-item lines="none">
               <ion-label class="ion-text-wrap">
                 <h2>Autoriser l'enregistrement de scores partout</h2>
                 <p>Ne pas tenir compte des inscriptions aux épreuves</p>
