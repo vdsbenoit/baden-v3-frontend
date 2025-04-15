@@ -9,10 +9,10 @@
         </ion-card-header>
         <ion-card-content class="ion-no-padding">
           <ion-list>
-            <ion-item routerLink="/new-users" button>
+            <ion-item router-link="/new-users" router-direction="forward" button>
               <ion-label>Nouveaux utilisateurs</ion-label>
             </ion-item>
-            <ion-item routerLink="/login-users" button class="ion-text-wrap">
+            <ion-item router-link="/login-users" router-direction="forward" button class="ion-text-wrap">
               <ion-label>Utilisateurs récemment connectés</ion-label>
             </ion-item>
           </ion-list>

@@ -30,7 +30,7 @@
           </div>
           <div v-else>
             <ion-item>
-              <ion-label :routerLink="`/profile/${user.id}`">
+              <ion-label :router-link="`/profile/${user.id}`" router-direction="forward">
                 <ion-text>{{ getUserName(user) }} ({{ getRoleByValue(user.role) }}) </ion-text>
                 <p>{{ parseDate(user.creationDate) }}</p>
               </ion-label>

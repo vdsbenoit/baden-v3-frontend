@@ -11,7 +11,7 @@
         <h2 class="ion-text-center ion-align-items-center">Erreur lors du chargement</h2>
       </div>
       <ion-list v-else-if="teams.length > 0">
-        <ion-item v-for="(team, index) in teams" :key="index" :routerLink="`/team/${team.id}`">
+        <ion-item v-for="(team, index) in teams" :key="index" :router-link="`/team/${team.id}`" router-direction="forward">
           <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ index + 1 }}</ion-badge>
           <ion-label>
             <b>{{ team.id }}</b> {{ team.groupName }} <ion-text color="medium">({{ team.groupCity }})</ion-text>

@@ -125,7 +125,8 @@
                     <ion-item
                       v-for="teamId in selectedGroup.teams"
                       :key="teamId"
-                      :routerLink="`/team/${teamId}`"
+                      :router-link="`/team/${teamId}`"
+                      router-direction="forward"
                       button
                     >
                       <ion-label>{{ teamId }}</ion-label>
@@ -169,7 +170,7 @@
                   <p>Erreur lors du chargement des membres</p>
                 </div>
                 <ion-list v-else-if="groupMembers && groupMembers.length > 0">
-                  <ion-item v-for="member in groupMembers" :key="member.id" :routerLink="`/profile/${member.id}`">
+                  <ion-item v-for="member in groupMembers" :key="member.id" :router-link="`/profile/${member.id}`" router-direction="forward">
                     <ion-label>{{ member.name }}</ion-label>
                     <ion-badge
                       v-if="member.role === USER_ROLES.Chef"

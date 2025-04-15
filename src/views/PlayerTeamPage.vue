@@ -122,7 +122,12 @@
                     </p>
                   </ion-label>
                 </ion-item>
-                <ion-item v-else :routerLink="`/match/${getMatch(i)?.id}`" class="ion-no-padding">
+                <ion-item
+                  v-else
+                  :router-link="`/match/${getMatch(i)?.id}`"
+                  router-direction="forward"
+                  class="ion-no-padding"
+                >
                   <ion-icon
                     class="schedule-icon ion-margin-end"
                     slot="start"

@@ -31,7 +31,12 @@
       </div>
       <ion-list v-else>
         <div v-if="matches && matches.length > 0">
-          <ion-item v-for="match in matches" :key="match.id" :routerLink="`/match/${match.id}`" class="">
+          <ion-item
+            v-for="match in matches"
+            :key="match.id"
+            :router-link="`/match/${match.id}`"
+            router-direction="forward"
+          >
             <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ match.gameId }}</ion-badge>
             <ion-label>
               {{ match.gameName }}
@@ -72,7 +77,7 @@ const selectedTime = ref(DEFAULT_TIME_VALUE)
 const appConfig = useAppConfig()
 const { data: matches, pending: isLoadingMatches, error: errorLoadingMatches } = useTimeMatches(selectedTime)
 
-watch(errorLoadingMatches, (error) => {
+watch(errorLoadingMatches, error => {
   if (error) {
     console.error("Error loading matches:", error)
   }

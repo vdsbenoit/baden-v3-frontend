@@ -211,7 +211,8 @@
                 </ion-item>
                 <ion-item
                   v-else
-                  :routerLink="`/match/${getMatch(i)?.id}`"
+                  :router-link="`/match/${getMatch(i)?.id}`"
+                  router-direction="forward"
                   :class="{ 'item-no-padding': isPlatform('ios') }"
                 >
                   <ion-label>
