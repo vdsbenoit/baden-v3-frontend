@@ -17,7 +17,7 @@
             <tile-col
               size="12"
               v-if="userProfile.games && userProfile.games[timeSlot.id]"
-              :target="`/game/${userProfile.games[timeSlot.id]}`"
+              :target="`/game/${userProfile.games[timeSlot.id].id}`"
               >Mon épreuve ({{ timeSlot.name }})</tile-col
             >
             <tile-col size="12" v-else-if="appSettings && appSettings.isAttendantRegistrationOpen" target="/games"

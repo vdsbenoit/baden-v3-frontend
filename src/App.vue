@@ -98,11 +98,12 @@ const appPages = computed(() => {
   if (userProfile.value.role >= USER_ROLES.Animateur) {
     if (userProfile.value.games && appConfig.value) {
       for (const timeSlot of appConfig.value.attendantSchedule) {
+        if (!userProfile.value.games[timeSlot.id]) continue
         pages = [
           ...pages,
           {
             title: `Mon épreuve (${timeSlot.name})`,
-            url: `/game/${userProfile.value.games[timeSlot.id]}`,
+            url: `/game/${userProfile.value.games[timeSlot.id].id}`,
             iosIcon: footballOutline,
             mdIcon: footballSharp
           }
