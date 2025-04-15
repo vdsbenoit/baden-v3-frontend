@@ -88,7 +88,7 @@ export const loadingPopup = async (message = "Chargement", timeout = 60000) => {
   return loading
 }
 
-export const toastPopup = async (message: string, duration = 3000) => {
+export const toastPopup = async (message: string, duration = 5000) => {
   const toast = await toastController.create({
     message: message,
     duration: duration,
