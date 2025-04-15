@@ -96,14 +96,15 @@ export function useApplicants(rLimit: MaybeRefOrGetter<number>) {
   return useCollection<UserProfile>(dbRef)
 }
 
-export function useLatestUsers(rLimit: MaybeRefOrGetter<number>) {
+export function useLastUsers(rLimit: MaybeRefOrGetter<number>, order: "creationDate" | "lastLogin" = "creationDate") {
   const dbRef = computed(() => {
     const limit = toValue(rLimit)
-    console.debug(`Fetching latest registered users`)
+    if (order == "creationDate") console.debug(`Fetching newly registered users`)
+    if (order == "lastLogin") console.debug(`Fetching recent login users`)
     // prettier-ignore
     return query(
       USER_PROFILES_COLLECTION_REF, 
-      orderBy("creationDate", "desc"),
+      orderBy(order, "desc"),
       fbLimit(limit)
     )
   })

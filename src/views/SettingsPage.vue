@@ -9,9 +9,11 @@
         </ion-card-header>
         <ion-card-content class="ion-no-padding">
           <ion-list>
-            <ion-item routerLink="/users">
+            <ion-item routerLink="/new-users" button>
               <ion-label>Nouveaux utilisateurs</ion-label>
-              <ion-icon slot="end" :ios="chevronForwardOutline" :md="chevronForwardSharp"></ion-icon>
+            </ion-item>
+            <ion-item routerLink="/login-users" button class="ion-text-wrap">
+              <ion-label>Utilisateurs récemment connectés</ion-label>
             </ion-item>
           </ion-list>
         </ion-card-content>
@@ -97,8 +99,8 @@ import { useAppSettings } from "@/composables/app"
 import { updateAppSettings } from "@/utils/app"
 import { loadingPopup } from "@/utils/popup"
 // prettier-ignore
-import { IonText, IonSpinner, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonToggle, useIonRouter } from "@ionic/vue";
-import { checkmarkOutline, checkmarkSharp, chevronForwardOutline, chevronForwardSharp } from "ionicons/icons"
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonSpinner, IonText, IonToggle, useIonRouter } from "@ionic/vue"
+import { checkmarkOutline, checkmarkSharp } from "ionicons/icons"
 import { reactive, watch } from "vue"
 
 // reactive data

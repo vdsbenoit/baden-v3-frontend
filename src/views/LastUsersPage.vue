@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <header-component pageTitle="Nouveaux utilisateurs">
+    <header-component :pageTitle="pageTitle">
       <ion-button @click="setLimit"
         ><ion-icon slot="icon-only" :ios="settingsOutline" :md="settingsSharp"></ion-icon
       ></ion-button>
@@ -46,7 +46,7 @@
 <script setup lang="ts">
 import HeaderComponent from "@/components/HeaderComponent.vue"
 import RefresherComponent from "@/components/RefresherComponent.vue"
-import { useLatestUsers } from "@/composables/userProfile"
+import { useLastUsers } from "@/composables/userProfile"
 import { USER_ROLES } from "@/constants"
 import { VueFireUserProfile } from "@/types"
 import { toastPopup } from "@/utils/popup"
@@ -56,7 +56,18 @@ import { alertController, AlertInput, IonButton, IonContent, IonIcon, IonItem, I
 import { FirestoreError } from "firebase/firestore"
 // prettier-ignore
 import { closeOutline, closeSharp, pencilOutline, pencilSharp, settingsOutline, settingsSharp } from "ionicons/icons"
-import { ref, watch } from "vue"
+import { ref, watch, defineProps, computed } from "vue"
+
+const props = defineProps({
+  order: {
+    type: String,
+    default: "new"
+  }
+})
+
+const pageTitle = computed(() => {
+  return props.order === 'new' ? 'Nouveaux utilisateurs' : 'Utilisateurs récemment connectés' 
+})
 
 // Strip Erreur, Anonyme & Newbie from ROLES
 const roles = Object.fromEntries(
@@ -72,7 +83,7 @@ const editedRole = ref(0)
 
 // Composables
 
-const { data: latestUsers, pending: isLoadingUsers, error: errorLoadingUsers } = useLatestUsers(limit)
+const { data: latestUsers, pending: isLoadingUsers, error: errorLoadingUsers } = useLastUsers(limit, props.order == 'new' ? "creationDate" : "lastLogin")
 
 // Watchers
 

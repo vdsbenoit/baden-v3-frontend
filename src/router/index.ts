@@ -111,10 +111,17 @@ const routes: Array<RouteRecordRaw> = [
     meta: { minimumRole: USER_ROLES.Administrateur }
   },
   {
-    name: "users",
-    path: "/users",
-    props: true,
-    component: () => import("../views/LatestUsersPage.vue"),
+    name: "new-users",
+    path: "/new-users",
+    props: { order: 'new'},
+    component: () => import("../views/LastUsersPage.vue"),
+    meta: { minimumRole: USER_ROLES.Administrateur }
+  },
+  {
+    name: "login-users",
+    path: "/login-users",
+    props: { order: 'login '},
+    component: () => import("../views/LastUsersPage.vue"),
     meta: { minimumRole: USER_ROLES.Administrateur }
   },
   {
