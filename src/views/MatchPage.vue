@@ -16,7 +16,18 @@
         <ion-grid class="ion-padding-horizontal ion-padding-top" @click="router.push(`/game/${match.gameId}`)">
           <ion-row class="ion-align-items-center">
             <ion-col class="ion-padding-start">
-              <ion-card-subtitle>{{ schedule.start }} - {{ schedule.stop }}</ion-card-subtitle>
+              <div class="ion-align-items-center ion-justify-content-start" style="display: flex">
+                <ion-card-subtitle class="ion-no-margin">{{ schedule.start }} - {{ schedule.stop }}</ion-card-subtitle>
+                <ion-button
+                  fill="clear"
+                  class="ion-no-padding ion-no-margin ion-margin-start"
+                  size="small"
+                  :router-link="`/game/${match.gameId}`"
+                  router-direction="root"
+                >
+                  Voir le jeu
+                </ion-button>
+              </div>
               <ion-spinner v-if="isLoadingGame"></ion-spinner>
               <h1 v-else-if="errorLoadingGame" class="ion-no-margin"><i>Erreur</i></h1>
               <h1 v-else-if="game" class="ion-no-margin" style="font-weight: bold">
@@ -108,15 +119,6 @@
                 </ion-col>
               </ion-row>
             </ion-grid>
-            <ion-button
-              expand="block"
-              color="medium"
-              class="ion-margin-top ion-margin-horizontal"
-              :router-link="`/game/${match.gameId}`"
-              router-direction="back"
-            >
-              Voir le jeu
-            </ion-button>
           </ion-card-content>
         </ion-card>
         <ion-card v-if="useCanSeeModeration">

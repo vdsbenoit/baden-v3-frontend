@@ -26,7 +26,18 @@
         <ion-grid class="ion-padding-horizontal ion-padding-top">
           <ion-row class="ion-align-items-center">
             <ion-col class="ion-padding-start">
-              <ion-card-subtitle v-if="team.groupCity">{{ team.groupCity }}</ion-card-subtitle>
+              <div class="ion-align-items-center ion-justify-content-start" style="display: flex">
+                <ion-card-subtitle class="ion-no-margin" v-if="team.groupCity">{{ team.groupCity }}</ion-card-subtitle>
+                <ion-button
+                  fill="clear"
+                  class="ion-no-padding ion-no-margin ion-margin-start"
+                  size="small"
+                  :router-link="`/player-group/${team.groupId}`"
+                  router-direction="root"
+                >
+                  Voir la section
+                </ion-button>
+              </div>
               <h1 v-if="team.groupName" class="ion-no-margin" style="font-weight: bold">{{ team.groupName }}</h1>
               <ion-spinner v-else></ion-spinner>
             </ion-col>
@@ -57,7 +68,7 @@
                   <span v-else>{{ playerGroup?.score }}</span>
                 </ion-note>
               </ion-item>
-              <ion-item class="ion-no-padding">
+              <ion-item class="ion-no-padding" lines="none">
                 <ion-label>Moyenne de la section</ion-label>
                 <ion-badge v-if="errorLoadingPlayerGroup" slot="end" class="ion-no-margin" color="danger">
                   error
@@ -68,9 +79,6 @@
                 </ion-note>
               </ion-item>
             </ion-list>
-            <ion-button expand="block" color="medium" class="ion-margin-top" :router-link="`/player-group/${team.groupId}`" router-direction="back">
-              Voir la section
-            </ion-button>
           </ion-card-content>
         </ion-card>
         <ion-button
