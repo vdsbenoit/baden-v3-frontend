@@ -112,7 +112,7 @@
                     <ion-icon :icon="pauseSharp" />
                   </ion-avatar>
                   <ion-label>
-                    <span>Pause {{ breaks[i] }}</span>
+                    <span>{{ breaks[i] }}</span>
                     <p>
                       <span class="time-slot">{{ timeSlot.start }} - {{ timeSlot.stop }}</span>
                     </p>
