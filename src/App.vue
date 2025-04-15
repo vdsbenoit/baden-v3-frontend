@@ -120,8 +120,6 @@ const appPages = computed(() => {
           mdIcon: peopleSharp
         }
       ]
-    if (userProfile.value.role >= USER_ROLES.Chef) pages = [...pages, applicantsPage]
-    pages = [...pages, attendantGroupsPage]
   }
   if (userProfile.value.role == USER_ROLES.Participant)
     pages = [
@@ -133,8 +131,10 @@ const appPages = computed(() => {
         mdIcon: peopleSharp
       }
     ]
-  if (userProfile.value.role > USER_ROLES.Newbie) pages = [...pages, playerGroupsPage, gamesPage]
   if (userProfile.value.role >= USER_ROLES.Organisateur) pages = [...pages, checkScoresPage]
+  if (userProfile.value.role > USER_ROLES.Newbie) pages = [...pages, gamesPage, playerGroupsPage]
+  if (userProfile.value.role >= USER_ROLES.Animateur) pages = [...pages, attendantGroupsPage]
+  if (userProfile.value.role >= USER_ROLES.Chef) pages = [...pages, applicantsPage]
   if (appSettings.value?.isRankingPublic || userProfile.value.role >= USER_ROLES.Organisateur)
     pages = [...pages, rankingPage]
   if (userProfile.value.role >= USER_ROLES.Administrateur) pages = [...pages, settingsPage]
@@ -198,7 +198,7 @@ const aboutPage = {
   mdIcon: informationCircleSharp
 }
 const playerGroupsPage = {
-  title: "Sections",
+  title: "Joueurs",
   url: "/player-group",
   iosIcon: peopleOutline,
   mdIcon: peopleOutline
