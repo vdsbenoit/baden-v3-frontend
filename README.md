@@ -1,8 +1,5 @@
 # Baden score app
 
-> [!NOTE]  
-> I am currently performing a huge refactoring of the project in the `feature/refactore_and_use_vuefire` branch. I am changing the way the project communicate with Firestore, transitioning from Magnetar (+ service functions) to VueFire (+ composables). 
-
 ## v3
 
 New UI from scratch, made with Vue & Ionic.  
