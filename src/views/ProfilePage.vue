@@ -491,13 +491,13 @@ const resetFormData = () => {
   if (!userProfile.value) return
 
   // common fields
-  if (!formData.name.isEditting) formData.name.value = userProfile.value.name
-  if (!formData.role.isEditting) formData.role.value = userProfile.value.role ?? DEFAULT_USER_ROLE_VALUE
+  if (!formData.name.isEditting && !formData.name.isUpdating) formData.name.value = userProfile.value.name
+  if (!formData.role.isEditting && !formData.role.isUpdating) formData.role.value = userProfile.value.role ?? DEFAULT_USER_ROLE_VALUE
 
   // players
   if (userProfile.value.role == USER_ROLES.Participant) {
-    if (!formData.team.isEditting) formData.team.value = userProfile.value.teamId ?? DEFAULT_TEAM_ID
-    if (!formData.playerGroup.isEditting) {
+    if (!formData.team.isEditting && !formData.team.isUpdating) formData.team.value = userProfile.value.teamId ?? DEFAULT_TEAM_ID
+    if (!formData.playerGroup.isEditting && !formData.playerGroup.isUpdating) {
       formData.playerGroup.id = userProfile.value.groupId ?? DEFAULT_GROUP_ID
       formData.playerGroup.name = userProfile.value.groupName ?? ""
       formData.playerGroup.categoryId = selectedPlayerGroup.value?.groupCategoryId ?? DEFAULT_GROUP_CATEGORY_ID
@@ -505,7 +505,7 @@ const resetFormData = () => {
   }
 
   // attendants & staff
-  if (userProfile.value.role >= USER_ROLES.Animateur && !formData.attendantGroup.isEditting) {
+  if (userProfile.value.role >= USER_ROLES.Animateur && !formData.attendantGroup.isEditting && !formData.attendantGroup.isUpdating) {
     formData.attendantGroup.id = userProfile.value.groupId ?? DEFAULT_GROUP_ID
     formData.attendantGroup.name = userProfile.value.groupName ?? ""
   }
@@ -633,6 +633,7 @@ const setRole = async () => {
   }
   formData.role.isEditting = false
   formData.role.isUpdating = true
+  console.log("ROLE 1", formData.role.value)
   // if the user was registered to games & that the new roles is not an attendant, remove the games
   if (
     userProfile.value.games &&
@@ -651,6 +652,7 @@ const setRole = async () => {
       toastPopup("L'utilisateur a été désinscrit de ses épreuves car son nouveau rôles n'est plus dans l'animation")
     }
   }
+  console.log("ROLE 2", formData.role.value)
   try {
     await updateUserProfile(userProfile.value.id, {
       role: formData.role.value,
@@ -665,6 +667,8 @@ const setRole = async () => {
   }
   formData.role.isUpdating = false
   resetFormData()
+  console.log("ROLE 3", formData.role.value)
+  
 }
 
 /**

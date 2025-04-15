@@ -2,7 +2,7 @@ import { DEFAULT_GAME_ID, GAMES_COLLECTION_NAME, GAMES_COLLECTION_REF, USER_PROF
 import { addToDocArray, removeFromDocArray, updateGameNameInMatches } from "@/services/firebase"
 import { Game } from "@/types"
 import { updateUserProfile } from "@/utils/userProfile"
-import { doc, getDoc, updateDoc } from "firebase/firestore"
+import { deleteField, doc, getDoc, updateDoc } from "firebase/firestore"
 
 // Getters
 
@@ -49,7 +49,7 @@ export const removeAttendant = async (gameId: string, uid: string, timeSlotId: s
 
   // remove from user profile
   console.debug(`Removing game ${gameId} from user profile ${uid} at timing id ${timeSlotId}`)
-  const userMergePromise = updateUserProfile(uid, { [`games.${timeSlotId}`]: DEFAULT_GAME_ID })
+  const userMergePromise = updateUserProfile(uid, { [`games.${timeSlotId}`]: deleteField() })
 
   return Promise.all([gameMergePromise, userMergePromise])
 }
