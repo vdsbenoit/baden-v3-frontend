@@ -14,8 +14,8 @@
       <ion-list lines="full">
         <ion-item v-for="applicant in applicants" :key="applicant.id" @click="handleRequest(applicant)">
           <ion-label>
-            <ion-text style="font-weight: bold">{{ applicant.name }} </ion-text>
-            <ion-text> ({{ applicant.email }})</ion-text>
+            <ion-text style="font-weight: bold">{{ applicant.name }}</ion-text>
+            <ion-text>&nbsp;{{ applicant.email }}</ion-text>
           </ion-label>
           <ion-badge slot="end" :color="badgeColor(applicant)">
             {{ getRoleByValue(applicant.requestedRole ?? -1) }}
