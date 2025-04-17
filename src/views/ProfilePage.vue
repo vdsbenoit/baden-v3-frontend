@@ -146,7 +146,9 @@
             </ion-item>
             <!-- Player Group (read mode) -->
             <ion-item lines="full" v-else>
-              <ion-label position="stacked" color="primary">Section</ion-label>
+              <ion-label position="stacked" color="primary" @click="goToPlayerGroupPage(formData.playerGroup.id)">
+                Section
+              </ion-label>
               <ion-input
                 name="playerGroup"
                 type="text"
@@ -190,7 +192,9 @@
             </ion-item>
             <!-- Team (read mode)-->
             <ion-item lines="full" v-else>
-              <ion-label position="stacked" color="primary">Équipe</ion-label>
+              <ion-label position="stacked" color="primary" @click="goToTeamPage(formData.team.value)">
+                Équipe
+              </ion-label>
               <ion-input type="text" :readonly="true" inputmode="none" @click="goToTeamPage(formData.team.value)">
                 {{ formData.team.value }}
               </ion-input>
@@ -234,7 +238,9 @@
             </ion-item>
             <!-- Attendant Group (read mode) -->
             <ion-item lines="full" v-else>
-              <ion-label position="stacked" color="primary">Section</ion-label>
+              <ion-label position="stacked" color="primary" @click="goToAttendantGroupPage(formData.attendantGroup.id)">
+                Section
+              </ion-label>
               <ion-input
                 name="attendantGroup"
                 type="text"
@@ -279,7 +285,9 @@
               </ion-item>
               <!-- Attendant Game (read mode) -->
               <ion-item lines="full" v-else>
-                <ion-label position="stacked" color="primary">Épreuve {{ timeSlot.name }}</ion-label>
+                <ion-label position="stacked" color="primary" @click="goToGamePage(formData.attendantGames.ids[timeSlot.id])">
+                  Épreuve {{ timeSlot.name }}
+                </ion-label>
                 <ion-input
                   v-if="timeSlot.id in formData.attendantGames.names"
                   type="text"
