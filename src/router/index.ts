@@ -113,14 +113,14 @@ const routes: Array<RouteRecordRaw> = [
   {
     name: "new-users",
     path: "/new-users",
-    props: { order: 'new'},
+    props: { order: "new" },
     component: () => import("../views/LastUsersPage.vue"),
     meta: { minimumRole: USER_ROLES.Administrateur }
   },
   {
     name: "login-users",
     path: "/login-users",
-    props: { order: 'login '},
+    props: { order: "login" },
     component: () => import("../views/LastUsersPage.vue"),
     meta: { minimumRole: USER_ROLES.Administrateur }
   },
@@ -197,14 +197,13 @@ router.beforeEach(async to => {
   if (!to.meta.minimumRole) return true
   if (userProfile.role >= +to.meta.minimumRole) return true
   toastPopup(
-    `Tu n'as pas le droit d'accéder à la page ${to.name?.toString()} avec ton role (${getRoleByValue(
-      userProfile.role
-    )})`
+    `Tu n'as pas le droit d'accéder à la page ${to.name?.toString()} 
+    avec ton role (${getRoleByValue(userProfile.role)})`
   )
   console.error(
-    `The user ${userProfile.email} with the role ${
-      userProfile.role
-    } tried to access ${to.name?.toString()} which requires the role ${getRoleByValue(+to.meta?.minimumRole)}`
+    `The user ${userProfile.email} with the role ${userProfile.role} 
+    tried to access ${to.name?.toString()} 
+    which requires the role ${getRoleByValue(+to.meta?.minimumRole)}`
   )
   return false
 })
