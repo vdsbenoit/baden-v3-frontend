@@ -346,17 +346,18 @@ import { usePlayerGroup, usePlayerGroups } from "@/composables/playerGroup"
 import { useEditProfileRights } from "@/composables/rights"
 import { useCurrentUserProfile, useUserProfile } from "@/composables/userProfile"
 // prettier-ignore
-import { DEFAULT_GAME_ID, DEFAULT_GROUP_CATEGORY_ID, DEFAULT_GROUP_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID, DEFAULT_USER_ROLE_VALUE, USER_ROLES } from "@/constants";
+import { DEFAULT_GAME_ID, DEFAULT_GROUP_CATEGORY_ID, DEFAULT_GROUP_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID, DEFAULT_USER_ROLE_VALUE, USER_ROLES } from "@/constants"
 import { VueFireGame } from "@/types"
-import { sanitizeInput } from "@/utils/form"
+
 import { addAttendant, removeAttendant } from "@/utils/game"
 import { confirmPopup, errorPopup, loadingPopup, toastPopup } from "@/utils/popup"
 import { getRoleByValue, removeFirebaseAccount, signOut, updateUserProfile } from "@/utils/userProfile"
+import DOMPurify from "dompurify"
 // prettier-ignore
-import { IonButton, IonCard, IonCol, IonContent, IonGrid, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue";
+import { IonButton, IonCard, IonCol, IonContent, IonGrid, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue"
 import { useRouteParams } from "@vueuse/router"
 // prettier-ignore
-import { checkmarkOutline, checkmarkSharp, closeOutline, closeSharp, pencilOutline, pencilSharp } from "ionicons/icons";
+import { checkmarkOutline, checkmarkSharp, closeOutline, closeSharp, pencilOutline, pencilSharp } from "ionicons/icons"
 import { computed, reactive, ref, watch, watchEffect } from "vue"
 import { useRouter } from "vue-router"
 
@@ -587,7 +588,7 @@ const setName = async () => {
   }
   formData.name.isEditting = false
   formData.name.isUpdating = true
-  await updateUserProfile(userId.value, { name: sanitizeInput(formData.name.value) }).catch(error => {
+  await updateUserProfile(userId.value, { name: DOMPurify.sanitize(formData.name.value) }).catch(error => {
     errorPopup(error.message, `Le n'a pas pu être mis à jour`)
   })
   formData.name.isUpdating = false

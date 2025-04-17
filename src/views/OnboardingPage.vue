@@ -92,10 +92,10 @@ import { useCurrentUserProfile } from "@/composables/userProfile"
 import { DEFAULT_GROUP_CATEGORY_ID, DEFAULT_GROUP_ID, DEFAULT_USER_ROLE_VALUE, USER_ROLES } from "@/constants"
 import { UserProfile } from "@/types"
 import { Group } from "@/types/Group"
-import { sanitizeInput } from "@/utils/form"
 import { getGroup } from "@/utils/playerGroup"
 import { confirmPopup, errorPopup, toastPopup } from "@/utils/popup"
 import { updateUserProfile } from "@/utils/userProfile"
+import DOMPurify from "dompurify"
 // prettier-ignore
 import { IonButton, IonCard, IonCardHeader, IonCardTitle, IonContent, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue"
 import { computed, ref, watch } from "vue"
@@ -177,7 +177,7 @@ const processForm = (groupData: Group) => {
   let newProfile: Partial<UserProfile>
   if (selectedRole.value === USER_ROLES.Participant) {
     newProfile = {
-      name: sanitizeInput(name.value),
+      name: DOMPurify.sanitize(name.value),
       role: selectedRole.value,
       groupId: selectedGroupId.value,
       groupName: groupData.name,
@@ -185,7 +185,7 @@ const processForm = (groupData: Group) => {
     }
   } else {
     newProfile = {
-      name: sanitizeInput(name.value),
+      name: DOMPurify.sanitize(name.value),
       requestedRole: selectedRole.value,
       requestedGroupId: selectedGroupId.value,
       requestedGroupName: groupData.name,
