@@ -51,13 +51,12 @@ import { USER_ROLES } from "@/constants"
 import { processSignInLink, sendSignInEmail } from "@/utils/auth"
 import { errorPopup, infoPopup, toastPopup } from "@/utils/popup"
 // prettier-ignore
-import { IonButton, IonCheckbox, IonContent, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonSpinner, IonText } from "@ionic/vue"
+import { IonButton, IonCheckbox, IonContent, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonSpinner, IonText, useIonRouter } from "@ionic/vue"
 import { computed } from "@vue/reactivity"
 import { useRouteQuery } from "@vueuse/router"
 import { onMounted, ref } from "vue"
-import { useRouter } from "vue-router"
 
-const router = useRouter()
+const router = useIonRouter()
 const userProfile = useCurrentUserProfile()
 const mode = useRouteQuery<string>("mode", "newLogin")
 const redirect = useRouteQuery<string>("redirect", `/home`)
