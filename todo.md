@@ -96,6 +96,8 @@
 - [ ] Create AppSettings & AppConfig in the init process
 - [ ] Remove id from the backend classes (python)
 - [ ] Retirer groupName des profiels (créer une function getGroupName(groupId: string)) 
+- [ ] Trouver une manière de donner un rôle d'organisateur aux chefs pios sans pour autant faire de tous les pios des organisateurs
+  - [ ] Ou bien créer 2 groups : un animateur (4) et un organisateur (6)
 
 ## Nice to have
 
