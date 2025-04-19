@@ -131,7 +131,7 @@
                 <ion-label>
                   <ion-text>Modififé par : </ion-text>
                   <ion-spinner v-if="isLoadingReporter"></ion-spinner>
-                  <ion-text v-else-if="reporter">{{ reporter.name }} ({{ reporter.groupName }})</ion-text>
+                  <ion-text v-else-if="reporter" class="ion-text-wrap">{{ reporter.name }} ({{ reporter.groupName }})</ion-text>
                   <ion-text v-else color="error">Impossible de charger le profil</ion-text>
                 </ion-label>
               </ion-item>
