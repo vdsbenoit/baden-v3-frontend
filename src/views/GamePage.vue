@@ -198,7 +198,7 @@
                   v-if="Object.keys(breaks).includes(i.toString())"
                   :class="{ 'item-no-padding': isPlatform('ios') }"
                 >
-                  <ion-label>
+                  <ion-label class="ion-text-wrap">
                     <ion-icon
                       :ios="pauseCircleOutline"
                       :md="pauseCircleSharp"
@@ -206,7 +206,7 @@
                       class="schedule-icon ion-margin-end"
                     />
                     <ion-text class="time-slot ion-margin-end">{{ timeSlot.start }} - {{ timeSlot.stop }} </ion-text>
-                    <ion-text color="primary" class="team-id pause">Pause {{ breaks[i] }}</ion-text>
+                    <ion-text color="primary" class="team-id pause"> {{ breaks[i] }}</ion-text>
                   </ion-label>
                 </ion-item>
                 <ion-item
@@ -215,7 +215,7 @@
                   router-direction="forward"
                   :class="{ 'item-no-padding': isPlatform('ios') }"
                 >
-                  <ion-label>
+                  <ion-label class="ion-text-wrap">
                     <ion-icon
                       :ios="peopleOutline"
                       :md="peopleSharp"
