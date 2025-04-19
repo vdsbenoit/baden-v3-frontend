@@ -13,7 +13,7 @@
       <ion-list v-else-if="teams.length > 0">
         <ion-item v-for="(team, index) in teams" :key="index" :router-link="`/team/${team.id}`" router-direction="forward">
           <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ index + 1 }}</ion-badge>
-          <ion-label>
+          <ion-label class="ion-text-wrap">
             <b>{{ team.id }}</b> {{ team.groupName }} <ion-text color="medium">({{ team.groupCity }})</ion-text>
           </ion-label>
           <ion-badge slot="end" class="ion-no-margin" color="primary">{{ team.score }}</ion-badge>
