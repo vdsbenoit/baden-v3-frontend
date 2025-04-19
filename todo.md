@@ -97,7 +97,9 @@
 - [ ] Remove id from the backend classes (python)
 - [ ] Retirer groupName des profiels (créer une function getGroupName(groupId: string)) 
 - [ ] Trouver une manière de donner un rôle d'organisateur aux chefs pios sans pour autant faire de tous les pios des organisateurs
-  - [ ] Ou bien créer 2 groups : un animateur (4) et un organisateur (6)
+      Idéalement, les chefs pios n'ont pas accès aux scores en live. Que les 'vrais' organisateurs (staff bb)
+      Peut-être créer un nouveau role.
+      Ou bien créer 2 groups : un animateur (4) et un organisateur (6)
 
 ## Nice to have
 

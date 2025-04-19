@@ -139,7 +139,7 @@ const appPages = computed(() => {
   if (userProfile.value.role > USER_ROLES.Newbie) pages = [...pages, gamesPage, playerGroupsPage]
   if (userProfile.value.role >= USER_ROLES.Animateur) pages = [...pages, attendantGroupsPage]
   if (userProfile.value.role >= USER_ROLES.Chef) pages = [...pages, applicantsPage]
-  if (appSettings.value?.isRankingPublic || userProfile.value.role >= USER_ROLES.Organisateur)
+  if (appSettings.value?.isRankingPublic || userProfile.value.role >= USER_ROLES.Administrateur)
     pages = [...pages, rankingPage]
   if (userProfile.value.role >= USER_ROLES.Administrateur) pages = [...pages, settingsPage]
   // bottom pages

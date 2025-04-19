@@ -10,7 +10,7 @@ export function useCanSeeRanking() {
   return computed(() => {
     if (appSettings.value?.isRankingPublic) return true
     if (!currentUserProfile.value) return false
-    return currentUserProfile.value.role >= USER_ROLES.Organisateur
+    return currentUserProfile.value.role >= USER_ROLES.Administrateur
   })
 }
 

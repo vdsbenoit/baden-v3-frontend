@@ -102,7 +102,7 @@ const routes: Array<RouteRecordRaw> = [
     name: "ranking",
     path: "/ranking",
     component: () => import("../views/RankingPage.vue"),
-    meta: { minimumRole: USER_ROLES.Organisateur }
+    meta: { minimumRole: USER_ROLES.Administrateur }
   },
   {
     name: "settings",

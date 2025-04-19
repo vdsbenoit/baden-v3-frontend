@@ -66,7 +66,7 @@ const appConfig = useAppConfig()
 // Computed
 
 const canPrint = computed(() => {
-  return currentUserProfile.value && currentUserProfile.value.role >= USER_ROLES.Organisateur
+  return currentUserProfile.value && currentUserProfile.value.role >= USER_ROLES.Administrateur
 })
 
 // Methods
