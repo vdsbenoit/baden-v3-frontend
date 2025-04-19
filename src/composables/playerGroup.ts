@@ -39,7 +39,7 @@ export function useTopPlayerGroups(rGroupCategoryId: MaybeRefOrGetter<string>, r
     return query(
       GROUPS_COLLECTION_REF, 
       where("groupCategoryId", "==", groupCategoryId),
-      orderBy("score", "desc"),
+      orderBy("meanScore", "desc"),
       fbLimit(limit),
     )
   })
