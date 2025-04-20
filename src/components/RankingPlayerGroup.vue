@@ -10,15 +10,20 @@
       <div v-else-if="errorLoading" class="not-found">
         <h2 class="ion-text-center ion-align-items-center">Erreur lors du chargement</h2>
       </div>
-      <ion-list v-else-if="groups.length > 0">
-        <ion-item v-for="(group, index) in groups" :key="index" :router-link="`/player-group/${group.id}`" router-direction="forward">
+      <transition-group v-else-if="groups.length > 0" name="fade-slide" tag="ion-list">
+        <ion-item
+          v-for="(group, index) in groups"
+          :key="group.id"
+          :router-link="`/player-group/${group.id}`"
+          router-direction="forward"
+        >
           <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ index + 1 }}</ion-badge>
           <ion-label class="ion-text-wrap">
             <b>{{ group.id }}</b> {{ group.name }} <ion-text color="medium">({{ group.city }})</ion-text>
           </ion-label>
           <ion-badge slot="end" class="ion-no-margin" color="primary">{{ group.meanScore }}</ion-badge>
         </ion-item>
-      </ion-list>
+      </transition-group>
       <div v-else>
         <h2 class="ion-text-center ion-align-items-center">Pas de classement</h2>
       </div>
@@ -53,7 +58,7 @@
 import { useTopPlayerGroups } from "@/composables/playerGroup"
 import { errorPopup } from "@/utils/popup"
 // prettier-ignore
-import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonLabel, IonList, IonSpinner, IonText } from "@ionic/vue";
+import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonLabel, IonSpinner, IonText } from "@ionic/vue";
 import { defineProps, watch } from "vue"
 const props = defineProps<{
   groupCategoryId: string
@@ -70,3 +75,23 @@ watch(errorLoading, error => {
   }
 })
 </script>
+<style scoped>
+.fade-slide-move,
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 1s ease;
+}
+.fade-slide-enter-from,
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-50px);
+}
+.fade-slide-leave-from,
+.fade-slide-enter-to {
+  opacity: 1;
+  transform: translateX(0);
+}
+.fade-slide-leave-active {
+  position: absolute;
+}
+</style>
