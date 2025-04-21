@@ -79,7 +79,7 @@ onMounted(() => {
 // computed data
 
 const sendButtonText = computed(() => {
-  return isEmailSent.value ? "Renvoyer un mail" : "Ca part"
+  return isEmailSent.value ? "Renvoyer un mail" : "Connexion"
 })
 const sendButtonColor = computed(() => {
   return isEmailSent.value ? "medium" : "primary"
