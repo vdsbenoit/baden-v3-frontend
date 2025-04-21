@@ -1,11 +1,13 @@
 <template>
   <ion-page>
-    <header-component :pageTitle="pageTitle"></header-component>
+    <header-component :page-title="pageTitle" />
     <ion-content :fullscreen="true">
-      <refresher-component></refresher-component>
+      <refresher-component />
       <div v-if="errorLoadingMatch" class="not-found">
         <strong class="capitalize">Erreur</strong>
-        <ion-text color="error">Impossible de charger les informations du match</ion-text>
+        <ion-text color="error">
+          Impossible de charger les informations du match
+        </ion-text>
         <p>Retour à <a @click="router.back()">la page précédente</a></p>
       </div>
       <div v-else-if="!match" class="not-found">
@@ -17,7 +19,9 @@
           <ion-row class="ion-align-items-center">
             <ion-col class="ion-padding-start">
               <div class="ion-align-items-center ion-justify-content-start" style="display: flex">
-                <ion-card-subtitle class="ion-no-margin">{{ schedule.start }} - {{ schedule.stop }}</ion-card-subtitle>
+                <ion-card-subtitle class="ion-no-margin">
+                  {{ schedule.start }} - {{ schedule.stop }}
+                </ion-card-subtitle>
                 <ion-button
                   fill="clear"
                   class="ion-no-padding ion-no-margin ion-margin-start"
@@ -28,14 +32,16 @@
                   Voir le jeu
                 </ion-button>
               </div>
-              <ion-spinner v-if="isLoadingGame"></ion-spinner>
-              <h1 v-else-if="errorLoadingGame" class="ion-no-margin"><i>Erreur</i></h1>
+              <ion-spinner v-if="isLoadingGame" />
+              <h1 v-else-if="errorLoadingGame" class="ion-no-margin">
+                <i>Erreur</i>
+              </h1>
               <h1 v-else-if="game" class="ion-no-margin" style="font-weight: bold">
                 {{ game.name ?? "Epreuve sans nom" }}
               </h1>
             </ion-col>
             <ion-col class="numberCircle ion-padding-end">
-              <ion-spinner v-if="isLoadingGame"></ion-spinner>
+              <ion-spinner v-if="isLoadingGame" />
               <span v-else>{{ game ? game.id : "?" }}</span>
             </ion-col>
           </ion-row>
@@ -46,14 +52,14 @@
             <ion-grid class="score-grid">
               <ion-row class="ion-align-items-center ion-text-center">
                 <!-- First player -->
-                <ion-col size="5" v-if="isLoadingMatch || isLoadingFirstPlayer" class="ion-no-padding">
-                  <ion-spinner></ion-spinner>
+                <ion-col v-if="isLoadingMatch || isLoadingFirstPlayer" size="5" class="ion-no-padding">
+                  <ion-spinner />
                 </ion-col>
                 <ion-col
-                  size="5"
                   v-else-if="firstPlayer"
-                  @click="router.push(`/team/${firstPlayer.id}`)"
+                  size="5"
                   class="ion-no-padding ion-pointer"
+                  @click="router.push(`/team/${firstPlayer.id}`)"
                 >
                   <ion-text color="primary">
                     <h1>{{ firstPlayer.id }}</h1>
@@ -69,14 +75,14 @@
                   <ion-text> vs </ion-text>
                 </ion-col>
                 <!-- Second player -->
-                <ion-col size="5" v-if="isLoadingMatch || isLoadingSecondPlayer" class="ion-no-padding">
-                  <ion-spinner></ion-spinner>
+                <ion-col v-if="isLoadingMatch || isLoadingSecondPlayer" size="5" class="ion-no-padding">
+                  <ion-spinner />
                 </ion-col>
                 <ion-col
-                  size="5"
                   v-else-if="secondPlayer"
-                  @click="router.push(`/team/${secondPlayer.id}`)"
+                  size="5"
                   class="ion-no-padding ion-pointer"
+                  @click="router.push(`/team/${secondPlayer.id}`)"
                 >
                   <ion-text color="primary">
                     <h1>{{ secondPlayer.id }}</h1>
@@ -104,17 +110,17 @@
                       class="score-icon"
                       :ios="scoreIcon(firstPlayer.id).ios"
                       :md="scoreIcon(firstPlayer.id).md"
-                    ></ion-icon>
+                    />
                   </div>
                 </ion-col>
-                <ion-col size="1"></ion-col>
+                <ion-col size="1" />
                 <ion-col size="5">
                   <div class="score-div" :class="scoreColor(secondPlayer.id)">
                     <ion-icon
                       class="score-icon"
                       :ios="scoreIcon(secondPlayer.id).ios"
                       :md="scoreIcon(secondPlayer.id).md"
-                    ></ion-icon>
+                    />
                   </div>
                 </ion-col>
               </ion-row>
@@ -126,23 +132,29 @@
             <ion-card-title>Modération</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <ion-list lines="none" v-if="reporterId" class="no-pointer">
+            <ion-list v-if="reporterId" lines="none" class="no-pointer">
               <ion-item class="ion-no-padding" style="--padding-start: 8px">
                 <ion-label>
                   <ion-text>Modififé par : </ion-text>
-                  <ion-spinner v-if="isLoadingReporter"></ion-spinner>
-                  <ion-text v-else-if="reporter" class="ion-text-wrap">{{ reporter.name }} ({{ reporter.groupName }})</ion-text>
-                  <ion-text v-else color="error">Impossible de charger le profil</ion-text>
+                  <ion-spinner v-if="isLoadingReporter" />
+                  <ion-text v-else-if="reporter" class="ion-text-wrap">
+                    {{ reporter.name }} ({{ reporter.groupName }})
+                  </ion-text>
+                  <ion-text v-else color="error">
+                    Impossible de charger le profil
+                  </ion-text>
                 </ion-label>
               </ion-item>
               <ion-item class="ion-no-padding" style="--padding-start: 8px">
                 <ion-label> Modifié à : {{ formatedDate }} </ion-label>
               </ion-item>
             </ion-list>
-            <ion-list-header v-else><h2>Le score n'a pas encore été enregistré</h2></ion-list-header>
+            <ion-list-header v-else>
+              <h2>Le score n'a pas encore été enregistré</h2>
+            </ion-list-header>
           </ion-card-content>
         </ion-card>
-        <div class="ion-margin-top" style="max-width: 600px; margin: 0 auto" v-if="canEditScores">
+        <div v-if="canEditScores" class="ion-margin-top" style="max-width: 600px; margin: 0 auto">
           <ion-button
             v-if="match.noScores"
             class="ion-margin-horizontal ion-margin-top"
@@ -155,11 +167,11 @@
           <ion-button
             v-else
             class="ion-margin-horizontal ion-margin-top"
-            @click="setScore"
             expand="block"
             :disabled="isSettingScore"
+            @click="setScore"
           >
-            <ion-spinner v-if="isSettingScore"></ion-spinner>
+            <ion-spinner v-if="isSettingScore" />
             <span v-else-if="match.winnerTeamId || match.draw">Modifier le score</span>
             <span v-else>Enregister le score</span>
           </ion-button>
@@ -170,14 +182,14 @@
             expand="block"
             disabled
           >
-            <ion-spinner></ion-spinner>
+            <ion-spinner />
           </ion-button>
           <ion-button
             v-else-if="match.winnerTeamId || match.draw"
             color="danger"
             class="ion-margin-horizontal ion-margin-top"
-            @click="resetScore"
             expand="block"
+            @click="resetScore"
           >
             Effacer le score
           </ion-button>
@@ -188,31 +200,30 @@
 </template>
 
 <script setup lang="ts">
-import HeaderComponent from "@/components/HeaderComponent.vue"
-import RefresherComponent from "@/components/RefresherComponent.vue"
-import { useAppConfig, useAppSettings } from "@/composables/app"
-import { useGame } from "@/composables/game"
-import { useMatch } from "@/composables/match"
-import { useEditScoreRights, useCanSeeModerationStuff } from "@/composables/rights"
-import { useTeam } from "@/composables/team"
-import { useCurrentUserProfile, useUserProfile } from "@/composables/userProfile"
-import { DEFAULT_GAME_ID, DEFAULT_MATCH_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID } from "@/constants"
-import { choicePopup, errorPopup, toastPopup } from "@/utils/popup"
-import { resetMatchScore, setMatchDraw, setMatchScore } from "@/utils/match"
-import { addGroupDraw, addGroupWin, removeGroupDraw, removeGroupWin } from "@/utils/playerGroup"
-import { addTeamDraw, addTeamWin, removeTeamDraw, removeTeamWin } from "@/utils/team"
+import type { FirestoreError } from 'firebase/firestore'
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import RefresherComponent from '@/components/RefresherComponent.vue'
+import { useAppConfig, useAppSettings } from '@/composables/app'
+import { useGame } from '@/composables/game'
+import { useMatch } from '@/composables/match'
+import { useCanSeeModerationStuff, useEditScoreRights } from '@/composables/rights'
+import { useTeam } from '@/composables/team'
+import { useCurrentUserProfile, useUserProfile } from '@/composables/userProfile'
+import { DEFAULT_GAME_ID, DEFAULT_MATCH_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID } from '@/constants'
+import { resetMatchScore, setMatchDraw, setMatchScore } from '@/utils/match'
+import { addGroupDraw, addGroupWin, removeGroupDraw, removeGroupWin } from '@/utils/playerGroup'
+import { choicePopup, errorPopup, toastPopup } from '@/utils/popup'
+import { addTeamDraw, addTeamWin, removeTeamDraw, removeTeamWin } from '@/utils/team'
 // prettier-ignore
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSpinner, IonText, useIonRouter } from "@ionic/vue";
-import { computed, ref } from "@vue/reactivity"
-import { useRouteParams } from "@vueuse/router"
-import { FirestoreError } from "firebase/firestore"
-import { closeOutline, closeSharp, trophyOutline, trophySharp } from "ionicons/icons"
-import { onMounted, watch } from "vue"
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSpinner, IonText, useIonRouter } from '@ionic/vue'
+import { useRouteParams } from '@vueuse/router'
+import { closeOutline, closeSharp, trophyOutline, trophySharp } from 'ionicons/icons'
+import { computed, onMounted, ref, watch } from 'vue'
 
 // Composables
 
 const router = useIonRouter()
-const matchId = useRouteParams<string>("matchId", DEFAULT_MATCH_ID)
+const matchId = useRouteParams<string>('matchId', DEFAULT_MATCH_ID)
 const { data: match, pending: isLoadingMatch, error: errorLoadingMatch } = useMatch(matchId)
 const gameId = computed(() => match.value?.gameId ?? DEFAULT_GAME_ID)
 const { data: game, pending: isLoadingGame, error: errorLoadingGame } = useGame(gameId)
@@ -235,7 +246,7 @@ const isResettingScore = ref(false)
 
 onMounted(() => {
   if (matchId.value === DEFAULT_MATCH_ID) {
-    const msg = "Match ID missing from the url"
+    const msg = 'Match ID missing from the url'
     toastPopup(msg)
     console.error(msg)
   }
@@ -244,16 +255,16 @@ onMounted(() => {
 // Computed
 
 const pageTitle = computed(() => {
-  if (isLoadingMatch.value) return "Chargement..."
+  if (isLoadingMatch.value) return 'Chargement...'
   if (match.value) return `Duel ${match.value.playerTeamIds[0]} vs ${match.value.playerTeamIds[1]}`
-  return "Duel inconnu"
+  return 'Duel inconnu'
 })
 
 const schedule = computed(() => {
   if (appConfig.value && match.value) {
     return appConfig.value.playerSchedule[match.value.time]
   }
-  return { start: "", stop: "" }
+  return { start: '', stop: '' }
 })
 const reporterId = computed(() => {
   if (!useCanSeeModeration.value) return DEFAULT_USER_ID // to prevent any unnecessary db calls
@@ -264,41 +275,43 @@ const { data: reporter, pending: isLoadingReporter, error: errorLoadingReporter 
 const formatedDate = computed(() => {
   if (match.value && match.value.lastModified) {
     const date = new Date(match.value.lastModified)
-    return date.toLocaleString("fr-BE")
+    return date.toLocaleString('fr-BE')
   }
+  return ''
 })
 
 // Methods
 
-const winHandler = async (winnerTeamId: string) => {
+async function winHandler(winnerTeamId: string) {
   if (!userProfile.value) {
     isSettingScore.value = false
     console.error(`userProfile is undefined`)
-    return errorPopup("L'utilisateur n'est pas connecté")
+    return errorPopup('L\'utilisateur n\'est pas connecté')
   }
   if (!match.value) {
     isSettingScore.value = false
     console.error(`match is undefined`)
-    return errorPopup("Le match n'a pas encore été chargé")
+    return errorPopup('Le match n\'a pas encore été chargé')
   }
-  if (match.value.winnerTeamId == winnerTeamId) {
+  if (match.value.winnerTeamId === winnerTeamId) {
     isSettingScore.value = false
     return errorPopup(`L'équipe ${winnerTeamId} est déjà enregistrée comme gagnante`)
   }
   let winningGroupId: string
   let losingGroupId: string
   const promises = []
-  const loser =
-    match.value.playerTeamIds[0] === winnerTeamId ? match.value.playerTeamIds[1] : match.value.playerTeamIds[0]
+  const loser
+    = match.value.playerTeamIds[0] === winnerTeamId ? match.value.playerTeamIds[1] : match.value.playerTeamIds[0]
   if (!firstPlayer.value || !secondPlayer.value) {
     isSettingScore.value = false
     console.error(`firstPlayer or secondPlayer is undefined`, firstPlayer.value, secondPlayer.value)
     return errorPopup(`Le match n'a pas encore été chargé`)
   }
-  if (firstPlayer.value.id == winnerTeamId) {
+  if (firstPlayer.value.id === winnerTeamId) {
     winningGroupId = firstPlayer.value.groupId
     losingGroupId = secondPlayer.value.groupId
-  } else {
+  }
+  else {
     winningGroupId = secondPlayer.value.groupId
     losingGroupId = firstPlayer.value.groupId
   }
@@ -321,27 +334,28 @@ const winHandler = async (winnerTeamId: string) => {
     promises.push(setMatchScore(matchId.value, winnerTeamId, loser, userProfile.value.id))
 
     await Promise.all(promises)
-    toastPopup("Le score a été enregistré")
-  } catch (error: any) {
-    errorPopup("Veuillez contacter l'administrateur de l'app", `L'enregistrement du score a échoué`)
-    console.error("Cannot set score.", error.message)
+    toastPopup('Le score a été enregistré')
+  }
+  catch (error: any) {
+    errorPopup('Veuillez contacter l\'administrateur de l\'app', `L'enregistrement du score a échoué`)
+    console.error('Cannot set score.', error.message)
   }
   isSettingScore.value = false
 }
-const drawHandler = async () => {
+async function drawHandler() {
   if (!userProfile.value) {
     isSettingScore.value = false
     console.error(`userProfile is undefined`)
-    return errorPopup("L'utilisateur n'est pas connecté")
+    return errorPopup('L\'utilisateur n\'est pas connecté')
   }
   if (!match.value) {
     isSettingScore.value = false
     console.error(`match is undefined`)
-    return errorPopup("Le match n'a pas encore été chargé")
+    return errorPopup('Le match n\'a pas encore été chargé')
   }
   if (match.value.draw) {
     isSettingScore.value = false
-    return errorPopup("Ce duel est déjà enregistré comme égalité")
+    return errorPopup('Ce duel est déjà enregistré comme égalité')
   }
   const promises = []
   if (!firstPlayer.value || !secondPlayer.value) {
@@ -351,8 +365,8 @@ const drawHandler = async () => {
   }
   try {
     if (match.value.winnerTeamId) {
-      const previousWinningGroupId =
-        firstPlayer.value.id == match.value.winnerTeamId ? firstPlayer.value.groupId : secondPlayer.value.groupId
+      const previousWinningGroupId
+        = firstPlayer.value.id === match.value.winnerTeamId ? firstPlayer.value.groupId : secondPlayer.value.groupId
       promises.push(removeTeamWin(match.value.winnerTeamId))
       promises.push(removeGroupWin(previousWinningGroupId))
     }
@@ -363,65 +377,68 @@ const drawHandler = async () => {
     promises.push(setMatchDraw(matchId.value, userProfile.value.id))
 
     await Promise.all(promises)
-    toastPopup("Le score a été enregistré")
-  } catch (error: any) {
+    toastPopup('Le score a été enregistré')
+  }
+  catch (error: any) {
     errorPopup(error.message, `L'enregistrement du score a échoué`)
     console.log(error)
   }
   isSettingScore.value = false
 }
 
-const setScore = () => {
+function setScore() {
   if (!match.value) {
     isSettingScore.value = false
     console.error(`match is undefined`)
-    return errorPopup("Le match n'a pas encore été chargé")
+    return errorPopup('Le match n\'a pas encore été chargé')
   }
   if (!appSettings.value?.canSetScores) {
-    errorPopup("Il n'est pas ou plus possible d'enregistrer des scores")
+    errorPopup('Il n\'est pas ou plus possible d\'enregistrer des scores')
     return
   }
   isSettingScore.value = true
   choicePopup(
-    "Est-ce une victoire ?",
-    ["Victoire", "Égalité"],
+    'Est-ce une victoire ?',
+    ['Victoire', 'Égalité'],
     (choice: string) => {
-      if (choice === "Égalité") {
+      if (choice === 'Égalité') {
         drawHandler()
-      } else if (choice === "Victoire") {
+      }
+      else if (choice === 'Victoire') {
         choicePopup(
-          "Qui est l'heureux gagnant ?",
-          [match.value?.playerTeamIds[0] ?? "", match.value?.playerTeamIds[1] ?? ""],
+          'Qui est l\'heureux gagnant ?',
+          [match.value?.playerTeamIds[0] ?? '', match.value?.playerTeamIds[1] ?? ''],
           winHandler,
-          "score-choice-popup"
+          'score-choice-popup',
         )
-      } else {
+      }
+      else {
         console.error(`Unknown choice: ${choice}`)
       }
     },
-    "score-choice-popup"
+    'score-choice-popup',
   ).then(() => {
     isSettingScore.value = false
   })
 }
 
-const resetScore = async () => {
+async function resetScore() {
   if (!match.value) {
     isSettingScore.value = false
     console.error(`match is undefined`)
-    return errorPopup("Le match n'a pas encore été chargé")
+    return errorPopup('Le match n\'a pas encore été chargé')
   }
   if (!userProfile.value) {
     isSettingScore.value = false
     console.error(`userProfile is undefined`)
-    return errorPopup("L'utilisateur n'est pas connecté")
+    return errorPopup('L\'utilisateur n\'est pas connecté')
   }
   if (!appSettings.value?.canSetScores) {
-    errorPopup("Il n'est pas ou plus possible de modifier des scores")
+    errorPopup('Il n\'est pas ou plus possible de modifier des scores')
     return
   }
   if (!match.value.winnerTeamId && !match.value.draw) {
-    errorPopup("Ce duel n'a pas encore de score")
+    errorPopup('Ce duel n\'a pas encore de score')
     return
   }
   isResettingScore.value = true
@@ -433,8 +450,8 @@ const resetScore = async () => {
   const promises = []
   try {
     if (match.value.winnerTeamId) {
-      const previousWinningGroupId =
-        firstPlayer.value.id == match.value.winnerTeamId ? firstPlayer.value.groupId : secondPlayer.value.groupId
+      const previousWinningGroupId
+        = firstPlayer.value.id === match.value.winnerTeamId ? firstPlayer.value.groupId : secondPlayer.value.groupId
       promises.push(removeTeamWin(match.value.winnerTeamId))
       promises.push(removeGroupWin(previousWinningGroupId))
     }
@@ -446,23 +463,24 @@ const resetScore = async () => {
     }
     promises.push(resetMatchScore(matchId.value, userProfile.value.id))
     await Promise.all(promises)
-    toastPopup("Le score a été réinitialisé")
+    toastPopup('Le score a été réinitialisé')
     console.log(`Score reset for match ${matchId.value} by ${userProfile.value.id}`)
-  } catch (error: any) {
+  }
+  catch (error: any) {
     errorPopup(error.message, `La réinitialisation du score a échoué`)
     console.log(error)
   }
   isResettingScore.value = false
 }
 
-const scoreColor = (playerId: string | undefined) => {
+function scoreColor(playerId: string | undefined) {
   if (match.value) {
-    if (playerId === match.value.winnerTeamId) return "winner-color"
-    if (playerId === match.value.loserTeamId) return "loser-color"
+    if (playerId === match.value.winnerTeamId) return 'winner-color'
+    if (playerId === match.value.loserTeamId) return 'loser-color'
   }
-  return ""
+  return ''
 }
-const scoreIcon = (playerId: string | undefined) => {
+function scoreIcon(playerId: string | undefined) {
   if (match.value) {
     if (playerId === match.value.winnerTeamId) return { ios: trophyOutline, md: trophySharp }
     if (playerId === match.value.loserTeamId) return { ios: closeOutline, md: closeSharp }
@@ -474,35 +492,36 @@ const scoreIcon = (playerId: string | undefined) => {
 
 watch(errorLoadingGame, (error: FirestoreError | undefined) => {
   if (error) {
-    toastPopup("Erreur lors du chargement du jeu")
+    toastPopup('Erreur lors du chargement du jeu')
     console.error(`Error loading game: ${error.message}`)
   }
 })
 watch(errorLoadingMatch, (error: FirestoreError | undefined) => {
   if (error) {
-    toastPopup("Erreur lors du chargement du match")
+    toastPopup('Erreur lors du chargement du match')
     console.error(`Error loading match: ${error.message}`)
   }
 })
 watch(errorLoadingFirstPlayer, (error: FirestoreError | undefined) => {
   if (error) {
-    toastPopup("Erreur lors du chargement de l'équipe 1")
+    toastPopup('Erreur lors du chargement de l\'équipe 1')
     console.error(`Error loading first player: ${error.message}`)
   }
 })
 watch(errorLoadingSecondPlayer, (error: FirestoreError | undefined) => {
   if (error) {
-    toastPopup("Erreur lors du chargement de l'équipe 2")
+    toastPopup('Erreur lors du chargement de l\'équipe 2')
     console.error(`Error loading second player: ${error.message}`)
   }
 })
 watch(errorLoadingReporter, (error: FirestoreError | undefined) => {
   if (error) {
-    toastPopup("Erreur lors du chargement du modérateur")
+    toastPopup('Erreur lors du chargement du modérateur')
     console.error(`Error loading reporter: ${error.message}`)
   }
 })
 </script>
+
 <style scoped>
 .score-grid {
   --ion-grid-columns: 11;

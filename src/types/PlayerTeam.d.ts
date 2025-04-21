@@ -1,7 +1,7 @@
-import { Ref } from "vue"
-import { VueFirestoreDocumentData } from "vuefire"
+import type { Ref } from 'vue'
+import type { VueFirestoreDocumentData } from 'vuefire'
 
-export type PlayerTeam = {
+export interface PlayerTeam {
   hash: string
   number: number // this is used by the distribution script
   groupCategoryId: string

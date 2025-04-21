@@ -5,11 +5,11 @@
         <ion-row class="ion-align-items-center">
           <ion-col size="2">
             <div>
-              <ion-icon style="font-size: 35px" :ios="infoIcon.ios" :md="infoIcon.md" slot="start"></ion-icon>
+              <ion-icon slot="start" style="font-size: 35px" :ios="infoIcon.ios" :md="infoIcon.md" />
             </div>
           </ion-col>
           <ion-col size="10">
-            <slot></slot>
+            <slot />
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -18,7 +18,8 @@
 </template>
 
 <script setup lang="ts">
-import { IonCard, IonCardContent, IonGrid, IonRow, IonCol, IonIcon } from "@ionic/vue"
-import { informationCircleOutline, informationCircleSharp } from "ionicons/icons"
+import { IonCard, IonCardContent, IonCol, IonGrid, IonIcon, IonRow } from '@ionic/vue'
+import { informationCircleOutline, informationCircleSharp } from 'ionicons/icons'
+
 const infoIcon = { ios: informationCircleOutline, md: informationCircleSharp }
 </script>

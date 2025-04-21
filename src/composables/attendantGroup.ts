@@ -1,8 +1,9 @@
-import { DEFAULT_GROUP_ID, GROUP_ROLES, GROUPS_COLLECTION_REF } from "@/constants"
-import { AttendantGroup, type RefUserProfile } from "@/types"
-import { doc, documentId, orderBy, query, where } from "firebase/firestore"
-import { computed, MaybeRefOrGetter, toValue } from "vue"
-import { useCollection, useDocument } from "vuefire"
+import type { AttendantGroup, RefUserProfile } from '@/types'
+import type { MaybeRefOrGetter } from 'vue'
+import { DEFAULT_GROUP_ID, GROUP_ROLES, GROUPS_COLLECTION_REF } from '@/constants'
+import { doc, documentId, orderBy, query, where } from 'firebase/firestore'
+import { computed, toValue } from 'vue'
+import { useCollection, useDocument } from 'vuefire'
 
 export function useAttendantGroup(rGroupId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
@@ -19,13 +20,12 @@ export function useAttendantGroup(rGroupId: MaybeRefOrGetter<string>) {
  * @param rShouldLoad To be used to lazy load the collection
  * @param rStaffGroups To define if the staff groups should be included in the query, excluded or only the staff groups should be returned
  * @param rShowAllAttendantGroups If false, only the current user group will be returned
- * @returns
  */
 export function useAttendantGroups(
   rShouldLoad: MaybeRefOrGetter<boolean> = true,
-  rStaffGroups: MaybeRefOrGetter<"include" | "exclude" | "only"> = "include",
+  rStaffGroups: MaybeRefOrGetter<'include' | 'exclude' | 'only'> = 'include',
   rShowAllAttendantGroups: MaybeRefOrGetter<boolean> = true,
-  rCurrentUserProfile: RefUserProfile
+  rCurrentUserProfile: RefUserProfile,
 ) {
   const dbRef = computed(() => {
     if (!rCurrentUserProfile.value) return null
@@ -35,21 +35,23 @@ export function useAttendantGroups(
     console.debug(`Fetching attendant groups`)
     // To be used to return only the current user group
     if (toValue(rShowAllAttendantGroups)) {
-      if (staffGroups === "exclude") {
+      if (staffGroups === 'exclude') {
         console.debug(`Excluding staff group in the query`)
-        queryParams.push(where("role", "<", GROUP_ROLES.Staff))
+        queryParams.push(where('role', '<', GROUP_ROLES.Staff))
       }
-      if (staffGroups === "only") {
+      if (staffGroups === 'only') {
         console.debug(`Returning only staff group in the query`)
-        queryParams.push(where("role", ">=", GROUP_ROLES.Staff))
-      } else {
-        queryParams.push(where("role", ">=", GROUP_ROLES.Attendant))
+        queryParams.push(where('role', '>=', GROUP_ROLES.Staff))
       }
-    } else {
-      console.debug(`Filtering to current user group : ${rCurrentUserProfile.value.groupId}`)
-      queryParams.push(where(documentId(), "==", rCurrentUserProfile.value.groupId))
+      else {
+        queryParams.push(where('role', '>=', GROUP_ROLES.Attendant))
+      }
     }
-    queryParams.push(orderBy("name"))
+    else {
+      console.debug(`Filtering to current user group : ${rCurrentUserProfile.value.groupId}`)
+      queryParams.push(where(documentId(), '==', rCurrentUserProfile.value.groupId))
+    }
+    queryParams.push(orderBy('name'))
     return query(GROUPS_COLLECTION_REF, ...queryParams)
   })
   return useCollection<AttendantGroup>(dbRef)

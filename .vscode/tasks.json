@@ -19,7 +19,7 @@
           "background": {
             "activeOnStart": true,
             "beginsPattern": ".",
-            "endsPattern": "Development server running",
+            "endsPattern": "Development server running"
 
           }
         }

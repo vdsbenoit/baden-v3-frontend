@@ -1,4 +1,4 @@
-#  Rôles
+# Rôles
 
 ## Accès
 
@@ -21,7 +21,7 @@ La page d'accueil des newbies est soit :
 - Une invitation à compléter le profil
   - Choisir son rôle
   - Choisir sa section (si animateur ou chef)
-- Un notification comme quoi leur rôle est en cours de validation 
+- Un notification comme quoi leur rôle est en cours de validation
   - Préciser qui est la personne qui doit valider leur rôle (chef, organisateur ou admin)
 - Une notif comme quoi leur demande a été refusée
 
@@ -76,7 +76,7 @@ La page d'accueil des chefs est soit :
 
 ### Organisateurs (6)
 
-Les organisateurs peuvent : 
+Les organisateurs peuvent :
 
 - Modifier n'importe quel profil, sauf le rôle
 - Voir la liste des sections
@@ -94,11 +94,9 @@ La page d'accueil des organisateurs est soit :
 
 - Lien vers la page de notifications, s'ils en ont
 
-
-
 ### Administrateur (8)
 
-Les administrateurs peuvent : 
+Les administrateurs peuvent :
 
 - Modifier n'importe quel profil, rôle compris
 - Accès à toutes les pages
@@ -117,22 +115,21 @@ La page d'accueil des administrateurs est soit :
 
 Les utilisateurs doivent d'abord se connecter.
 
-Ensuite ils sont invités à choisir un rôle. 
+Ensuite ils sont invités à choisir un rôle.
 
 Si participants -> le rôle est validé automatiquement.
 
-Si animateurs: 
+Si animateurs:
 
 - il faut également préciser la section en question
 - le rôle doit être validé par un chef de la section en question ou un organisateur ou administrateur
 
 Si chef:
 
--  il faut également préciser la section en question
+- il faut également préciser la section en question
 - le rôle doit être validé au minimum par un organisateur
 
 Si organisateur ou administrateur
 
 - la section est assignée à "Staff BB"
 - le rôle doit être validé par un administrateur
-

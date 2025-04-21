@@ -2,32 +2,34 @@
 
 ## v3
 
-New UI from scratch, made with Vue & Ionic.  
+New UI from scratch, made with Vue & Ionic.
 Micro services backend replaced with Firebase (serverless hosting + cloud functions)
 
 ## Why this app
 
-The goal of this app is to manage a kind of tournament played by a large number of players IRL. 
-It was initially designed for a boyscout game I used to coordinate, called [Baden Battle](https://badenbattle.be/). At the first editions, there were only a few hundreds of people playing. Everything was done on paper (distributing the players across the games, recording the scores, etc). However, the game gained a lot of success and hosts now more than 1000 players. 
+The goal of this app is to manage a kind of tournament played by a large number of players IRL.
+It was initially designed for a boyscout game I used to coordinate, called [Baden Battle](https://badenbattle.be/). At the first editions, there were only a few hundreds of people playing. Everything was done on paper (distributing the players across the games, recording the scores, etc). However, the game gained a lot of success and hosts now more than 1000 players.
 
-We faced two major scaling issues : 
+We faced two major scaling issues :
 
 ### 1. Score registration
 
-It became quickly impossible to record the scores on paper and compute them fast enough to share the name of the winner at the closing ceremony. We tried to use shared Excel sheets and online forms to record the scores but we faced the limit of this system too. 
+It became quickly impossible to record the scores on paper and compute them fast enough to share the name of the winner at the closing ceremony. We tried to use shared Excel sheets and online forms to record the scores but we faced the limit of this system too.
 
 ### 2. Team distribution
+
 Distributing the players into teams, and defining what team plays at what game at what time may seem simple. This is actually a complex combinatorics problem. See the 'Constraints' section below for more details about it.
 
 Later on, I added a third use to this app :
 
 ### 3. Attendant registration
-The game success grew to a point we had to hire some attendants from other boyscout units. 
+
+The game success grew to a point we had to hire some attendants from other boyscout units.
 In order to manage who is taking care of what game, I implemented a feature to facilitate attendant registration to games.
 
 ## Constrains
 
-I searched the internet for any existing similar software first, unsuccessfully. 
+I searched the internet for any existing similar software first, unsuccessfully.
 What I found was mostly apps to manage tournaments. Our distribution differs from a tournament distribution. This is the main reason that motivated me to create this app.
 
 Here are our constraints:
@@ -35,8 +37,8 @@ Here are our constraints:
 - Players register to the game in groups (called sections).
 - Sections must be split in smaller groups (called teams) if needed. Teams count around 10 players (this is configurable).
 - Teams must contain at least a leader (the players are children and cannot be left alone).
-- Games are distributed in circuits. In one circuit, there are as many games as time slots during the day. The amount of circuit must be defined based on the amount of players and time slots. 
-- A team only plays in one circuit. 
+- Games are distributed in circuits. In one circuit, there are as many games as time slots during the day. The amount of circuit must be defined based on the amount of players and time slots.
+- A team only plays in one circuit.
 - Teams must play all the games of their circuit.
 - A team cannot play against itself.
 - A team cannot play a game twice.
@@ -70,7 +72,7 @@ I created a backend that uses a combinatorics solver ([PuLP](https://coin-or.git
 
 This project is a side hustle. I had to write it fast, aside of my full-time job and the coordination of the Battle Battle itself (the event this project is made for). Therefore, there are a lot of imperfect / unfinished things.
 
-Even though most of the code is in English, the app itself is in French, because it is targeting a French-speaking audience. I'd like to make it customizable (design and language) in the future. 
+Even though most of the code is in English, the app itself is in French, because it is targeting a French-speaking audience. I'd like to make it customizable (design and language) in the future.
 
 ## Use
 

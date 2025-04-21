@@ -1,20 +1,20 @@
 # Configuration
 
-This document describes the steps to reset the app and configure a new game.  
+This document describes the steps to reset the app and configure a new game.
 
 ⚠️ WIP ⚠️ This is a draft. I currently use this document as a specification to define how I am going to implement the setup of the app.
 
 ## Wipe previous config
 
-The user accepts to reset the database, i.e. erasing the data from the year before. 
+The user accepts to reset the database, i.e. erasing the data from the year before.
 
 Provide an option to keep the schedule.
 
 ## Players schedule
 
-The user need to define how many games a player plays during the day. 
+The user need to define how many games a player plays during the day.
 
-Create a UI tool to add/remove games and increment/decrement the value by 2. 
+Create a UI tool to add/remove games and increment/decrement the value by 2.
 
 Info box: this settings cannot be modified later on.
 
@@ -22,7 +22,7 @@ Info box: this settings cannot be modified later on.
 | ------------------- | ---------------------------------------------------------- | ------- |
 | `nbGamesPerCircuit` | Number of games a player plays during the day. Must be odd | 17      |
 
-`nbGamesPerCircuit` defines multiple things : 
+`nbGamesPerCircuit` defines multiple things :
 
 - The number of games a team plays during the day
 - The number of games per circuit
@@ -38,13 +38,13 @@ The user can edit the name of the breaks.
 
 ## Create player groups
 
-The user needs to create a player group category. For instance `Lutins`.  
+The user needs to create a player group category. For instance `Lutins`.
 
-Info box : inform the user that the players only play against people from the same groups type. 
+Info box : inform the user that the players only play against people from the same groups type.
 
 The user can either <u>create new player group category</u> or <u>load the settings from an existing player group category</u>.
 
-A group category comes with some dedicated parameters : 
+A group category comes with some dedicated parameters :
 
 | Parameter           | Description                        | Example  |
 | ------------------- | ---------------------------------- | -------- |
@@ -54,7 +54,7 @@ A group category comes with some dedicated parameters :
 
 Then, the user can either add groups one by one or load a batch through a a csv file.
 
-Each group must have these fields: 
+Each group must have these fields:
 
 | Field     | Description         | Example          |
 | --------- | ------------------- | ---------------- |
@@ -100,7 +100,7 @@ Plus : create a parser to parse from a list (e.g. an excell sheet or a text docu
 
 ### Badges
 
-Upload base image. 
+Upload base image.
 
 Button to generate the team badges
 
@@ -112,13 +112,13 @@ Button to generate the staff badges
 
 The user needs to create a roadmap template per circuit (A, B, C, etc)
 
-Every template must have as many time slots as configured for the circuit. 
+Every template must have as many time slots as configured for the circuit.
 
 Breaks are not supported and must be hardcoded in the template.
 
 #### 2. Upload the templates
 
-Upload the roadmap template for every circuit. 
+Upload the roadmap template for every circuit.
 
 #### 3. Generate the roadmaps
 
@@ -132,9 +132,9 @@ Verify the roadmaps have been parsed properly (e.g. the map matches with the dat
 
 #### 1. Prepare the templates
 
-The user needs to create as many roadmaps as there are variants of schedule. 
+The user needs to create as many roadmaps as there are variants of schedule.
 
-Every template must have as many time slots as configured for the circuit. 
+Every template must have as many time slots as configured for the circuit.
 
 Breaks are not supported and must be hardcoded in the template.
 
@@ -149,6 +149,3 @@ Click button to generate the game roadmaps.
 #### 4. Verify the roadmaps
 
 Verify the roadmaps have been parse properly (e.g. amount of time slots matches with the circuit, the part of the day matches)
-
-
-

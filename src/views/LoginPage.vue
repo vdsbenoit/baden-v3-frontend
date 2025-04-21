@@ -1,18 +1,20 @@
 <template>
   <ion-page>
-    <header-component pageTitle="Connexion"></header-component>
+    <header-component page-title="Connexion" />
     <ion-content :fullscreen="true" class="ion-padding">
-      <refresher-component></refresher-component>
+      <refresher-component />
       <div class="homepage-logo">
-        <img src="@/assets/img/logo-bb.png" alt="Logo Baden Battle" />
+        <img src="@/assets/img/logo-bb.png" alt="Logo Baden Battle">
       </div>
-      <ion-text class="ion-text-center" v-if="redirect">
+      <ion-text v-if="redirect" class="ion-text-center">
         <p>Connecte-toi pour accéder à ce contenu</p>
       </ion-text>
-      <form v-on:submit.prevent="sendEmail">
+      <form @submit.prevent="sendEmail">
         <ion-list id="login-form">
           <ion-item lines="full">
-            <ion-label position="floating" color="primary">Entre ton email ici</ion-label>
+            <ion-label position="floating" color="primary">
+              Entre ton email ici
+            </ion-label>
             <ion-input
               v-model="email"
               name="email"
@@ -22,19 +24,23 @@
               required
               autocapitalize="off"
               :clear-input="true"
-            ></ion-input>
-            <ion-note slot="helper">Utilise une addresse à laquelle tu as accès depuis ton téléphone</ion-note>
+            />
+            <ion-note slot="helper">
+              Utilise une addresse à laquelle tu as accès depuis ton téléphone
+            </ion-note>
           </ion-item>
           <ion-item lines="none">
-            <ion-checkbox slot="start" class="ion-no-margin ion-margin-end" v-model="dgprChecked"></ion-checkbox>
-            <ion-label class="">J'accepte les <a @click="showPrivacyNotice">conditions d'utilisation</a></ion-label>
+            <ion-checkbox slot="start" v-model="dgprChecked" class="ion-no-margin ion-margin-end" />
+            <ion-label class="">
+              J'accepte les <a @click="showPrivacyNotice">conditions d'utilisation</a>
+            </ion-label>
           </ion-item>
-          <ion-button expand="block" @click="sendEmail" :color="sendButtonColor">
-            <ion-spinner v-if="isSendingEmail"></ion-spinner>
+          <ion-button expand="block" :color="sendButtonColor" @click="sendEmail">
+            <ion-spinner v-if="isSendingEmail" />
             <span v-else>{{ sendButtonText }}</span>
           </ion-button>
-          <ion-button expand="block" @click="signInWithClipboard" color="tertiary">
-            <ion-spinner v-if="isValidating"></ion-spinner>
+          <ion-button expand="block" color="tertiary" @click="signInWithClipboard">
+            <ion-spinner v-if="isValidating" />
             <span v-else>J'ai copié le lien de l'email</span>
           </ion-button>
         </ion-list>
@@ -44,26 +50,25 @@
 </template>
 
 <script setup lang="ts">
-import HeaderComponent from "@/components/HeaderComponent.vue"
-import RefresherComponent from "@/components/RefresherComponent.vue"
-import { useCurrentUserProfile } from "@/composables/userProfile"
-import { USER_ROLES } from "@/constants"
-import { processSignInLink, sendSignInEmail } from "@/utils/auth"
-import { errorPopup, infoPopup, toastPopup } from "@/utils/popup"
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import RefresherComponent from '@/components/RefresherComponent.vue'
+import { useCurrentUserProfile } from '@/composables/userProfile'
+import { USER_ROLES } from '@/constants'
+import { processSignInLink, sendSignInEmail } from '@/utils/auth'
+import { errorPopup, infoPopup, toastPopup } from '@/utils/popup'
 // prettier-ignore
-import { IonButton, IonCheckbox, IonContent, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonSpinner, IonText, useIonRouter } from "@ionic/vue"
-import { computed } from "@vue/reactivity"
-import { useRouteQuery } from "@vueuse/router"
-import { onMounted, ref } from "vue"
+import { IonButton, IonCheckbox, IonContent, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonSpinner, IonText, useIonRouter } from '@ionic/vue'
+import { useRouteQuery } from '@vueuse/router'
+import { computed, onMounted, ref } from 'vue'
 
 const router = useIonRouter()
 const userProfile = useCurrentUserProfile()
-const mode = useRouteQuery<string>("mode", "newLogin")
-const redirect = useRouteQuery<string>("redirect", `/home`)
+const mode = useRouteQuery<string>('mode', 'newLogin')
+const redirect = useRouteQuery<string>('redirect', `/home`)
 
 // reactive data
 
-const email = ref("")
+const email = ref('')
 const isSendingEmail = ref(false)
 const isEmailSent = ref(false)
 const dgprChecked = ref(false)
@@ -71,7 +76,7 @@ const isValidating = ref(false)
 
 // Watcher
 onMounted(() => {
-  if (mode.value && mode.value == "signIn") {
+  if (mode.value && mode.value === 'signIn') {
     signIn(window.location.href)
   }
 })
@@ -79,41 +84,43 @@ onMounted(() => {
 // computed data
 
 const sendButtonText = computed(() => {
-  return isEmailSent.value ? "Renvoyer un mail" : "Connexion"
+  return isEmailSent.value ? 'Renvoyer un mail' : 'Connexion'
 })
 const sendButtonColor = computed(() => {
-  return isEmailSent.value ? "medium" : "primary"
+  return isEmailSent.value ? 'medium' : 'primary'
 })
 
 // methods
 
-const sendEmail = async () => {
+async function sendEmail() {
   if (!dgprChecked.value) {
     dgprChecked.value = true
     await new Promise(resolve => setTimeout(resolve, 300))
-    setTimeout
   }
   if (!email.value) return
   isSendingEmail.value = true
   try {
     await sendSignInEmail(email.value, `https://${location.host}${redirect.value}`)
     isEmailSent.value = true
-    toastPopup("On t'a envoyé un email<br/>Clique sur le lien qui s'y trouve pour te connecter", 20000)
-  } catch (error: any) {
+    toastPopup('On t\'a envoyé un email<br/>Clique sur le lien qui s\'y trouve pour te connecter', 20000)
+  }
+  catch (error: any) {
     errorPopup(error.message, `Impossible de se connecter`)
   }
   isSendingEmail.value = false
 }
 
-const signIn = async (href: string) => {
+async function signIn(href: string) {
   try {
     await processSignInLink(href)
     if (!userProfile.value || (userProfile.value.role === USER_ROLES.Newbie && !userProfile.value.hasDoneOnboarding)) {
-      router.replace("/onboarding")
-    } else {
-      router.replace("/home")
+      router.replace('/onboarding')
     }
-  } catch (error: any) {
+    else {
+      router.replace('/home')
+    }
+  }
+  catch (error: any) {
     errorPopup(error.message)
   }
 }
@@ -123,18 +130,19 @@ function sanitizeClipboardContent(input: string): string | null {
     const url = new URL(input)
 
     // Check for valid HTTPS protocol
-    if (url.protocol !== "https:") {
+    if (url.protocol !== 'https:') {
       return null
     }
 
     // Example: Allow Firebase Dynamic Links or direct Firebase sign-in links
-    const allowedDomains = ["app.badenbattle.be", window.location.hostname]
+    const allowedDomains = ['app.badenbattle.be', window.location.hostname]
 
     if (allowedDomains.some(domain => url.hostname.endsWith(domain))) {
       return url.href // Return sanitized link
     }
-  } catch {
-    console.error("Clipboard content is not a valid or supported Firebase sign-in link.")
+  }
+  catch {
+    console.error('Clipboard content is not a valid or supported Firebase sign-in link.')
   }
   return null
 }
@@ -145,7 +153,7 @@ function sanitizeClipboardContent(input: string): string | null {
 async function signInWithClipboard() {
   // Ensure the Clipboard API is supported
   if (!navigator.clipboard) {
-    errorPopup("Cette fonctionnalité n'est pas supportée")
+    errorPopup('Cette fonctionnalité n\'est pas supportée')
     return
   }
 
@@ -154,22 +162,24 @@ async function signInWithClipboard() {
     const clipboardText = await navigator.clipboard.readText()
     const sanitizedLink = sanitizeClipboardContent(clipboardText)
     if (!sanitizedLink) {
-      console.error("Invalid link from clipboard : ", sanitizedLink)
-      errorPopup("Copie le lien qui t'as été envoyé par email", "Le lien dans le presse-papier n'est pas valide")
+      console.error('Invalid link from clipboard : ', sanitizedLink)
+      errorPopup('Copie le lien qui t\'as été envoyé par email', 'Le lien dans le presse-papier n\'est pas valide')
       return
     }
     signIn(clipboardText)
-  } catch (error: any) {
-    if (error.name === "NotAllowedError") {
-      errorPopup("Tu dois authoriser l'accès au presse-papier", "Impossible de lire le presse-papier")
+  }
+  catch (error: any) {
+    if (error.name === 'NotAllowedError') {
+      errorPopup('Tu dois authoriser l\'accès au presse-papier', 'Impossible de lire le presse-papier')
       // request permission again
-    } else {
-      errorPopup("Assure-toi que le lien a bien été copié", "Impossible de lire le presse-papier")
+    }
+    else {
+      errorPopup('Assure-toi que le lien a bien été copié', 'Impossible de lire le presse-papier')
     }
   }
 }
 
-const showPrivacyNotice = () => {
+function showPrivacyNotice() {
   const privacyNotice = `
   Pour le bon fonctionnement de l'application, des données liées à l'utilisateur sont enregistrées telles que son nom, 
   le nom de sa section, la ville de sa section et son adresse email.<br/><br/>
@@ -183,7 +193,7 @@ const showPrivacyNotice = () => {
   Cette application est la propriété de Benoit Vander Stappen. 
   Pour toute question relative à ces conditions, veuillez le contacter sur <a href="mailto:vdsbenoit@gmail.com"> son adresse email</a>.  
   `
-  infoPopup(privacyNotice, "Vie privée & utilisation des données")
+  infoPopup(privacyNotice, 'Vie privée & utilisation des données')
 }
 </script>
 

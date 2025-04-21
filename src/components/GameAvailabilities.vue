@@ -13,10 +13,10 @@
 </template>
 
 <script lang="ts" setup>
-import { useAppConfig, useAppSettings } from "@/composables/app"
-import { Game } from "@/types"
-import { IonBadge } from "@ionic/vue"
-import { computed, defineProps } from "vue"
+import type { Game } from '@/types'
+import { useAppConfig, useAppSettings } from '@/composables/app'
+import { IonBadge } from '@ionic/vue'
+import { computed, defineProps } from 'vue'
 
 // Props
 
@@ -41,9 +41,9 @@ const availabilities = computed(() => {
   const data = []
   for (const timeSlot of attendantSchedule.value) {
     const nbAttendants = props.game.attendants[timeSlot.id] ? props.game.attendants[timeSlot.id].length : 0
-    let color = "success"
-    if (nbAttendants < maxGameAttendants.value) color = "warning"
-    if (nbAttendants === 0) color = "danger"
+    let color = 'success'
+    if (nbAttendants < maxGameAttendants.value) color = 'warning'
+    if (nbAttendants === 0) color = 'danger'
     data.push({ nbAttendants, color })
   }
   return data

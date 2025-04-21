@@ -1,8 +1,8 @@
-import { useCurrentUserProfile } from "@/composables/userProfile"
-import { DEFAULT_GROUP_ID, USER_ROLES } from "@/constants"
-import { RefGame, RefUserProfile } from "@/types"
-import { computed, reactive, watchEffect } from "vue"
-import { useAppSettings } from "./app"
+import type { RefGame, RefUserProfile } from '@/types'
+import { useCurrentUserProfile } from '@/composables/userProfile'
+import { DEFAULT_GROUP_ID, USER_ROLES } from '@/constants'
+import { computed, reactive, watchEffect } from 'vue'
+import { useAppSettings } from './app'
 
 export function useCanSeeRanking() {
   const currentUserProfile = useCurrentUserProfile()
@@ -20,11 +20,11 @@ export function useEditScoreRights(rGame: RefGame) {
 
   const canEditScoresAt = (timingId: string) => {
     if (!rGame.value) {
-      console.debug("Cannot edit score, game variable is not set yet")
+      console.debug('Cannot edit score, game variable is not set yet')
       return false
     }
     if (!currentUserProfile.value) {
-      console.debug("Cannot edit score, user is not authenticated")
+      console.debug('Cannot edit score, user is not authenticated')
       return false
     }
     // Check if moderator
@@ -39,11 +39,12 @@ export function useEditScoreRights(rGame: RefGame) {
       console.debug(`Cannot edit score, timing with id ${timingId} not found in game ${rGame.value.id} attendants`)
       return false
     }
-    if (rGame.value.attendants[timingId].map(attendant => attendant.id).includes(currentUserProfile.value.id))
+    if (rGame.value.attendants[timingId].map(attendant => attendant.id).includes(currentUserProfile.value.id)) {
       return true
+    }
     else {
       console.debug(
-        `Cannot edit score, user ${currentUserProfile.value.id} is not registered to set scores at game ${rGame.value.id}`
+        `Cannot edit score, user ${currentUserProfile.value.id} is not registered to set scores at game ${rGame.value.id}`,
       )
       return false
     }
@@ -51,17 +52,17 @@ export function useEditScoreRights(rGame: RefGame) {
 
   const canEditScores = computed(() => {
     if (!rGame.value) {
-      console.debug("Cannot edit score, game variable is not set yet")
+      console.debug('Cannot edit score, game variable is not set yet')
       return false
     }
     if (!currentUserProfile.value) {
-      console.debug("Cannot edit score, user is not authenticated")
+      console.debug('Cannot edit score, user is not authenticated')
       return false
     }
 
     // Check frozen score
     if (!appSettings.value?.canSetScores) {
-      console.debug("Cannot edit score. Score registration is not enabled yet")
+      console.debug('Cannot edit score. Score registration is not enabled yet')
       return false
     }
     // Check if not attendant
@@ -102,7 +103,7 @@ export function useCanRegister() {
   const canRegister = reactive({
     itself: false,
     group: false,
-    anyone: false
+    anyone: false,
   })
   const currentUserProfile = useCurrentUserProfile()
   const appSettings = useAppSettings()
@@ -112,7 +113,7 @@ export function useCanRegister() {
     canRegister.group = false
     canRegister.anyone = false
     if (!currentUserProfile.value) {
-      console.debug("User cannot register to a game. User is not authenticated")
+      console.debug('User cannot register to a game. User is not authenticated')
       return
     }
     if (currentUserProfile.value.role >= USER_ROLES.Organisateur) {
@@ -128,10 +129,10 @@ export function useCanRegister() {
       console.debug(`User ${currentUserProfile.value.id} cannot register to a game. Insufficient role`)
       return
     }
-    if (currentUserProfile.value.role == USER_ROLES.Animateur) {
+    if (currentUserProfile.value.role === USER_ROLES.Animateur) {
       canRegister.itself = true
     }
-    if (currentUserProfile.value.role == USER_ROLES.Chef) {
+    if (currentUserProfile.value.role === USER_ROLES.Chef) {
       canRegister.itself = true
       canRegister.group = true
     }
@@ -209,10 +210,11 @@ export function useEditProfileRights(targetUserProfile: RefUserProfile) {
     if (!targetUserProfile.value) return false
     if (canEditProfile.value) return true
     if (
-      currentUserProfile.value.role == USER_ROLES.Chef &&
-      currentUserProfile.value.groupId == targetUserProfile.value.groupId
-    )
+      currentUserProfile.value.role === USER_ROLES.Chef
+      && currentUserProfile.value.groupId === targetUserProfile.value.groupId
+    ) {
       return true
+    }
     return false
   })
 
@@ -249,6 +251,6 @@ export function useEditProfileRights(targetUserProfile: RefUserProfile) {
     canEditAttendantGroup,
     canEditRole,
     canResetOnboarding,
-    canDeleteProfile
+    canDeleteProfile,
   }
 }

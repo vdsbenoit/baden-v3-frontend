@@ -5,16 +5,20 @@
     </ion-card-header>
     <ion-card-content class="ion-no-padding ion-padding-vertical">
       <div v-if="isLoadingApplicants" class="not-found" style="background: transparent">
-        <ion-spinner></ion-spinner>
+        <ion-spinner />
       </div>
       <div v-else-if="errorLoadingApplicants" class="not-found">
         <strong class="capitalize">Erreur</strong>
-        <ion-text color="error">Impossible de charger les candidats</ion-text>
+        <ion-text color="error">
+          Impossible de charger les candidats
+        </ion-text>
       </div>
       <ion-list lines="full">
         <ion-item v-for="applicant in applicants" :key="applicant.id" @click="handleRequest(applicant)">
           <ion-label>
-            <ion-text style="font-weight: bold">{{ applicant.name }}</ion-text>
+            <ion-text style="font-weight: bold">
+              {{ applicant.name }}
+            </ion-text>
             <ion-text>&nbsp;{{ applicant.email }}</ion-text>
           </ion-label>
           <ion-badge slot="end" :color="badgeColor(applicant)">
@@ -27,14 +31,14 @@
 </template>
 
 <script lang="ts" setup>
-import { useCurrentUserProfile, useGroupApplicants } from "@/composables/userProfile"
-import { DEFAULT_USER_ROLE_VALUE, USER_ROLES } from "@/constants"
-import { VueFireUserProfile } from "@/types"
-import { choicePopup, errorPopup, textInputPopup } from "@/utils/popup"
-import { getRoleByValue, getUserName, updateUserProfile } from "@/utils/userProfile"
+import type { VueFireUserProfile } from '@/types'
+import { useCurrentUserProfile, useGroupApplicants } from '@/composables/userProfile'
+import { DEFAULT_USER_ROLE_VALUE, USER_ROLES } from '@/constants'
+import { choicePopup, errorPopup, textInputPopup } from '@/utils/popup'
+import { getRoleByValue, getUserName, updateUserProfile } from '@/utils/userProfile'
 // prettier-ignore
-import { IonBadge, IonItem, IonLabel, IonList, IonSpinner, IonText, IonCard, IonCardContent, IonCardHeader, IonCardTitle } from "@ionic/vue"
-import { defineEmits, defineProps, watch } from "vue"
+import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonLabel, IonList, IonSpinner, IonText } from '@ionic/vue'
+import { defineEmits, defineProps, watch } from 'vue'
 
 const props = defineProps<{
   attendantGroupId: string
@@ -42,7 +46,7 @@ const props = defineProps<{
   attendantGroupCity: string
   limit: number
 }>()
-const emit = defineEmits(["hasApplicants"])
+const emit = defineEmits(['hasApplicants'])
 
 // composables
 
@@ -50,15 +54,18 @@ const currentUser = useCurrentUserProfile()
 const {
   data: applicants,
   pending: isLoadingApplicants,
-  error: errorLoadingApplicants
+  error: errorLoadingApplicants,
 } = useGroupApplicants(props.limit, props.attendantGroupId)
 
 // watchers
 
-watch(applicants, newApplicants => {
+watch(applicants, (newApplicants) => {
   if (newApplicants && newApplicants.length < 1 && !errorLoadingApplicants.value) {
-    emit("hasApplicants", false)
-  } else emit("hasApplicants", true)
+    emit('hasApplicants', false)
+  }
+  else {
+    emit('hasApplicants', true)
+  }
 })
 
 // methods
@@ -69,18 +76,18 @@ watch(applicants, newApplicants => {
  * @param {VueFireUserProfile} user - The user object.
  * @returns {string} - The Ionic color of the badge.
  */
-const badgeColor = (user: VueFireUserProfile) => {
+function badgeColor(user: VueFireUserProfile) {
   switch (user.requestedRole) {
     case USER_ROLES.Animateur:
-      return "success"
+      return 'success'
     case USER_ROLES.Chef:
-      return "primary"
+      return 'primary'
     case USER_ROLES.Organisateur:
-      return "warning"
+      return 'warning'
     case USER_ROLES.Administrateur:
-      return "danger"
+      return 'danger'
     default:
-      return "medium"
+      return 'medium'
   }
 }
 
@@ -101,16 +108,16 @@ const badgeColor = (user: VueFireUserProfile) => {
  * @param applicant - The applicant object.
  */
 
-const handleRequest = (applicant: VueFireUserProfile) => {
+function handleRequest(applicant: VueFireUserProfile) {
   if (!currentUser.value) {
-    errorPopup("Impossible de récupérer les informations de l'utilisateur actuel")
+    errorPopup('Impossible de récupérer les informations de l\'utilisateur actuel')
     return
   }
   if (!applicant.requestedRole) {
     errorPopup(`requestedRole n'est pas défini pour ${getUserName(applicant)}`)
     return
   }
-  let message = ""
+  let message = ''
   if (applicant.requestedRole === USER_ROLES.Animateur || applicant.requestedRole === USER_ROLES.Chef) {
     message = `Veux-tu ajouter ${getUserName(applicant)}
     comme <b>${getRoleByValue(applicant.requestedRole)}</b> de la section ${props.attendantGroupName}.`
@@ -123,7 +130,7 @@ const handleRequest = (applicant: VueFireUserProfile) => {
     errorPopup(`Ce rôle n'existe pas (${applicant.requestedRole})`)
     return
   }
-  const choices = ["Accepter", "Refuser", "Annuler"]
+  const choices = ['Accepter', 'Refuser', 'Annuler']
   const reasonMessage = `Pourquoi refuse-tu la demande de ${getUserName(applicant)} ?`
   const acceptHandler = () => {
     updateUserProfile(applicant.id, {
@@ -131,32 +138,32 @@ const handleRequest = (applicant: VueFireUserProfile) => {
       groupId: applicant.requestedGroupId,
       groupName: applicant.requestedGroupName,
       requestedRole: DEFAULT_USER_ROLE_VALUE,
-      requestedGroupId: "",
-      rejectionReason: ""
+      requestedGroupId: '',
+      rejectionReason: '',
     })
   }
   const rejectHandler = (reason: string) => {
     const fullReason = `${getUserName(currentUser)} (${getRoleByValue(currentUser.value?.role ?? -1)}) dit : ${reason}`
     updateUserProfile(applicant.id, {
       requestedRole: -1,
-      requestedGroupId: "",
+      requestedGroupId: '',
       rejectionReason: fullReason,
-      hasDoneOnboarding: false
+      hasDoneOnboarding: false,
     })
   }
   const choicePopupHandler = (choice: string) => {
     switch (choice) {
-      case "Accepter":
+      case 'Accepter':
         acceptHandler()
         break
-      case "Refuser":
-        textInputPopup(reasonMessage, rejectHandler, "Raison", "Brève explication")
+      case 'Refuser':
+        textInputPopup(reasonMessage, rejectHandler, 'Raison', 'Brève explication')
         break
       default:
         break
     }
   }
-  choicePopup("Continuer?", choices, choicePopupHandler, "", message)
+  choicePopup('Continuer?', choices, choicePopupHandler, '', message)
 }
 </script>
 

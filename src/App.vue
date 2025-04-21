@@ -5,9 +5,11 @@
         <ion-content style="height: 100%">
           <ion-list id="menu-list">
             <ion-list-header>Baden Battle</ion-list-header>
-            <ion-note class="ion-text-uppercase">score app</ion-note>
+            <ion-note class="ion-text-uppercase">
+              score app
+            </ion-note>
 
-            <ion-menu-toggle :auto-hide="false" v-for="(p, i) in appPages" :key="i">
+            <ion-menu-toggle v-for="(p, i) in appPages" :key="i" :auto-hide="false">
               <ion-item
                 router-direction="root"
                 :router-link="p.url"
@@ -16,7 +18,7 @@
                 class="hydrated"
                 :class="{ selected: isSelected(p.url) }"
               >
-                <ion-icon slot="start" :ios="p.iosIcon" :md="p.mdIcon" :color="p.color ?? 'medium'"></ion-icon>
+                <ion-icon slot="start" :ios="p.iosIcon" :md="p.mdIcon" :color="p.color ?? 'medium'" />
                 <ion-label>{{ p.title }}</ion-label>
               </ion-item>
             </ion-menu-toggle>
@@ -33,14 +35,14 @@
           </ion-footer>
         </ion-menu-toggle>
       </ion-menu>
-      <ion-router-outlet id="main-content"></ion-router-outlet>
+      <ion-router-outlet id="main-content" />
     </ion-split-pane>
   </ion-app>
 </template>
 
 <script setup lang="ts">
 // prettier-ignore
-import { IonApp, IonContent, IonFooter, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, IonSplitPane, IonText } from "@ionic/vue";
+import { IonApp, IonContent, IonFooter, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, IonSplitPane, IonText } from '@ionic/vue'
 import {
   checkmarkCircleOutline,
   checkmarkCircleSharp,
@@ -61,14 +63,14 @@ import {
   personCircleOutline,
   personCircleSharp,
   trophyOutline,
-  trophySharp
-} from "ionicons/icons"
-import { computed } from "vue"
-import { useRoute, useRouter } from "vue-router"
-import { useAppConfig, useAppSettings } from "./composables/app"
-import { useCurrentUserProfile } from "./composables/userProfile"
-import { USER_ROLES } from "./constants"
-import { getUserName } from "./utils/userProfile"
+  trophySharp,
+} from 'ionicons/icons'
+import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useAppConfig, useAppSettings } from './composables/app'
+import { useCurrentUserProfile } from './composables/userProfile'
+import { USER_ROLES } from './constants'
+import { getUserName } from './utils/userProfile'
 
 const router = useRouter()
 const route = useRoute()
@@ -76,26 +78,112 @@ const appSettings = useAppSettings()
 const appConfig = useAppConfig()
 const userProfile = useCurrentUserProfile()
 
-// Computed
-
 const name = computed(() => {
-  if (!userProfile.value) return "undefined"
+  if (!userProfile.value) return 'undefined'
   return getUserName(userProfile)
 })
+
+const isSelected = (url: string) => url === route.path
+
+const checkScoresPage = {
+  title: 'Check Scores',
+  url: '/check-scores',
+  iosIcon: checkmarkCircleOutline,
+  mdIcon: checkmarkCircleSharp,
+  color: 'success',
+}
+const rankingPage = {
+  title: 'Classement',
+  url: '/ranking',
+  iosIcon: trophyOutline,
+  mdIcon: trophySharp,
+  color: 'warning',
+}
+const settingsPage = {
+  title: 'Paramètres',
+  url: '/settings',
+  iosIcon: optionsOutline,
+  mdIcon: optionsSharp,
+  color: 'primary',
+}
+const homePage = {
+  title: 'Accueil',
+  url: '/home',
+  iosIcon: homeOutline,
+  mdIcon: homeSharp,
+  color: 'primary',
+}
+const guestHomePage = {
+  title: 'Accueil',
+  url: '/guest',
+  iosIcon: homeOutline,
+  mdIcon: homeSharp,
+  color: 'primary',
+}
+const loginPage = {
+  title: 'Connexion',
+  url: '/login',
+  iosIcon: personCircleOutline,
+  mdIcon: personCircleSharp,
+  color: 'primary',
+}
+const profilePage = {
+  title: 'Profil',
+  url: '/profile',
+  iosIcon: personCircleOutline,
+  mdIcon: personCircleSharp,
+  color: 'primary',
+}
+const aboutPage = {
+  title: 'A propos',
+  url: '/about',
+  iosIcon: informationCircleOutline,
+  mdIcon: informationCircleSharp,
+  color: 'medium',
+}
+const playerGroupsPage = {
+  title: 'Joueurs',
+  url: '/player-group',
+  iosIcon: peopleOutline,
+  mdIcon: peopleOutline,
+  color: 'success',
+}
+const attendantGroupsPage = {
+  title: 'Animateurs',
+  url: '/attendant-group',
+  iosIcon: peopleOutline,
+  mdIcon: peopleOutline,
+  color: 'danger',
+}
+const gamesPage = {
+  title: 'Épreuves',
+  url: '/games',
+  iosIcon: footballOutline,
+  mdIcon: footballSharp,
+  color: 'ternary',
+}
+const applicantsPage = {
+  title: 'Demandes d\'accès',
+  url: '/applicants',
+  iosIcon: personAddOutline,
+  mdIcon: personAddSharp,
+  color: 'ternary',
+}
 const appPages = computed(() => {
   if (!userProfile.value) return [guestHomePage, loginPage, aboutPage]
   let pages = [homePage]
-  if (userProfile.value.teamId)
+  if (userProfile.value.teamId) {
     pages = [
       ...pages,
       {
-        title: "Mon Equipe",
+        title: 'Mon Equipe',
         url: `/team/${userProfile.value.teamId}`,
         iosIcon: peopleCircleOutline,
         mdIcon: peopleCircleSharp,
-        color: "success"
-      }
+        color: 'success',
+      },
     ]
+  }
   if (userProfile.value.role >= USER_ROLES.Animateur) {
     if (userProfile.value.games && appConfig.value) {
       for (const timeSlot of appConfig.value.attendantSchedule) {
@@ -107,34 +195,36 @@ const appPages = computed(() => {
             url: `/game/${userProfile.value.games[timeSlot.id].id}`,
             iosIcon: footballOutline,
             mdIcon: footballSharp,
-            color: "secondary"
-          }
+            color: 'secondary',
+          },
         ]
       }
     }
-    if (userProfile.value.groupId)
+    if (userProfile.value.groupId) {
       pages = [
         ...pages,
         {
-          title: "Ma section",
+          title: 'Ma section',
           url: `/attendant-group/${userProfile.value.groupId}`,
           iosIcon: peopleSharp,
           mdIcon: peopleSharp,
-          color: "secondary"
-        }
+          color: 'secondary',
+        },
       ]
+    }
   }
-  if (userProfile.value.role == USER_ROLES.Participant)
+  if (userProfile.value.role === USER_ROLES.Participant) {
     pages = [
       ...pages,
       {
-        title: "Ma section",
+        title: 'Ma section',
         url: `/player-group/${userProfile.value.groupId}`,
         iosIcon: peopleSharp,
         mdIcon: peopleSharp,
-        color: "secondary"
-      }
+        color: 'secondary',
+      },
     ]
+  }
   if (userProfile.value.role >= USER_ROLES.Organisateur) pages = [...pages, checkScoresPage]
   if (userProfile.value.role > USER_ROLES.Newbie) pages = [...pages, gamesPage, playerGroupsPage]
   if (userProfile.value.role >= USER_ROLES.Animateur) pages = [...pages, attendantGroupsPage]
@@ -146,97 +236,6 @@ const appPages = computed(() => {
   pages = [...pages, profilePage, aboutPage]
   return pages
 })
-
-// Methods
-
-const isSelected = (url: string) => url === route.path
-
-// Data
-
-const checkScoresPage = {
-  title: "Check Scores",
-  url: "/check-scores",
-  iosIcon: checkmarkCircleOutline,
-  mdIcon: checkmarkCircleSharp,
-  color: "success"
-}
-const rankingPage = {
-  title: "Classement",
-  url: "/ranking",
-  iosIcon: trophyOutline,
-  mdIcon: trophySharp,
-  color: "warning"
-}
-const settingsPage = {
-  title: "Paramètres",
-  url: "/settings",
-  iosIcon: optionsOutline,
-  mdIcon: optionsSharp,
-  color: "primary"
-}
-const homePage = {
-  title: "Accueil",
-  url: "/home",
-  iosIcon: homeOutline,
-  mdIcon: homeSharp,
-  color: "primary"
-}
-const guestHomePage = {
-  title: "Accueil",
-  url: "/guest",
-  iosIcon: homeOutline,
-  mdIcon: homeSharp,
-  color: "primary"
-}
-const loginPage = {
-  title: "Connexion",
-  url: "/login",
-  iosIcon: personCircleOutline,
-  mdIcon: personCircleSharp,
-  color: "primary"
-}
-const profilePage = {
-  title: "Profil",
-  url: "/profile",
-  iosIcon: personCircleOutline,
-  mdIcon: personCircleSharp,
-  color: "primary"
-}
-const aboutPage = {
-  title: "A propos",
-  url: "/about",
-  iosIcon: informationCircleOutline,
-  mdIcon: informationCircleSharp,
-  color: "medium"
-}
-const playerGroupsPage = {
-  title: "Joueurs",
-  url: "/player-group",
-  iosIcon: peopleOutline,
-  mdIcon: peopleOutline,
-  color: "success"
-}
-const attendantGroupsPage = {
-  title: "Animateurs",
-  url: "/attendant-group",
-  iosIcon: peopleOutline,
-  mdIcon: peopleOutline,
-  color: "danger"
-}
-const gamesPage = {
-  title: "Épreuves",
-  url: "/games",
-  iosIcon: footballOutline,
-  mdIcon: footballSharp,
-  color: "ternary"
-}
-const applicantsPage = {
-  title: "Demandes d'accès",
-  url: "/applicants",
-  iosIcon: personAddOutline,
-  mdIcon: personAddSharp,
-  color: "ternary"
-}
 </script>
 
 <style>

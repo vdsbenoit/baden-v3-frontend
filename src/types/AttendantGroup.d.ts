@@ -1,7 +1,7 @@
-import { Ref } from "vue"
-import { VueFirestoreDocumentData } from "vuefire"
-import { Group } from "./Group"
-import { GROUP_ROLES } from "@/constants"
+import type { GROUP_ROLES } from '@/constants'
+import type { Ref } from 'vue'
+import type { VueFirestoreDocumentData } from 'vuefire'
+import type { Group } from './Group'
 
 export interface AttendantGroup extends Group {
   role: GROUP_ROLES.Attendant

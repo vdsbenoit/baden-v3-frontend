@@ -1,14 +1,15 @@
+import type { Match } from '@/types'
+import type { MaybeRefOrGetter } from 'vue'
 import {
   DEFAULT_GAME_ID,
   DEFAULT_MATCH_ID,
   DEFAULT_TEAM_ID,
   DEFAULT_TIME_VALUE,
-  MATCHES_COLLECTION_REF
-} from "@/constants"
-import { Match } from "@/types"
-import { doc, orderBy, query, where } from "firebase/firestore"
-import { MaybeRefOrGetter, computed, toValue } from "vue"
-import { useCollection, useDocument } from "vuefire"
+  MATCHES_COLLECTION_REF,
+} from '@/constants'
+import { doc, orderBy, query, where } from 'firebase/firestore'
+import { computed, toValue } from 'vue'
+import { useCollection, useDocument } from 'vuefire'
 
 export function useMatch(rId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
@@ -27,9 +28,9 @@ export function useGameMatches(rGameId: MaybeRefOrGetter<string>) {
     console.debug(`Fetching matches from game ${id}`)
     // prettier-ignore
     return query(
-      MATCHES_COLLECTION_REF, 
-      where("gameId", "==", id),
-      orderBy("time", "asc")
+      MATCHES_COLLECTION_REF,
+      where('gameId', '==', id),
+      orderBy('time', 'asc'),
     )
   })
   return useCollection<Match>(dbRef)
@@ -41,9 +42,9 @@ export function useTeamMatches(rTeamId: MaybeRefOrGetter<string>) {
     console.debug(`Fetching matches from team ${id}`)
     // prettier-ignore
     return query(
-      MATCHES_COLLECTION_REF, 
-      where("playerTeamIds", "array-contains", id),
-      orderBy("time", "asc")
+      MATCHES_COLLECTION_REF,
+      where('playerTeamIds', 'array-contains', id),
+      orderBy('time', 'asc'),
     )
   })
   return useCollection<Match>(dbRef)
@@ -55,9 +56,9 @@ export function useTimeMatches(rTime: MaybeRefOrGetter<number>) {
     console.debug(`Fetching matches from time ${time}`)
     // prettier-ignore
     return query(
-      MATCHES_COLLECTION_REF, 
-      where("time", "==", time),
-      orderBy("gameNumber", "asc")
+      MATCHES_COLLECTION_REF,
+      where('time', '==', time),
+      orderBy('gameNumber', 'asc'),
     )
   })
   return useCollection<Match>(dbRef)

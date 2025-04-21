@@ -1,9 +1,9 @@
-import { Ref } from "vue"
-import { VueFirestoreDocumentData } from "vuefire"
+import type { Ref } from 'vue'
+import type { VueFirestoreDocumentData } from 'vuefire'
 
 // App settings
 
-export type AppSettings = {
+export interface AppSettings {
   canSetAnyScores: boolean // emergency switch to allow any attendant to set scores (bypassing the attendant registration)
   canSetScores: boolean // switch to enable/disable the score registration
   isAttendantRegistrationOpen: boolean // true when the attendant can register to games

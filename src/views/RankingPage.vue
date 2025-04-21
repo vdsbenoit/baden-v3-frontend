@@ -1,13 +1,13 @@
 <template>
   <ion-page>
-    <header-component pageTitle="Classement">
-      <ion-toggle v-if="canPrint" @IonChange="togglePrintable" :checked="showPrintableScores"></ion-toggle>
-      <ion-button @click="setLimit"
-        ><ion-icon slot="icon-only" :ios="settingsOutline" :md="settingsSharp"></ion-icon
-      ></ion-button>
+    <header-component page-title="Classement">
+      <ion-toggle v-if="canPrint" :checked="showPrintableScores" @ion-change="togglePrintable" />
+      <ion-button @click="setLimit">
+        <ion-icon slot="icon-only" :ios="settingsOutline" :md="settingsSharp" />
+      </ion-button>
     </header-component>
     <ion-content :fullscreen="true">
-      <refresher-component></refresher-component>
+      <refresher-component />
       <div v-if="appConfig">
         <ion-card v-for="(groupCategory, groupCategoryId) in appConfig.groupCategories" :key="groupCategoryId">
           <ion-card-header>
@@ -18,14 +18,14 @@
               <ion-row>
                 <ion-col size="12" size-sm="6">
                   <ranking-player-group
-                    :groupCategoryId="String(groupCategoryId)"
+                    :group-category-id="String(groupCategoryId)"
                     :limit="limit"
                     :printable-scores="showPrintableScores"
                   />
                 </ion-col>
                 <ion-col size="12" size-sm="6">
                   <ranking-player-team
-                    :groupCategoryId="String(groupCategoryId)"
+                    :group-category-id="String(groupCategoryId)"
                     :limit="limit"
                     :printable-scores="showPrintableScores"
                   />
@@ -41,17 +41,18 @@
 
 <script setup lang="ts">
 // prettier-ignore
-import HeaderComponent from "@/components/HeaderComponent.vue";
-import RankingPlayerGroup from "@/components/RankingPlayerGroup.vue"
-import RankingPlayerTeam from "@/components/RankingPlayerTeam.vue"
-import RefresherComponent from "@/components/RefresherComponent.vue"
-import { useAppConfig } from "@/composables/app"
-import { useCurrentUserProfile } from "@/composables/userProfile"
-import { USER_ROLES } from "@/constants"
+import type { AlertInput } from '@ionic/vue'
 // prettier-ignore
-import { alertController, AlertInput, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonPage, IonRow, IonToggle } from "@ionic/vue";
-import { settingsOutline, settingsSharp } from "ionicons/icons"
-import { computed, ref } from "vue"
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import RankingPlayerGroup from '@/components/RankingPlayerGroup.vue'
+import RankingPlayerTeam from '@/components/RankingPlayerTeam.vue'
+import RefresherComponent from '@/components/RefresherComponent.vue'
+import { useAppConfig } from '@/composables/app'
+import { useCurrentUserProfile } from '@/composables/userProfile'
+import { USER_ROLES } from '@/constants'
+import { alertController, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonPage, IonRow, IonToggle } from '@ionic/vue'
+import { settingsOutline, settingsSharp } from 'ionicons/icons'
+import { computed, ref } from 'vue'
 
 // reactive data
 
@@ -71,31 +72,32 @@ const canPrint = computed(() => {
 
 // Methods
 
-const setLimit = async () => {
+async function setLimit() {
   const inputs = [] as AlertInput[]
   const options = [10, 25, 50, 100, 500]
   options.forEach((option: number) => {
     inputs.push({
-      type: "radio",
+      type: 'radio',
       label: option.toString(),
       value: option,
       handler: () => {
         limit.value = option
       },
-      checked: option === limit.value
+      checked: option === limit.value,
     })
   })
   const alert = await alertController.create({
-    header: "Afficher combien de scores ?",
-    inputs: inputs,
-    buttons: ["OK"]
+    header: 'Afficher combien de scores ?',
+    inputs,
+    buttons: ['OK'],
   })
   await alert.present()
 }
-const togglePrintable = () => {
+function togglePrintable() {
   showPrintableScores.value = !showPrintableScores.value
 }
 </script>
+
 <style scoped>
 ion-select {
   width: 100%;

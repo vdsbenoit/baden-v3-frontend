@@ -1,7 +1,7 @@
-import { Ref } from "vue"
-import { VueFirestoreDocumentData } from "vuefire"
+import type { Ref } from 'vue'
+import type { VueFirestoreDocumentData } from 'vuefire'
 
-export type Match = {
+export interface Match {
   gameId: string
   gameNumber: number
   gameName: string

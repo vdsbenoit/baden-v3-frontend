@@ -1,8 +1,8 @@
-import { Ref } from "vue"
-import { VueFirestoreDocumentData } from "vuefire"
-import { VueFireUserProfile } from "./UserProfile"
+import type { Ref } from 'vue'
+import type { VueFirestoreDocumentData } from 'vuefire'
+import type { VueFireUserProfile } from './UserProfile'
 
-export type Game = {
+export interface Game {
   hash: string
   number: number
   name: string

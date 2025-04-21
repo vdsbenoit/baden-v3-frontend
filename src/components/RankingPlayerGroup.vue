@@ -5,10 +5,12 @@
     </ion-card-header>
     <ion-card-content v-if="!printableScores" class="ion-no-padding ion-padding-vertical">
       <div v-if="isLoading" class="ion-text-center ion-align-items-center">
-        <ion-spinner></ion-spinner>
+        <ion-spinner />
       </div>
       <div v-else-if="errorLoading" class="not-found">
-        <h2 class="ion-text-center ion-align-items-center">Erreur lors du chargement</h2>
+        <h2 class="ion-text-center ion-align-items-center">
+          Erreur lors du chargement
+        </h2>
       </div>
       <transition-group v-else-if="groups.length > 0" name="fade-slide" tag="ion-list">
         <ion-item
@@ -17,20 +19,28 @@
           :router-link="`/player-group/${group.id}`"
           router-direction="forward"
         >
-          <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ index + 1 }}</ion-badge>
+          <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">
+            {{ index + 1 }}
+          </ion-badge>
           <ion-label class="ion-text-wrap">
-            <b>{{ group.id }}</b> {{ group.name }} <ion-text color="medium">({{ group.city }})</ion-text>
+            <b>{{ group.id }}</b> {{ group.name }} <ion-text color="medium">
+              ({{ group.city }})
+            </ion-text>
           </ion-label>
-          <ion-badge slot="end" class="ion-no-margin" color="primary">{{ group.meanScore }}</ion-badge>
+          <ion-badge slot="end" class="ion-no-margin" color="primary">
+            {{ group.meanScore }}
+          </ion-badge>
         </ion-item>
       </transition-group>
       <div v-else>
-        <h2 class="ion-text-center ion-align-items-center">Pas de classement</h2>
+        <h2 class="ion-text-center ion-align-items-center">
+          Pas de classement
+        </h2>
       </div>
     </ion-card-content>
     <ion-card-content v-else>
       <div>
-        <br /><br />
+        <br><br>
         <table>
           <thead>
             <tr>
@@ -55,11 +65,12 @@
 </template>
 
 <script setup lang="ts">
-import { useTopPlayerGroups } from "@/composables/playerGroup"
-import { errorPopup } from "@/utils/popup"
+import { useTopPlayerGroups } from '@/composables/playerGroup'
+import { errorPopup } from '@/utils/popup'
 // prettier-ignore
-import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonLabel, IonSpinner, IonText } from "@ionic/vue";
-import { defineProps, watch } from "vue"
+import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonLabel, IonSpinner, IonText } from '@ionic/vue'
+import { defineProps, watch } from 'vue'
+
 const props = defineProps<{
   groupCategoryId: string
   limit: number
@@ -68,13 +79,14 @@ const props = defineProps<{
 
 // composable
 const { data: groups, pending: isLoading, error: errorLoading } = useTopPlayerGroups(props.groupCategoryId, props.limit)
-watch(errorLoading, error => {
+watch(errorLoading, (error) => {
   if (error) {
-    errorPopup("Erreur lors du chargement des sections")
-    console.error("Error loading player groups:", error)
+    errorPopup('Erreur lors du chargement des sections')
+    console.error('Error loading player groups:', error)
   }
 })
 </script>
+
 <style scoped>
 .fade-slide-move,
 .fade-slide-enter-active,

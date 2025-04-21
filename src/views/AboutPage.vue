@@ -1,20 +1,20 @@
 <template>
   <ion-page>
-    <header-component pageTitle="A propos"></header-component>
+    <header-component page-title="A propos" />
     <ion-content :fullscreen="true" class="ion-padding background-image">
       <div class="about-info">
         <ion-list lines="none" class="ion-padding-vertical" style="border-radius: 5px">
           <ion-item>
-            <ion-icon :icon="pin" slot="start"></ion-icon>
+            <ion-icon slot="start" :icon="pin" />
             <ion-label style="white-space: pre-wrap">
-              Collège St Vincent<br />
-              Chaussée de Braine, 22<br />
+              Collège St Vincent<br>
+              Chaussée de Braine, 22<br>
               7060 Soignies
             </ion-label>
           </ion-item>
 
           <ion-item>
-            <ion-icon :icon="trophyOutline" slot="start"></ion-icon>
+            <ion-icon slot="start" :icon="trophyOutline" />
             <ion-label>Scores</ion-label>
           </ion-item>
 
@@ -28,7 +28,7 @@
           </p>
 
           <ion-item>
-            <ion-icon :icon="informationCircleOutline" slot="start"></ion-icon>
+            <ion-icon slot="start" :icon="informationCircleOutline" />
             <ion-label>À propos de la Baden Battle</ion-label>
           </ion-item>
 
@@ -39,7 +39,7 @@
             nombreuses activités opposant les sections entre elles sous forme de petites équipes. Le but ultime étant,
             évidemment, de gagner des défis ainsi que de nombreux prix. Les animations sont variées afin que tout le
             monde s'y retrouve: certaines sont physiques, d'autres intellectuelles ou même culturelles. La coopération
-            sera de mise pour atteindre le podium! <br /><br />
+            sera de mise pour atteindre le podium! <br><br>
 
             Pour toute information complémentaire, n'hésitez pas à nous joindre sur notre
             <a href="https://www.facebook.com/badenbattle/">page Facebook</a> ou via notre
@@ -55,12 +55,12 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonIcon, IonLabel, IonList, IonItem } from "@ionic/vue"
-import { pin, informationCircleOutline, trophyOutline } from "ionicons/icons"
-import HeaderComponent from "@/components/HeaderComponent.vue"
-import { buildInfo } from "@/app/buildinfo"
+import { buildInfo } from '@/app/buildinfo'
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import { IonContent, IonIcon, IonItem, IonLabel, IonList, IonPage } from '@ionic/vue'
+import { informationCircleOutline, pin, trophyOutline } from 'ionicons/icons'
 
-const buildDate = new Date(buildInfo.buildDate).toLocaleString("fr-BE")
+const buildDate = new Date(buildInfo.buildDate).toLocaleString('fr-BE')
 </script>
 
 <style scoped>

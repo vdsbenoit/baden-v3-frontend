@@ -1,21 +1,21 @@
-import { DEFAULT_GAME_ID, GAMES_COLLECTION_NAME, GAMES_COLLECTION_REF, USER_PROFILES_COLLECTION_REF } from "@/constants"
-import { addToDocArray, removeFromDocArray, updateGameNameInMatches } from "@/services/firebase"
-import { Game } from "@/types"
-import { updateUserProfile } from "@/utils/userProfile"
-import { deleteField, doc, getDoc, updateDoc } from "firebase/firestore"
+import type { Game } from '@/types'
+import { DEFAULT_GAME_ID, GAMES_COLLECTION_NAME, GAMES_COLLECTION_REF, USER_PROFILES_COLLECTION_REF } from '@/constants'
+import { addToDocArray, removeFromDocArray, updateGameNameInMatches } from '@/services/firebase'
+import { updateUserProfile } from '@/utils/userProfile'
+import { deleteField, doc, getDoc, updateDoc } from 'firebase/firestore'
 
 // Getters
 
 export async function getGame(gameId: string): Promise<Game> {
-  if (gameId === DEFAULT_GAME_ID) throw Error("Game id is the default value")
+  if (gameId === DEFAULT_GAME_ID) throw new Error('Game id is the default value')
   const docSnap = await getDoc(doc(GAMES_COLLECTION_REF, gameId))
   if (docSnap.exists()) return docSnap.data() as Game
-  else throw Error(`Game not found with id ${gameId}`)
+  else throw new Error(`Game not found with id ${gameId}`)
 }
 
 // Setters
 
-export const setGameName = async (gameId: string, name: string) => {
+export async function setGameName(gameId: string, name: string) {
   const promises = []
   console.debug(`Changing the name of game ${gameId} to ${name}`)
   const dbRef = doc(GAMES_COLLECTION_REF, gameId)
@@ -28,7 +28,7 @@ export const setGameName = async (gameId: string, name: string) => {
 /**
  * Add the attendant to the game document, and the game to the attendant profile
  */
-export const addAttendant = async (gameId: string, uid: string, timeSlotId: string) => {
+export async function addAttendant(gameId: string, uid: string, timeSlotId: string) {
   const userDocRef = doc(USER_PROFILES_COLLECTION_REF, uid)
   const gameDocRef = doc(GAMES_COLLECTION_REF, gameId)
   console.debug(`Adding user ${uid} to game ${gameId} at timing id ${timeSlotId}`)
@@ -41,7 +41,7 @@ export const addAttendant = async (gameId: string, uid: string, timeSlotId: stri
 /**
  * Remove attendant from the game, and the game from the attendant profile
  */
-export const removeAttendant = async (gameId: string, uid: string, timeSlotId: string) => {
+export async function removeAttendant(gameId: string, uid: string, timeSlotId: string) {
   const userDocRef = doc(USER_PROFILES_COLLECTION_REF, uid)
   // remove from game
   console.debug(`Removing user ${uid} from game ${gameId} at timing id ${timeSlotId}`)
@@ -54,7 +54,7 @@ export const removeAttendant = async (gameId: string, uid: string, timeSlotId: s
   return Promise.all([gameMergePromise, userMergePromise])
 }
 
-export const setGameNoScores = async (gameId: string, noScores: boolean) => {
+export async function setGameNoScores(gameId: string, noScores: boolean) {
   const dbRef = doc(GAMES_COLLECTION_REF, gameId)
   return updateDoc(dbRef, { noScores })
 }

@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <header-component pageTitle="404"></header-component>
+    <header-component page-title="404" />
     <ion-content :fullscreen="true">
       <div class="not-found">
         <strong class="capitalize">C'est page n'existe pas ou plus</strong>
@@ -12,9 +12,10 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage } from "@ionic/vue"
-import HeaderComponent from "@/components/HeaderComponent.vue"
-import { useRouter } from "vue-router"
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import { IonContent, IonPage } from '@ionic/vue'
+import { useRouter } from 'vue-router'
+
 const router = useRouter()
 </script>
 

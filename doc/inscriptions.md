@@ -26,7 +26,7 @@ ETAPE 3
 2. Ils leur indiquent de sélectionner le rôle "Animateur"
 3. Les chefs des sections animatrices valident leurs demandes (car je présume que vous ne savez pas qui est quoi)
 
-Quelques précisions supplémentaires : 
+Quelques précisions supplémentaires :
 
 Les animateurs et leurs chefs peuvent s'inscrire à leurs épreuves. Je ne sais pas comment vous avez géré ça mais si rien n'est encore établi, vous pouvez miser sur un premier arrivé, premier servi.
 
@@ -38,4 +38,4 @@ Les organisateurs peuvent inscrire n'importe qui à n'importe quelle épreuve.
 
 Pour avoir une meilleure idée des jeux où il y a des animateurs d'inscrits ou non, j'ai ajouté des indicateurs sur cette page : https://app.badenbattle.be/games. M pour Matin et A pour Après-midi. Genre M1 veut dire qu'il y a un animateur inscrit au matin et A0 qu'il n'y pas d'animateurs inscrits pour l'après midi. En gros, il faut qu'il n'y ait plus de rouge pour demain matin 😬😬
 
-Dernier détail : est-ce que vous pouvez indiquer lorsqu'une épreuve ne sera pas cotée? Par ex, je l'ai fait ici : https://app.badenbattle.be/game/68. Mais je ne suis pas certain de quel épreuve ne compte pas. 
+Dernier détail : est-ce que vous pouvez indiquer lorsqu'une épreuve ne sera pas cotée? Par ex, je l'ai fait ici : https://app.badenbattle.be/game/68. Mais je ne suis pas certain de quel épreuve ne compte pas.

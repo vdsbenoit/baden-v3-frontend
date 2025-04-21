@@ -1,8 +1,9 @@
-import { DEFAULT_GROUP_ID, DEFAULT_GROUP_CATEGORY_ID, GROUPS_COLLECTION_REF } from "@/constants"
-import { PlayerGroup } from "@/types"
-import { doc, limit as fbLimit, orderBy, query, where } from "firebase/firestore"
-import { MaybeRefOrGetter, computed, toValue } from "vue"
-import { useCollection, useDocument } from "vuefire"
+import type { PlayerGroup } from '@/types'
+import type { MaybeRefOrGetter } from 'vue'
+import { DEFAULT_GROUP_CATEGORY_ID, DEFAULT_GROUP_ID, GROUPS_COLLECTION_REF } from '@/constants'
+import { doc, limit as fbLimit, orderBy, query, where } from 'firebase/firestore'
+import { computed, toValue } from 'vue'
+import { useCollection, useDocument } from 'vuefire'
 
 export function usePlayerGroup(rGroupId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
@@ -21,9 +22,9 @@ export function usePlayerGroups(rGroupCategoryId: MaybeRefOrGetter<string>) {
     console.debug(`Fetching player player groups from category ${groupCategoryId}`)
     // prettier-ignore
     return query(
-      GROUPS_COLLECTION_REF, 
-      where("groupCategoryId", "==", groupCategoryId), 
-      orderBy("number")
+      GROUPS_COLLECTION_REF,
+      where('groupCategoryId', '==', groupCategoryId),
+      orderBy('number'),
     )
   })
   return useCollection<PlayerGroup>(dbRef)
@@ -37,9 +38,9 @@ export function useTopPlayerGroups(rGroupCategoryId: MaybeRefOrGetter<string>, r
     console.debug(`Fetching the ${limit} top player groups from category ${groupCategoryId}`)
     // prettier-ignore
     return query(
-      GROUPS_COLLECTION_REF, 
-      where("groupCategoryId", "==", groupCategoryId),
-      orderBy("meanScore", "desc"),
+      GROUPS_COLLECTION_REF,
+      where('groupCategoryId', '==', groupCategoryId),
+      orderBy('meanScore', 'desc'),
       fbLimit(limit),
     )
   })

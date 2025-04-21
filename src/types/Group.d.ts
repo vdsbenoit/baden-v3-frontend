@@ -1,4 +1,4 @@
-export abstract interface Group {
+export interface Group {
   name: string
   city: string
   unit: string

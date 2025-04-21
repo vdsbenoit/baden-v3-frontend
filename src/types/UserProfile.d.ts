@@ -1,8 +1,8 @@
-import { Ref } from "vue"
-import { VueFirestoreDocumentData } from "vuefire"
-import { VueFireGame } from "./Game"
+import type { Ref } from 'vue'
+import type { VueFirestoreDocumentData } from 'vuefire'
+import type { VueFireGame } from './Game'
 
-export type UserProfile = {
+export interface UserProfile {
   creationDate: Timestamp
   lastLogin: Timestamp
   email: string
