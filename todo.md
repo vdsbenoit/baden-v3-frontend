@@ -13,9 +13,6 @@
 - [x] Refactor morningGame & afternonGame into something generic : attendantTimings (similar to playerTimings)
 - [x] Remove id from documents and custom types : use the built-in id from vuefire
 - [x] Merge section & leaderSection collections
-- [ ] Button pour recalculer tous les scores moyens
-- [ ] Enregistrer qui accepte un applicant 
-- [ ] Badges blancs sur blancs
 
 
 ## User feedback
@@ -29,6 +26,12 @@
 - [ ] Mettre le plan en dessous de chaque épreuve
 - [ ] Système pour générer un version imprimable des classements
 - [ ] Bouton pour demander de l'aide -> notif aux organisateurs
+
+## Notes 2025
+
+- [ ] Button pour recalculer tous les scores moyens
+- [ ] Enregistrer qui accepte un applicant 
+- [ ] Badges blancs sur blancs
 
 ## Pages
 
