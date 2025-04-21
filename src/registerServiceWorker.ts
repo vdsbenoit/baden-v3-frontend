@@ -1,6 +1,6 @@
-import { confirmPopup, errorPopup } from "./utils/popup"
 import { buildInfo } from "@/app/buildinfo"
-import * as semver from "semver"
+import semver from "semver"
+import { confirmPopup, errorPopup } from "./utils/popup"
 
 /* eslint-disable no-console */
 /* tslint:disable-next-line */
