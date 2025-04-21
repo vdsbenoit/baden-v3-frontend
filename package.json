@@ -5,11 +5,12 @@
   "description": "Baden Battle Score App",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "patchBuild": "npm version patch --no-git-tag-version && ionic-build-info && vue-cli-service build",
     "build": "ionic-build-info && vue-cli-service build",
+    "build:patch": "npm version patch --no-git-tag-version && ionic-build-info && vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
-    "lint": "vue-cli-service lint",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "deploy": "firebase deploy --only hosting"
   },
   "dependencies": {
