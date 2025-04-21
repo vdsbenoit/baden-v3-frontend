@@ -29,9 +29,15 @@
 
 ## Notes 2025
 
-- [ ] Button pour recalculer tous les scores moyens
 - [ ] Enregistrer qui accepte un applicant 
 - [ ] Badges blancs sur blancs
+- [ ] Revoir les roles : Erreur, anonyme, nouveau compte, en attente de validation, player, etc
+- [ ] Revoir les groupe roles. Pq pas une liste de user rôles acceptés par le groupe ?
+- [ ] Trouver une manière de donner un rôle d'organisateur aux chefs pios sans pour autant faire de tous les pios des organisateurs
+      Idéalement, les chefs pios n'ont pas accès aux scores en live. Que les 'vrais' organisateurs (staff bb)
+      Peut-être créer un nouveau role?
+      Ou bien créer 2 groups : un animateur (4) et un organisateur (6)
+- [ ] Page pour créer sections animateurs 
 
 ## Pages
 
@@ -98,10 +104,7 @@
 - [ ] Create AppSettings & AppConfig in the init process
 - [ ] Remove id from the backend classes (python)
 - [ ] Retirer groupName des profiels (créer une function getGroupName(groupId: string)) 
-- [ ] Trouver une manière de donner un rôle d'organisateur aux chefs pios sans pour autant faire de tous les pios des organisateurs
-      Idéalement, les chefs pios n'ont pas accès aux scores en live. Que les 'vrais' organisateurs (staff bb)
-      Peut-être créer un nouveau role.
-      Ou bien créer 2 groups : un animateur (4) et un organisateur (6)
+
 
 ## Nice to have
 
