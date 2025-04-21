@@ -13,10 +13,9 @@
 - [x] Refactor morningGame & afternonGame into something generic : attendantTimings (similar to playerTimings)
 - [x] Remove id from documents and custom types : use the built-in id from vuefire
 - [x] Merge section & leaderSection collections
-- [ ] Edit the game roadmap template (on Windows)
-  - [ ] Add attendantTime1
-  - [ ] Add attendantTime2
-  - [ ] Add playerTime1 to 17
+- [ ] Button pour recalculer tous les scores moyens
+- [ ] Enregistrer qui accepte un applicant 
+- [ ] Badges blancs sur blancs
 
 
 ## User feedback
