@@ -20,7 +20,7 @@ export default antfu(
     rules: {
       'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
       'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-      'n/prefer-global/process': 'off',
+      'node/prefer-global/process': 'off',
       'vue/no-deprecated-slot-attribute': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       'vue/block-order': ['error', {
