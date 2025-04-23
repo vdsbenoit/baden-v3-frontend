@@ -36,7 +36,6 @@ import { useCurrentUserProfile, useGroupApplicants } from '@/composables/userPro
 import { DEFAULT_USER_ROLE_VALUE, USER_ROLES } from '@/constants'
 import { choicePopup, errorPopup, textInputPopup } from '@/utils/popup'
 import { getRoleByValue, getUserName, updateUserProfile } from '@/utils/userProfile'
-// prettier-ignore
 import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonLabel, IonList, IonSpinner, IonText } from '@ionic/vue'
 import { defineEmits, defineProps, watch } from 'vue'
 

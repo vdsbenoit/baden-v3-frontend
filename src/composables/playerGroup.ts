@@ -20,8 +20,7 @@ export function usePlayerGroups(rGroupCategoryId: MaybeRefOrGetter<string>) {
     const groupCategoryId = toValue(rGroupCategoryId)
     if (groupCategoryId === DEFAULT_GROUP_CATEGORY_ID) return null
     console.debug(`Fetching player player groups from category ${groupCategoryId}`)
-    // prettier-ignore
-    return query(
+        return query(
       GROUPS_COLLECTION_REF,
       where('groupCategoryId', '==', groupCategoryId),
       orderBy('number'),
@@ -36,8 +35,7 @@ export function useTopPlayerGroups(rGroupCategoryId: MaybeRefOrGetter<string>, r
     const limit = toValue(rLimit)
     if (groupCategoryId === DEFAULT_GROUP_CATEGORY_ID) return null
     console.debug(`Fetching the ${limit} top player groups from category ${groupCategoryId}`)
-    // prettier-ignore
-    return query(
+        return query(
       GROUPS_COLLECTION_REF,
       where('groupCategoryId', '==', groupCategoryId),
       orderBy('meanScore', 'desc'),

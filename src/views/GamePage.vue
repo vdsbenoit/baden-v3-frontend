@@ -272,7 +272,6 @@
 
 <script setup lang="ts">
 import type { AttendantTimeSlot, VueFireUserProfile } from '@/types'
-// prettier-ignore
 import HeaderComponent from '@/components/HeaderComponent.vue'
 import MyActionSheetButton from '@/components/MyActionSheetButton.vue'
 import RefresherComponent from '@/components/RefresherComponent.vue'
@@ -288,7 +287,6 @@ import { setMatchNoScores } from '@/utils/match'
 import { confirmPopup, errorPopup, toastPopup } from '@/utils/popup'
 import { canBeRegistered } from '@/utils/rights'
 import { getRoleByValue, getUserName } from '@/utils/userProfile'
-// prettier-ignore
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner, IonText, isPlatform, useIonRouter } from '@ionic/vue'
 import { useRouteParams } from '@vueuse/router'
 import {

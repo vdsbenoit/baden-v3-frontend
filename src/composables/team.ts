@@ -23,8 +23,7 @@ export function useTopTeams(rGroupCategoryId: MaybeRefOrGetter<string>, rLimit: 
     const limit = toValue(rLimit)
     if (groupCategory === DEFAULT_GROUP_CATEGORY_ID) return null
     console.debug(`Fetching the ${limit} top teams from groupCategory ${groupCategory}`)
-    // prettier-ignore
-    return query(
+        return query(
       TEAMS_COLLECTION_REF,
       where('groupCategoryId', '==', groupCategory),
       orderBy('score', 'desc'),

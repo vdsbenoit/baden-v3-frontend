@@ -1,5 +1,4 @@
 import type { AppSettings, AttendantTimeSlot } from '@/types'
-// prettier-ignore
 import { APP_COLLECTION_NAME, APP_CONFIG_DOC_NAME, APP_CONFIG_DOC_REF, APP_SETTINGS_DOC_REF, ATTENDANT_SCHEDULE_KEY, GAMES_COLLECTION_NAME, USER_PROFILES_COLLECTION_NAME, USER_PROFILES_GAMES_KEY } from '@/constants'
 import { addToDocArray, generateRandomId, updateFieldInCollection } from '@/services/firebase'
 import { getDoc, updateDoc } from 'firebase/firestore'

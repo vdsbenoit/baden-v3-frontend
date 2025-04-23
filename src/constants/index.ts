@@ -8,7 +8,6 @@ export const USER_PROFILES_COLLECTION_NAME = 'userProfiles'
 export const USER_PROFILES_COLLECTION_REF = collection(db, USER_PROFILES_COLLECTION_NAME)
 export const USER_PROFILES_GAMES_KEY = 'games'
 
-// prettier-ignore
 export const USER_ROLES = {
   Erreur: -1, // Error
   Anonyme: 0, // Anonymous
@@ -28,7 +27,6 @@ export const DEFAULT_GROUP_ID = ''
 export const GROUPS_COLLECTION_NAME = 'groups'
 export const GROUPS_COLLECTION_REF = collection(db, GROUPS_COLLECTION_NAME)
 
-// prettier-ignore
 export const GROUP_ROLES = {
   Erreur: -1, // Error
   Player: 2, // Player

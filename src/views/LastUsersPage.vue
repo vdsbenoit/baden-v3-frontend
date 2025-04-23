@@ -47,7 +47,6 @@
 
 <script setup lang="ts">
 import type { VueFireUserProfile } from '@/types'
-// prettier-ignore
 import type { AlertInput } from '@ionic/vue'
 import type { FirestoreError } from 'firebase/firestore'
 import HeaderComponent from '@/components/HeaderComponent.vue'
@@ -57,7 +56,6 @@ import { USER_ROLES } from '@/constants'
 import { toastPopup } from '@/utils/popup'
 import { getRoleByValue, getUserName, updateUserProfile } from '@/utils/userProfile'
 import { alertController, IonButton, IonContent, IonIcon, IonItem, IonLabel, IonList, IonPage, IonSelect, IonSelectOption, IonSpinner, IonText } from '@ionic/vue'
-// prettier-ignore
 import { closeOutline, closeSharp, pencilOutline, pencilSharp, settingsOutline, settingsSharp } from 'ionicons/icons'
 import { computed, defineProps, ref, watch } from 'vue'
 

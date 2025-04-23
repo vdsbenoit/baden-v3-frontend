@@ -214,7 +214,6 @@ import { resetMatchScore, setMatchDraw, setMatchScore } from '@/utils/match'
 import { addGroupDraw, addGroupWin, removeGroupDraw, removeGroupWin } from '@/utils/playerGroup'
 import { choicePopup, errorPopup, toastPopup } from '@/utils/popup'
 import { addTeamDraw, addTeamWin, removeTeamDraw, removeTeamWin } from '@/utils/team'
-// prettier-ignore
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSpinner, IonText, useIonRouter } from '@ionic/vue'
 import { useRouteParams } from '@vueuse/router'
 import { closeOutline, closeSharp, trophyOutline, trophySharp } from 'ionicons/icons'

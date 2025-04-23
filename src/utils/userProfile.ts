@@ -1,6 +1,5 @@
 import type { RefUserProfile, UserProfile } from '@/types'
 import type { MaybeRefOrGetter } from 'vue'
-// prettier-ignore
 import { DEFAULT_GROUP_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID, USER_PROFILES_COLLECTION_NAME, USER_PROFILES_COLLECTION_REF, USER_ROLES } from '@/constants'
 import { db, fbSignOut, getAuthInstance } from '@/services/firebase'
 import { Timestamp } from '@firebase/firestore'
@@ -65,8 +64,7 @@ export async function removeFirebaseAccount(uid: string) {
   if (!user) throw new Error('User not found in the auth db')
   const deleteDocPromise = deleteDoc(dbRef)
   const deleteUserPromise = deleteUser(user)
-  // prettier-ignore
-  return Promise.all([
+    return Promise.all([
     deleteDocPromise,
     deleteUserPromise,
   ]).then(() => console.debug(`Removed user ${uid}`))

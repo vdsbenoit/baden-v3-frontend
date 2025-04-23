@@ -61,7 +61,6 @@
 </template>
 
 <script setup lang="ts">
-// prettier-ignore
 import type { AlertInput } from '@ionic/vue'
 import ApplicantCard from '@/components/ApplicantCard.vue'
 import HeaderComponent from '@/components/HeaderComponent.vue'

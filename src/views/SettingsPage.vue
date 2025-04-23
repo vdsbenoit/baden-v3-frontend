@@ -110,7 +110,6 @@ import RefresherComponent from '@/components/RefresherComponent.vue'
 import { useAppSettings } from '@/composables/app'
 import { updateAppSettings } from '@/utils/app'
 import { loadingPopup } from '@/utils/popup'
-// prettier-ignore
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonSpinner, IonText, IonToggle, useIonRouter } from '@ionic/vue'
 import { checkmarkOutline, checkmarkSharp } from 'ionicons/icons'
 import { reactive, watch } from 'vue'

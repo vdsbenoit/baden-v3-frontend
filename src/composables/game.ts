@@ -29,8 +29,7 @@ export function useCircuitGames(rCircuit: MaybeRefOrGetter<string>) {
     const circuit = toValue(rCircuit)
     if (circuit === DEFAULT_CIRCUIT_VALUE) return null
     console.debug(`Fetching games from circuit ${circuit}`)
-    // prettier-ignore
-    return query(
+        return query(
       GAMES_COLLECTION_REF,
       where('circuit', '==', circuit),
       orderBy('number'),

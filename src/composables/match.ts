@@ -26,8 +26,7 @@ export function useGameMatches(rGameId: MaybeRefOrGetter<string>) {
     const id = toValue(rGameId)
     if (id === DEFAULT_GAME_ID) return null
     console.debug(`Fetching matches from game ${id}`)
-    // prettier-ignore
-    return query(
+        return query(
       MATCHES_COLLECTION_REF,
       where('gameId', '==', id),
       orderBy('time', 'asc'),
@@ -40,8 +39,7 @@ export function useTeamMatches(rTeamId: MaybeRefOrGetter<string>) {
     const id = toValue(rTeamId)
     if (id === DEFAULT_TEAM_ID) return null
     console.debug(`Fetching matches from team ${id}`)
-    // prettier-ignore
-    return query(
+        return query(
       MATCHES_COLLECTION_REF,
       where('playerTeamIds', 'array-contains', id),
       orderBy('time', 'asc'),
@@ -54,8 +52,7 @@ export function useTimeMatches(rTime: MaybeRefOrGetter<number>) {
     const time = toValue(rTime)
     if (time === DEFAULT_TIME_VALUE) return null
     console.debug(`Fetching matches from time ${time}`)
-    // prettier-ignore
-    return query(
+        return query(
       MATCHES_COLLECTION_REF,
       where('time', '==', time),
       orderBy('gameNumber', 'asc'),

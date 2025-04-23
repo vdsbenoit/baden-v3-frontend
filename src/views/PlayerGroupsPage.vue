@@ -227,7 +227,6 @@ import { useCurrentUserProfile, useMembersOfGroup } from '@/composables/userProf
 import { DEFAULT_GROUP_CATEGORY_ID, DEFAULT_GROUP_ID, USER_ROLES } from '@/constants'
 import { updateGroupMeanScore } from '@/utils/playerGroup'
 import { errorPopup, loadingPopup } from '@/utils/popup'
-// prettier-ignore
 import { IonBadge, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonNote, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner } from '@ionic/vue'
 import { useRouteParams } from '@vueuse/router'
 import { arrowUpOutline, arrowUpSharp } from 'ionicons/icons'

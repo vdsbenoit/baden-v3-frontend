@@ -56,7 +56,6 @@ import { useCurrentUserProfile } from '@/composables/userProfile'
 import { USER_ROLES } from '@/constants'
 import { processSignInLink, sendSignInEmail } from '@/utils/auth'
 import { errorPopup, infoPopup, toastPopup } from '@/utils/popup'
-// prettier-ignore
 import { IonButton, IonCheckbox, IonContent, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonSpinner, IonText, useIonRouter } from '@ionic/vue'
 import { useRouteQuery } from '@vueuse/router'
 import { computed, onMounted, ref } from 'vue'

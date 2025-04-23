@@ -157,7 +157,6 @@ import { useAttendantGroup, useAttendantGroups } from '@/composables/attendantGr
 import { useCurrentUserProfile, useGroupApplicants, useMembersOfGroup } from '@/composables/userProfile'
 import { DEFAULT_GROUP_ID, GROUP_ROLES, USER_ROLES } from '@/constants'
 import { getUserName } from '@/utils/userProfile'
-// prettier-ignore
 import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner, IonText } from '@ionic/vue'
 import { useRouteParams } from '@vueuse/router'
 import { arrowUpOutline, arrowUpSharp } from 'ionicons/icons'

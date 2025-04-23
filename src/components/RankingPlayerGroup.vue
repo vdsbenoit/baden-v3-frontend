@@ -67,7 +67,6 @@
 <script setup lang="ts">
 import { useTopPlayerGroups } from '@/composables/playerGroup'
 import { errorPopup } from '@/utils/popup'
-// prettier-ignore
 import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonLabel, IonSpinner, IonText } from '@ionic/vue'
 import { defineProps, watch } from 'vue'
 

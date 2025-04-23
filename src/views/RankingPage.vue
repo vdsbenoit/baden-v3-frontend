@@ -40,9 +40,7 @@
 </template>
 
 <script setup lang="ts">
-// prettier-ignore
 import type { AlertInput } from '@ionic/vue'
-// prettier-ignore
 import HeaderComponent from '@/components/HeaderComponent.vue'
 import RankingPlayerGroup from '@/components/RankingPlayerGroup.vue'
 import RankingPlayerTeam from '@/components/RankingPlayerTeam.vue'

@@ -44,8 +44,7 @@ export function useMembersOfGroup(rGroupId: MaybeRefOrGetter<string>, rShouldLoa
     if (!toValue(rShouldLoad)) return null
     if (groupId === DEFAULT_GROUP_ID) return null
     console.debug(`Fetching users from group ${groupId}`)
-    // prettier-ignore
-    return query(
+        return query(
       USER_PROFILES_COLLECTION_REF,
       where('groupId', '==', groupId),
     )
@@ -105,8 +104,7 @@ export function useLastUsers(rLimit: MaybeRefOrGetter<number>, order: 'creationD
     const limit = toValue(rLimit)
     if (order === 'creationDate') console.debug(`Fetching newly registered users`)
     if (order === 'lastLogin') console.debug(`Fetching recent login users`)
-    // prettier-ignore
-    return query(
+        return query(
       USER_PROFILES_COLLECTION_REF,
       orderBy(order, 'desc'),
       fbLimit(limit),

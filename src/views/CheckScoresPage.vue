@@ -67,9 +67,7 @@ import RefresherComponent from '@/components/RefresherComponent.vue'
 import { useAppConfig } from '@/composables/app'
 import { useTimeMatches } from '@/composables/match'
 import { DEFAULT_TIME_VALUE } from '@/constants'
-// prettier-ignore
 import { IonBadge, IonContent, IonIcon, IonItem, IonLabel, IonList, IonPage, IonSelect, IonSelectOption, IonSpinner, IonText } from '@ionic/vue'
-// prettier-ignore
 import { arrowUpOutline, arrowUpSharp, checkmarkCircle, checkmarkCircleSharp, closeCircle, closeCircleSharp } from 'ionicons/icons'
 import { computed, ref, watch } from 'vue'
 

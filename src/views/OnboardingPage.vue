@@ -113,7 +113,6 @@ import { DEFAULT_GROUP_CATEGORY_ID, DEFAULT_GROUP_ID, DEFAULT_USER_ROLE_VALUE, U
 import { getGroup } from '@/utils/playerGroup'
 import { confirmPopup, errorPopup, toastPopup } from '@/utils/popup'
 import { updateUserProfile } from '@/utils/userProfile'
-// prettier-ignore
 import { IonButton, IonCard, IonCardHeader, IonCardTitle, IonContent, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonSelect, IonSelectOption, IonSpinner } from '@ionic/vue'
 import DOMPurify from 'dompurify'
 import { computed, ref, watch } from 'vue'

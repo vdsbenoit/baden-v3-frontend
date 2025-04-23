@@ -103,9 +103,7 @@ import { useCanEditGames } from '@/composables/rights'
 import { DEFAULT_CIRCUIT_VALUE, DEFAULT_GAME_ID } from '@/constants'
 import { setGameName } from '@/utils/game'
 import { toastPopup } from '@/utils/popup'
-// prettier-ignore
 import { IonBadge, IonButton, IonContent, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonSelect, IonSelectOption, IonSpinner, IonText, isPlatform, useIonRouter } from '@ionic/vue'
-// prettier-ignore
 import { arrowUpOutline, arrowUpSharp, checkmarkOutline, checkmarkSharp, closeOutline, closeSharp, pencilOutline, pencilSharp } from 'ionicons/icons'
 import { computed, ref, watch } from 'vue'
 

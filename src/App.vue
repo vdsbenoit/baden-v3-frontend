@@ -41,7 +41,6 @@
 </template>
 
 <script setup lang="ts">
-// prettier-ignore
 import { IonApp, IonContent, IonFooter, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, IonSplitPane, IonText } from '@ionic/vue'
 import {
   checkmarkCircleOutline,
