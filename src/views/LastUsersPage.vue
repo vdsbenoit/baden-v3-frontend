@@ -61,8 +61,8 @@ import { computed, defineProps, ref, watch } from 'vue'
 
 const props = defineProps({
   order: {
-    type: String,
-    default: 'new',
+    'type': String,
+    'default': 'new',
   },
 })
 
@@ -105,8 +105,7 @@ function toggleEditRole(user: VueFireUserProfile | null) {
   if (user) {
     editedUid.value = user.id
     editedRole.value = user.role
-  }
-  else {
+  } else {
     editedUid.value = ''
     editedRole.value = 0
   }

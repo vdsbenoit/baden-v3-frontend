@@ -309,8 +309,7 @@ async function winHandler(winnerTeamId: string) {
   if (firstPlayer.value.id === winnerTeamId) {
     winningGroupId = firstPlayer.value.groupId
     losingGroupId = secondPlayer.value.groupId
-  }
-  else {
+  } else {
     winningGroupId = secondPlayer.value.groupId
     losingGroupId = firstPlayer.value.groupId
   }
@@ -334,8 +333,7 @@ async function winHandler(winnerTeamId: string) {
 
     await Promise.all(promises)
     toastPopup('Le score a été enregistré')
-  }
-  catch (error: any) {
+  } catch (error: any) {
     errorPopup('Veuillez contacter l\'administrateur de l\'app', `L'enregistrement du score a échoué`)
     console.error('Cannot set score.', error.message)
   }
@@ -377,8 +375,7 @@ async function drawHandler() {
 
     await Promise.all(promises)
     toastPopup('Le score a été enregistré')
-  }
-  catch (error: any) {
+  } catch (error: any) {
     errorPopup(error.message, `L'enregistrement du score a échoué`)
     console.log(error)
   }
@@ -402,16 +399,14 @@ function setScore() {
     (choice: string) => {
       if (choice === 'Égalité') {
         drawHandler()
-      }
-      else if (choice === 'Victoire') {
+      } else if (choice === 'Victoire') {
         choicePopup(
           'Qui est l\'heureux gagnant ?',
           [match.value?.playerTeamIds[0] ?? '', match.value?.playerTeamIds[1] ?? ''],
           winHandler,
           'score-choice-popup',
         )
-      }
-      else {
+      } else {
         console.error(`Unknown choice: ${choice}`)
       }
     },
@@ -464,8 +459,7 @@ async function resetScore() {
     await Promise.all(promises)
     toastPopup('Le score a été réinitialisé')
     console.log(`Score reset for match ${matchId.value} by ${userProfile.value.id}`)
-  }
-  catch (error: any) {
+  } catch (error: any) {
     errorPopup(error.message, `La réinitialisation du score a échoué`)
     console.log(error)
   }

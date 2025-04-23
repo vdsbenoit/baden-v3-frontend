@@ -42,12 +42,10 @@ export function useAttendantGroups(
       if (staffGroups === 'only') {
         console.debug(`Returning only staff group in the query`)
         queryParams.push(where('role', '>=', GROUP_ROLES.Staff))
-      }
-      else {
+      } else {
         queryParams.push(where('role', '>=', GROUP_ROLES.Attendant))
       }
-    }
-    else {
+    } else {
       console.debug(`Filtering to current user group : ${rCurrentUserProfile.value.groupId}`)
       queryParams.push(where(documentId(), '==', rCurrentUserProfile.value.groupId))
     }

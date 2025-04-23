@@ -201,8 +201,7 @@ function processForm(groupData: Group) {
       groupName: groupData.name,
       hasDoneOnboarding: true,
     }
-  }
-  else {
+  } else {
     newProfile = {
       name: DOMPurify.sanitize(name.value),
       requestedRole: selectedRole.value,
@@ -238,8 +237,7 @@ async function submitForm() {
 
   try {
     groupData = await getGroup(selectedGroupId.value)
-  }
-  catch (error: any) {
+  } catch (error: any) {
     return errorPopup(error.message, `Une erreur est survenue`)
   }
   switch (selectedRole.value) {

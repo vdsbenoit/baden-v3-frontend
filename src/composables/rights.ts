@@ -41,8 +41,7 @@ export function useEditScoreRights(rGame: RefGame) {
     }
     if (rGame.value.attendants[timingId].map(attendant => attendant.id).includes(currentUserProfile.value.id)) {
       return true
-    }
-    else {
+    } else {
       console.debug(
         `Cannot edit score, user ${currentUserProfile.value.id} is not registered to set scores at game ${rGame.value.id}`,
       )

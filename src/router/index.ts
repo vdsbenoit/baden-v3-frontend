@@ -147,8 +147,7 @@ router.beforeEach(async (to) => {
   let currentUser
   try {
     currentUser = await getCurrentUser()
-  }
-  catch (e) {
+  } catch (e) {
     console.error('Error while getting current user: ', e)
     currentUser = null
   }

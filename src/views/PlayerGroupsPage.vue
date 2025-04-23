@@ -303,8 +303,7 @@ async function computeMeanScore() {
   const loading = await loadingPopup('Calcul du score moyen en cours...')
   try {
     await updateGroupMeanScore(selectedGroupId.value)
-  }
-  catch (error: any) {
+  } catch (error: any) {
     console.error(error)
     errorPopup(error.message, 'Erreur lors du calcul du score moyen')
   }

@@ -11,6 +11,11 @@ export default antfu(
       html: true,
       markdown: 'prettier',
     },
+    stylistic: {
+      indent: 2,
+      quotes: 'single',
+      semi: false,
+    },
     ignores: [
       'tests/*',
     ],
@@ -21,8 +26,11 @@ export default antfu(
       'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
       'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
       'node/prefer-global/process': 'off',
-      'vue/no-deprecated-slot-attribute': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
+      'unicorn/prefer-node-protocol': 'off',
+      'vue/no-deprecated-slot-attribute': 'off', // necessary to use Ionic slot attributes
+      '@typescript-eslint/no-explicit-any': 'off', // from Ionic template
+      'style/quote-props': ['error', 'consistent-as-needed', { keywords: true }],
+      'style/brace-style': ['error', '1tbs', { allowSingleLine: true }],
       'vue/block-order': ['error', {
         order: ['template', 'script', 'style'],
       }],
@@ -30,6 +38,15 @@ export default antfu(
         registeredComponentsOnly: true,
         ignores: [],
       }],
+      'max-len': [
+        'warn',
+        {
+          code: 120,
+          ignoreComments: true,
+          ignoreUrls: true,
+        },
+      ],
+      'vue/singleline-html-element-content-newline': ['error', { externalIgnores: ['IonLabel'] }],
     },
   },
 )

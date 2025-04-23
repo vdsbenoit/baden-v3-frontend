@@ -102,8 +102,7 @@ async function sendEmail() {
     await sendSignInEmail(email.value, `https://${location.host}${redirect.value}`)
     isEmailSent.value = true
     toastPopup('On t\'a envoyé un email<br/>Clique sur le lien qui s\'y trouve pour te connecter', 20000)
-  }
-  catch (error: any) {
+  } catch (error: any) {
     errorPopup(error.message, `Impossible de se connecter`)
   }
   isSendingEmail.value = false
@@ -114,12 +113,10 @@ async function signIn(href: string) {
     await processSignInLink(href)
     if (!userProfile.value || (userProfile.value.role === USER_ROLES.Newbie && !userProfile.value.hasDoneOnboarding)) {
       router.replace('/onboarding')
-    }
-    else {
+    } else {
       router.replace('/home')
     }
-  }
-  catch (error: any) {
+  } catch (error: any) {
     errorPopup(error.message)
   }
 }
@@ -139,8 +136,7 @@ function sanitizeClipboardContent(input: string): string | null {
     if (allowedDomains.some(domain => url.hostname.endsWith(domain))) {
       return url.href // Return sanitized link
     }
-  }
-  catch {
+  } catch {
     console.error('Clipboard content is not a valid or supported Firebase sign-in link.')
   }
   return null
@@ -166,13 +162,11 @@ async function signInWithClipboard() {
       return
     }
     signIn(clipboardText)
-  }
-  catch (error: any) {
+  } catch (error: any) {
     if (error.name === 'NotAllowedError') {
       errorPopup('Tu dois authoriser l\'accès au presse-papier', 'Impossible de lire le presse-papier')
       // request permission again
-    }
-    else {
+    } else {
       errorPopup('Assure-toi que le lien a bien été copié', 'Impossible de lire le presse-papier')
     }
   }

@@ -64,7 +64,7 @@ export async function removeFirebaseAccount(uid: string) {
   if (!user) throw new Error('User not found in the auth db')
   const deleteDocPromise = deleteDoc(dbRef)
   const deleteUserPromise = deleteUser(user)
-    return Promise.all([
+  return Promise.all([
     deleteDocPromise,
     deleteUserPromise,
   ]).then(() => console.debug(`Removed user ${uid}`))

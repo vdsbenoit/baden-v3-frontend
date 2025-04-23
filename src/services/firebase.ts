@@ -51,8 +51,7 @@ export async function fbSignInWithEmailLink(email: string, href: string) {
   if (isSignInWithEmailLink(auth, href)) {
     const response = signInWithEmailLink(auth, email, href)
     return response
-  }
-  else {
+  } else {
     throw new Error('Incorrect validation url')
   }
 }
@@ -67,8 +66,7 @@ export function fbAuthStateListener(callback: any) {
       // User is signed in, see docs for a list of available properties
       // https://firebase.google.com/docs/reference/js/firebase.User
       callback(user)
-    }
-    else {
+    } else {
       // User is signed out
       callback(null)
     }

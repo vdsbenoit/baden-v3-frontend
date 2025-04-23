@@ -13,8 +13,7 @@ export function useUserProfile(rUid: MaybeRefOrGetter<string>) {
     if (uid === DEFAULT_USER_ID) {
       console.debug(`User profile not fetched because the provided uid is the default one`)
       return null
-    }
-    else {
+    } else {
       console.debug(`Fetching user profile ${uid}`)
     }
     return doc(USER_PROFILES_COLLECTION_REF, uid)
@@ -44,7 +43,7 @@ export function useMembersOfGroup(rGroupId: MaybeRefOrGetter<string>, rShouldLoa
     if (!toValue(rShouldLoad)) return null
     if (groupId === DEFAULT_GROUP_ID) return null
     console.debug(`Fetching users from group ${groupId}`)
-        return query(
+    return query(
       USER_PROFILES_COLLECTION_REF,
       where('groupId', '==', groupId),
     )
@@ -104,7 +103,7 @@ export function useLastUsers(rLimit: MaybeRefOrGetter<number>, order: 'creationD
     const limit = toValue(rLimit)
     if (order === 'creationDate') console.debug(`Fetching newly registered users`)
     if (order === 'lastLogin') console.debug(`Fetching recent login users`)
-        return query(
+    return query(
       USER_PROFILES_COLLECTION_REF,
       orderBy(order, 'desc'),
       fbLimit(limit),

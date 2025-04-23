@@ -8,8 +8,7 @@ export async function sendSignInEmail(email: string, redirectUrl: string) {
   try {
     await fbSendSignInEmail(email, redirectUrl)
     window.localStorage.setItem('emailForSignIn', email)
-  }
-  catch (e: any) {
+  } catch (e: any) {
     console.error(e)
     throw e
   }
@@ -51,19 +50,16 @@ export async function processSignInLink(href: string) {
       window.localStorage.removeItem('emailForSignIn')
       loading.dismiss()
       return true
-    }
-    else {
+    } else {
       loading.dismiss()
       return false
     }
-  }
-  catch (e: any) {
+  } catch (e: any) {
     loading.dismiss()
     if (e.code === 'auth/invalid-action-code') {
       throw new Error(`Le lien que tu viens d'utiliser n'est plus valide. <br/><br/>
         Clique sur le lien du dernier email que tu as reçu ou réessaie la procédure d'inscription depuis le début.`)
-    }
-    else {
+    } else {
       console.error(e)
       throw new Error('Une erreur est survenue durant la connexion')
     }

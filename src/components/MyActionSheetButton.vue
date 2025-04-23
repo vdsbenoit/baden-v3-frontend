@@ -55,14 +55,12 @@ async function presentActionSheet() {
     isProcessing.value = true
     try {
       await props.callback(result, props.payload)
-    }
-    catch (e: any) {
+    } catch (e: any) {
       console.error('Cannot process action sheet callback function', e)
       toastPopup(e.message)
     }
     isProcessing.value = false
-  }
-  else {
+  } else {
     console.error(`ActionSheet result does not have any data`)
   }
 }

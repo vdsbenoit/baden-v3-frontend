@@ -285,8 +285,7 @@ async function registerPlayer() {
   try {
     await updateUserProfile(user.value.id, { teamId: team.value.id })
     toastPopup(`L'équipe ${team.value.id} a été enregistrée comme ton équipe`)
-  }
-  catch (e) {
+  } catch (e) {
     errorPopup(`Une erreur s'est produite lors de la modification de ton profil`)
     console.error(e)
   }
@@ -307,8 +306,7 @@ async function unRegisterPlayer() {
   try {
     updateUserProfile(user.value.id, { teamId: DEFAULT_TEAM_ID })
     toastPopup(`Tu es désincrit.e de cette équipe`)
-  }
-  catch (e) {
+  } catch (e) {
     errorPopup(`Une erreur s'est produite lors de la modification de ton profil`)
     console.error(e)
   }

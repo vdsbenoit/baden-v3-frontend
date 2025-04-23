@@ -469,14 +469,12 @@ async function register(result: any, payload: any) {
         },
         () => toastPopup('Enregistrement annulé'),
       )
-    }
-    else {
+    } else {
       await addAttendant(_game.id, _targetUser.id, _timeSlot.id).then(() => {
         toastPopup('Responsables mis à jour')
       })
     }
-  }
-  catch (e: any) {
+  } catch (e: any) {
     toastPopup(e.message)
     console.error(e)
   }

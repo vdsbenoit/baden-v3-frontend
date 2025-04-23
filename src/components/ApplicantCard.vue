@@ -61,8 +61,7 @@ const {
 watch(applicants, (newApplicants) => {
   if (newApplicants && newApplicants.length < 1 && !errorLoadingApplicants.value) {
     emit('hasApplicants', false)
-  }
-  else {
+  } else {
     emit('hasApplicants', true)
   }
 })
