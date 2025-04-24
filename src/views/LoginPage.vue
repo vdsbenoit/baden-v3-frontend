@@ -12,9 +12,7 @@
       <form @submit.prevent="sendEmail">
         <ion-list id="login-form">
           <ion-item lines="full">
-            <ion-label position="floating" color="primary">
-              Entre ton email ici
-            </ion-label>
+            <ion-label position="floating" color="primary"> Entre ton email ici </ion-label>
             <ion-input
               v-model="email"
               name="email"
@@ -31,9 +29,7 @@
           </ion-item>
           <ion-item lines="none">
             <ion-checkbox slot="start" v-model="dgprChecked" class="ion-no-margin ion-margin-end" />
-            <ion-label class="">
-              J'accepte les <a @click="showPrivacyNotice">conditions d'utilisation</a>
-            </ion-label>
+            <ion-label class=""> J'accepte les <a @click="showPrivacyNotice">conditions d'utilisation</a> </ion-label>
           </ion-item>
           <ion-button expand="block" :color="sendButtonColor" @click="sendEmail">
             <ion-spinner v-if="isSendingEmail" />
@@ -56,7 +52,20 @@ import { useCurrentUserProfile } from '@/composables/userProfile'
 import { USER_ROLES } from '@/constants'
 import { processSignInLink, sendSignInEmail } from '@/utils/auth'
 import { errorPopup, infoPopup, toastPopup } from '@/utils/popup'
-import { IonButton, IonCheckbox, IonContent, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonSpinner, IonText, useIonRouter } from '@ionic/vue'
+import {
+  IonButton,
+  IonCheckbox,
+  IonContent,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonNote,
+  IonPage,
+  IonSpinner,
+  IonText,
+  useIonRouter,
+} from '@ionic/vue'
 import { useRouteQuery } from '@vueuse/router'
 import { computed, onMounted, ref } from 'vue'
 

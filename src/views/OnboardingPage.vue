@@ -21,9 +21,7 @@
         <form @submit.prevent="submitForm" @keydown.enter="submitForm">
           <ion-list class="ion-no-padding">
             <ion-item>
-              <ion-label position="floating" color="primary">
-                Totem / Nom
-              </ion-label>
+              <ion-label position="floating" color="primary"> Totem / Nom </ion-label>
               <ion-input
                 v-model="name"
                 name="name"
@@ -37,9 +35,7 @@
               </ion-note>
             </ion-item>
             <ion-item>
-              <ion-label position="floating" color="primary">
-                Quel sera ton role durant la Baden Battle ?
-              </ion-label>
+              <ion-label position="floating" color="primary"> Quel sera ton role durant la Baden Battle ? </ion-label>
               <ion-select v-model="selectedRole" required interface="popover" @ion-change="handleRoleChange">
                 <ion-select-option v-for="(value, roleName) in selectableRoles" :key="value" :value="value">
                   {{ roleName }}
@@ -48,9 +44,7 @@
             </ion-item>
 
             <ion-item v-if="isParticipant">
-              <ion-label position="floating" color="primary">
-                Type de section
-              </ion-label>
+              <ion-label position="floating" color="primary"> Type de section </ion-label>
               <ion-select v-model="selectedgroupCategoryId" interface="popover" required>
                 <ion-select-option v-for="(groupCategory, id) in appConfig?.groupCategories" :key="id" :value="id">
                   {{ groupCategory.name }}
@@ -58,9 +52,7 @@
               </ion-select>
             </ion-item>
             <ion-item v-if="isParticipant && selectedgroupCategoryId">
-              <ion-label position="floating" color="primary">
-                Section
-              </ion-label>
+              <ion-label position="floating" color="primary"> Section </ion-label>
               <ion-spinner v-if="isLoadingPlayerGroups" />
               <div v-else-if="errorLoadingGroups">
                 Erreur
@@ -73,9 +65,7 @@
             </ion-item>
 
             <ion-item v-if="isAttendant">
-              <ion-label position="floating" color="primary">
-                Section
-              </ion-label>
+              <ion-label position="floating" color="primary"> Section </ion-label>
               <ion-spinner v-if="isLoadingAttendantGroups" />
               <div v-else-if="errorLoadingAttendantGroups">
                 Erreur
@@ -113,7 +103,22 @@ import { DEFAULT_GROUP_CATEGORY_ID, DEFAULT_GROUP_ID, DEFAULT_USER_ROLE_VALUE, U
 import { getGroup } from '@/utils/playerGroup'
 import { confirmPopup, errorPopup, toastPopup } from '@/utils/popup'
 import { updateUserProfile } from '@/utils/userProfile'
-import { IonButton, IonCard, IonCardHeader, IonCardTitle, IonContent, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonSelect, IonSelectOption, IonSpinner } from '@ionic/vue'
+import {
+  IonButton,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonContent,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonNote,
+  IonPage,
+  IonSelect,
+  IonSelectOption,
+  IonSpinner,
+} from '@ionic/vue'
 import DOMPurify from 'dompurify'
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'

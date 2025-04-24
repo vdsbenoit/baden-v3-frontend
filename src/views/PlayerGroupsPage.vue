@@ -184,7 +184,12 @@
                   <p>Erreur lors du chargement des membres</p>
                 </div>
                 <ion-list v-else-if="groupMembers && groupMembers.length > 0">
-                  <ion-item v-for="member in groupMembers" :key="member.id" :router-link="`/profile/${member.id}`" router-direction="forward">
+                  <ion-item
+                    v-for="member in groupMembers"
+                    :key="member.id"
+                    :router-link="`/profile/${member.id}`"
+                    router-direction="forward"
+                  >
                     <ion-label>{{ member.name }}</ion-label>
                     <ion-badge
                       v-if="member.role === USER_ROLES.Chef"
@@ -227,7 +232,28 @@ import { useCurrentUserProfile, useMembersOfGroup } from '@/composables/userProf
 import { DEFAULT_GROUP_CATEGORY_ID, DEFAULT_GROUP_ID, USER_ROLES } from '@/constants'
 import { updateGroupMeanScore } from '@/utils/playerGroup'
 import { errorPopup, loadingPopup } from '@/utils/popup'
-import { IonBadge, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonNote, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner } from '@ionic/vue'
+import {
+  IonBadge,
+  IonButton,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonNote,
+  IonPage,
+  IonRow,
+  IonSelect,
+  IonSelectOption,
+  IonSpinner,
+} from '@ionic/vue'
 import { useRouteParams } from '@vueuse/router'
 import { arrowUpOutline, arrowUpSharp } from 'ionicons/icons'
 import { computed, ref, watch, watchEffect } from 'vue'

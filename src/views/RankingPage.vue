@@ -48,7 +48,21 @@ import RefresherComponent from '@/components/RefresherComponent.vue'
 import { useAppConfig } from '@/composables/app'
 import { useCurrentUserProfile } from '@/composables/userProfile'
 import { USER_ROLES } from '@/constants'
-import { alertController, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonPage, IonRow, IonToggle } from '@ionic/vue'
+import {
+  alertController,
+  IonButton,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonIcon,
+  IonPage,
+  IonRow,
+  IonToggle,
+} from '@ionic/vue'
 import { settingsOutline, settingsSharp } from 'ionicons/icons'
 import { computed, ref } from 'vue'
 

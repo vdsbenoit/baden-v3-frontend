@@ -40,7 +40,7 @@
 
           <!-- >= chef -->
           <tile-col v-if="nbApplicants" target="/applicants">
-            {{ nbApplicants }} demande{{ typeof nbApplicants == "string" || nbApplicants > 1 ? "s" : "" }} d'accès
+            {{ nbApplicants }} demande{{ typeof nbApplicants == 'string' || nbApplicants > 1 ? 's' : '' }} d'accès
           </tile-col>
 
           <!-- chef -->

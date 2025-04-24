@@ -56,9 +56,7 @@
                   <ion-text style="font-weight: bold">
                     {{ attendant.name }}
                   </ion-text>
-                  <ion-text color="medium">
-                    &nbsp;({{ attendant.groupName ?? "" }})
-                  </ion-text>
+                  <ion-text color="medium"> &nbsp;({{ attendant.groupName ?? '' }}) </ion-text>
                 </ion-label>
                 <ion-icon
                   v-if="edit.isOn"
@@ -99,7 +97,7 @@
                   class="ion-no-padding ion-padding-horizontal"
                 >
                   <ion-button expand="block" :color="edit.isOn ? 'medium' : 'tertiary'" @click="toggleEditMode">
-                    {{ edit.isOn ? "Arrêter la modification" : "Modifier les animateurs" }}
+                    {{ edit.isOn ? 'Arrêter la modification' : 'Modifier les animateurs' }}
                   </ion-button>
                 </ion-col>
                 <ion-col v-if="canEditGameSettings" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
@@ -226,9 +224,7 @@
                       style="vertical-align: middle"
                       class="schedule-icon ion-margin-end"
                     />
-                    <ion-text class="time-slot ion-margin-end">
-                      {{ timeSlot.start }} - {{ timeSlot.stop }}
-                    </ion-text>
+                    <ion-text class="time-slot ion-margin-end"> {{ timeSlot.start }} - {{ timeSlot.stop }} </ion-text>
                     <ion-text color="primary" class="team-id pause">
                       {{ breaks[i] }}
                     </ion-text>
@@ -247,14 +243,12 @@
                       style="vertical-align: middle"
                       class="schedule-icon ion-margin-end"
                     />
-                    <ion-text class="time-slot ion-margin-end">
-                      {{ timeSlot.start }} - {{ timeSlot.stop }}
-                    </ion-text>
+                    <ion-text class="time-slot ion-margin-end"> {{ timeSlot.start }} - {{ timeSlot.stop }} </ion-text>
                     <ion-text class="team-id" :class="[getTeamIdClass(i, 0)]">
                       {{ getMatch(i)?.playerTeamIds[0] }}
                     </ion-text>
                     <ion-text class="separator">
-                      {{ getMatch(i)?.draw ? " = " : " vs " }}
+                      {{ getMatch(i)?.draw ? ' = ' : ' vs ' }}
                     </ion-text>
                     <ion-text class="team-id" :class="[getTeamIdClass(i, 1)]">
                       {{ getMatch(i)?.playerTeamIds[1] }}
@@ -287,7 +281,30 @@ import { setMatchNoScores } from '@/utils/match'
 import { confirmPopup, errorPopup, toastPopup } from '@/utils/popup'
 import { canBeRegistered } from '@/utils/rights'
 import { getRoleByValue, getUserName } from '@/utils/userProfile'
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner, IonText, isPlatform, useIonRouter } from '@ionic/vue'
+import {
+  IonButton,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardSubtitle,
+  IonCardTitle,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonPage,
+  IonRow,
+  IonSelect,
+  IonSelectOption,
+  IonSpinner,
+  IonText,
+  isPlatform,
+  useIonRouter,
+} from '@ionic/vue'
 import { useRouteParams } from '@vueuse/router'
 import {
   closeOutline,

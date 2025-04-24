@@ -67,8 +67,27 @@ import RefresherComponent from '@/components/RefresherComponent.vue'
 import { useAppConfig } from '@/composables/app'
 import { useTimeMatches } from '@/composables/match'
 import { DEFAULT_TIME_VALUE } from '@/constants'
-import { IonBadge, IonContent, IonIcon, IonItem, IonLabel, IonList, IonPage, IonSelect, IonSelectOption, IonSpinner, IonText } from '@ionic/vue'
-import { arrowUpOutline, arrowUpSharp, checkmarkCircle, checkmarkCircleSharp, closeCircle, closeCircleSharp } from 'ionicons/icons'
+import {
+  IonBadge,
+  IonContent,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonPage,
+  IonSelect,
+  IonSelectOption,
+  IonSpinner,
+  IonText,
+} from '@ionic/vue'
+import {
+  arrowUpOutline,
+  arrowUpSharp,
+  checkmarkCircle,
+  checkmarkCircleSharp,
+  closeCircle,
+  closeCircleSharp,
+} from 'ionicons/icons'
 import { computed, ref, watch } from 'vue'
 
 // reactive data

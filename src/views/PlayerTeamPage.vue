@@ -172,9 +172,42 @@ import { useCurrentUserProfile } from '@/composables/userProfile'
 import { DEFAULT_GROUP_ID, DEFAULT_TEAM_ID, USER_ROLES } from '@/constants'
 import { errorPopup, toastPopup } from '@/utils/popup'
 import { updateUserProfile } from '@/utils/userProfile'
-import { IonAvatar, IonBadge, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonNote, IonPage, IonRow, IonSpinner, IonText, useIonRouter } from '@ionic/vue'
+import {
+  IonAvatar,
+  IonBadge,
+  IonButton,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardSubtitle,
+  IonCardTitle,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonNote,
+  IonPage,
+  IonRow,
+  IonSpinner,
+  IonText,
+  useIonRouter,
+} from '@ionic/vue'
 import { useRouteParams } from '@vueuse/router'
-import { closeOutline, closeSharp, pauseSharp, reorderTwoOutline, reorderTwoSharp, star, starOutline, trophyOutline, trophySharp } from 'ionicons/icons'
+import {
+  closeOutline,
+  closeSharp,
+  pauseSharp,
+  reorderTwoOutline,
+  reorderTwoSharp,
+  star,
+  starOutline,
+  trophyOutline,
+  trophySharp,
+} from 'ionicons/icons'
 import { computed, onMounted, ref, watch } from 'vue'
 
 // reactive data

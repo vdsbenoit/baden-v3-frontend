@@ -80,7 +80,13 @@
                   </ion-text>
                 </div>
                 <ion-list v-else-if="groupMembers && groupMembers.length > 0">
-                  <ion-item v-for="user in groupMembers" :key="user.id" :router-link="`/profile/${user.id}`" router-direction="forward" button>
+                  <ion-item
+                    v-for="user in groupMembers"
+                    :key="user.id"
+                    :router-link="`/profile/${user.id}`"
+                    router-direction="forward"
+                    button
+                  >
                     <ion-label>{{ getUserName(user) }}</ion-label>
                     <div v-if="user.role <= USER_ROLES.Chef">
                       <ion-badge v-if="countGames(user) === 0" slot="end" color="danger">
@@ -119,7 +125,13 @@
                   </ion-text>
                 </div>
                 <ion-list v-else-if="groupLeaders && groupLeaders.length > 0">
-                  <ion-item v-for="user in groupLeaders" :key="user.id" :router-link="`/profile/${user.id}`" router-direction="forward" button>
+                  <ion-item
+                    v-for="user in groupLeaders"
+                    :key="user.id"
+                    :router-link="`/profile/${user.id}`"
+                    router-direction="forward"
+                    button
+                  >
                     <ion-label>{{ getUserName(user) }}</ion-label>
                     <div v-if="user.role <= USER_ROLES.Chef">
                       <ion-badge v-if="countGames(user) === 0" slot="end" color="danger">
@@ -157,7 +169,27 @@ import { useAttendantGroup, useAttendantGroups } from '@/composables/attendantGr
 import { useCurrentUserProfile, useGroupApplicants, useMembersOfGroup } from '@/composables/userProfile'
 import { DEFAULT_GROUP_ID, GROUP_ROLES, USER_ROLES } from '@/constants'
 import { getUserName } from '@/utils/userProfile'
-import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner, IonText } from '@ionic/vue'
+import {
+  IonBadge,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonPage,
+  IonRow,
+  IonSelect,
+  IonSelectOption,
+  IonSpinner,
+  IonText,
+} from '@ionic/vue'
 import { useRouteParams } from '@vueuse/router'
 import { arrowUpOutline, arrowUpSharp } from 'ionicons/icons'
 import { computed, watch } from 'vue'
@@ -173,7 +205,11 @@ const {
   error: errorLoadingAttendants,
 } = useMembersOfGroup(selectedGroupId)
 const currentUser = useCurrentUserProfile()
-const { data: groups, pending: isLoadingGroups, error: errorLoadingGroups } = useAttendantGroups(true, 'include', true, currentUser)
+const {
+  data: groups,
+  pending: isLoadingGroups,
+  error: errorLoadingGroups,
+} = useAttendantGroups(true, 'include', true, currentUser)
 const applicants = useGroupApplicants(50, selectedGroupId.value)
 
 watch([errorLoadingAttendants, errorLoadingGroups, errorLoadingGroup], (errors) => {
@@ -192,15 +228,11 @@ watch([errorLoadingAttendants, errorLoadingGroups, errorLoadingGroup], (errors) 
 
 const groupMembers = computed(() => {
   if (!attendants.value) return []
-  return attendants.value.filter(
-    user => user.role !== USER_ROLES.Chef && user.role !== USER_ROLES.Administrateur,
-  )
+  return attendants.value.filter(user => user.role !== USER_ROLES.Chef && user.role !== USER_ROLES.Administrateur)
 })
 const groupLeaders = computed(() => {
   if (!attendants.value) return []
-  return attendants.value.filter(
-    user => user.role === USER_ROLES.Chef || user.role === USER_ROLES.Administrateur,
-  )
+  return attendants.value.filter(user => user.role === USER_ROLES.Chef || user.role === USER_ROLES.Administrateur)
 })
 
 const nbApplicants = computed((): string => {

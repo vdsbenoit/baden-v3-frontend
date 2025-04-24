@@ -37,12 +37,12 @@
                 <i>Erreur</i>
               </h1>
               <h1 v-else-if="game" class="ion-no-margin" style="font-weight: bold">
-                {{ game.name ?? "Epreuve sans nom" }}
+                {{ game.name ?? 'Epreuve sans nom' }}
               </h1>
             </ion-col>
             <ion-col class="numberCircle ion-padding-end">
               <ion-spinner v-if="isLoadingGame" />
-              <span v-else>{{ game ? game.id : "?" }}</span>
+              <span v-else>{{ game ? game.id : '?' }}</span>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -140,9 +140,7 @@
                   <ion-text v-else-if="reporter" class="ion-text-wrap">
                     {{ reporter.name }} ({{ reporter.groupName }})
                   </ion-text>
-                  <ion-text v-else color="error">
-                    Impossible de charger le profil
-                  </ion-text>
+                  <ion-text v-else color="error"> Impossible de charger le profil </ion-text>
                 </ion-label>
               </ion-item>
               <ion-item class="ion-no-padding" style="--padding-start: 8px">
@@ -214,7 +212,27 @@ import { resetMatchScore, setMatchDraw, setMatchScore } from '@/utils/match'
 import { addGroupDraw, addGroupWin, removeGroupDraw, removeGroupWin } from '@/utils/playerGroup'
 import { choicePopup, errorPopup, toastPopup } from '@/utils/popup'
 import { addTeamDraw, addTeamWin, removeTeamDraw, removeTeamWin } from '@/utils/team'
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSpinner, IonText, useIonRouter } from '@ionic/vue'
+import {
+  IonButton,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardSubtitle,
+  IonCardTitle,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonPage,
+  IonRow,
+  IonSpinner,
+  IonText,
+  useIonRouter,
+} from '@ionic/vue'
 import { useRouteParams } from '@vueuse/router'
 import { closeOutline, closeSharp, trophyOutline, trophySharp } from 'ionicons/icons'
 import { computed, onMounted, ref, watch } from 'vue'

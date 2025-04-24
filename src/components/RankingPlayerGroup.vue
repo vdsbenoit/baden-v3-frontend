@@ -23,9 +23,7 @@
             {{ index + 1 }}
           </ion-badge>
           <ion-label class="ion-text-wrap">
-            <b>{{ group.id }}</b> {{ group.name }} <ion-text color="medium">
-              ({{ group.city }})
-            </ion-text>
+            <b>{{ group.id }}</b> {{ group.name }} <ion-text color="medium"> ({{ group.city }}) </ion-text>
           </ion-label>
           <ion-badge slot="end" class="ion-no-margin" color="primary">
             {{ group.meanScore }}
@@ -67,7 +65,17 @@
 <script setup lang="ts">
 import { useTopPlayerGroups } from '@/composables/playerGroup'
 import { errorPopup } from '@/utils/popup'
-import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonLabel, IonSpinner, IonText } from '@ionic/vue'
+import {
+  IonBadge,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonItem,
+  IonLabel,
+  IonSpinner,
+  IonText,
+} from '@ionic/vue'
 import { defineProps, watch } from 'vue'
 
 const props = defineProps<{

@@ -55,9 +55,7 @@
               </ion-button>
             </ion-item>
             <ion-item v-else @click="formData.maxGameAttendants.isEditting = true">
-              <ion-label slot="start" class="ion-text-wrap fixedLabel">
-                Max animateurs par épreuve
-              </ion-label>
+              <ion-label slot="start" class="ion-text-wrap fixedLabel"> Max animateurs par épreuve </ion-label>
               <ion-input slot="end" name="maxGameAttendants" type="number" :readonly="true" inputmode="none">
                 {{ appSettings.maxGameAttendants }}
               </ion-input>
@@ -67,28 +65,16 @@
               <ion-toggle :checked="!appSettings.canSetScores" @ion-change="freezeScores" />
             </ion-item>
             <ion-item>
-              <ion-label class="ion-text-wrap">
-                Rendre les classements publiques
-              </ion-label>
+              <ion-label class="ion-text-wrap"> Rendre les classements publiques </ion-label>
               <ion-toggle :checked="appSettings.isRankingPublic" @ion-change="showRanking" />
             </ion-item>
             <ion-item>
-              <ion-label class="ion-text-wrap">
-                Inscriptions aux épreuves
-              </ion-label>
-              <ion-toggle
-                :checked="appSettings.isAttendantRegistrationOpen"
-                @ion-change="setAttendantRegistration"
-              />
+              <ion-label class="ion-text-wrap"> Inscriptions aux épreuves </ion-label>
+              <ion-toggle :checked="appSettings.isAttendantRegistrationOpen" @ion-change="setAttendantRegistration" />
             </ion-item>
             <ion-item>
-              <ion-label class="ion-text-wrap">
-                Afficher la disponibilités des épreuves
-              </ion-label>
-              <ion-toggle
-                :checked="appSettings.isGameAvailabilitiesDisplayed"
-                @ion-change="setGameAvailabilites"
-              />
+              <ion-label class="ion-text-wrap"> Afficher la disponibilités des épreuves </ion-label>
+              <ion-toggle :checked="appSettings.isGameAvailabilitiesDisplayed" @ion-change="setGameAvailabilites" />
             </ion-item>
             <ion-item lines="none">
               <ion-label class="ion-text-wrap">
@@ -110,7 +96,24 @@ import RefresherComponent from '@/components/RefresherComponent.vue'
 import { useAppSettings } from '@/composables/app'
 import { updateAppSettings } from '@/utils/app'
 import { loadingPopup } from '@/utils/popup'
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonSpinner, IonText, IonToggle, useIonRouter } from '@ionic/vue'
+import {
+  IonButton,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonContent,
+  IonIcon,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonPage,
+  IonSpinner,
+  IonText,
+  IonToggle,
+  useIonRouter,
+} from '@ionic/vue'
 import { checkmarkOutline, checkmarkSharp } from 'ionicons/icons'
 import { reactive, watch } from 'vue'
 

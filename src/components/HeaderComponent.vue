@@ -20,7 +20,16 @@
 </template>
 
 <script setup lang="ts">
-import { IonBackButton, IonButton, IonButtons, IonHeader, IonIcon, IonMenuButton, IonTitle, IonToolbar } from '@ionic/vue'
+import {
+  IonBackButton,
+  IonButton,
+  IonButtons,
+  IonHeader,
+  IonIcon,
+  IonMenuButton,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/vue'
 import { homeOutline } from 'ionicons/icons'
 import { defineProps } from 'vue'
 

@@ -20,11 +20,7 @@ export function usePlayerGroups(rGroupCategoryId: MaybeRefOrGetter<string>) {
     const groupCategoryId = toValue(rGroupCategoryId)
     if (groupCategoryId === DEFAULT_GROUP_CATEGORY_ID) return null
     console.debug(`Fetching player player groups from category ${groupCategoryId}`)
-    return query(
-      GROUPS_COLLECTION_REF,
-      where('groupCategoryId', '==', groupCategoryId),
-      orderBy('number'),
-    )
+    return query(GROUPS_COLLECTION_REF, where('groupCategoryId', '==', groupCategoryId), orderBy('number'))
   })
   return useCollection<PlayerGroup>(dbRef)
 }

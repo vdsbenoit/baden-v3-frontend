@@ -3,7 +3,7 @@
     <header-component :page-title="pageTitle">
       <ion-button v-if="canEditGames" @click="toggleEditMode">
         <ion-label v-if="isPlatform('ios')" color="primary">
-          {{ editMode ? "done" : "edit" }}
+          {{ editMode ? 'done' : 'edit' }}
         </ion-label>
         <ion-icon v-else slot="icon-only" :icon="editMode ? closeSharp : pencilSharp" />
       </ion-button>
@@ -12,7 +12,12 @@
       <refresher-component />
       <ion-item color="primary">
         <ion-spinner v-if="isLoadingAppConfig" />
-        <ion-select v-else-if="circuits" v-model="selectedCircuit" interface="popover" placeholder="Sélectionne un circuit">
+        <ion-select
+          v-else-if="circuits"
+          v-model="selectedCircuit"
+          interface="popover"
+          placeholder="Sélectionne un circuit"
+        >
           <ion-select-option v-for="letter in Object.keys(circuits).sort()" :key="letter" :value="letter">
             {{ letter }} - {{ getGroupCategoryName(letter) }}
           </ion-select-option>
@@ -103,8 +108,33 @@ import { useCanEditGames } from '@/composables/rights'
 import { DEFAULT_CIRCUIT_VALUE, DEFAULT_GAME_ID } from '@/constants'
 import { setGameName } from '@/utils/game'
 import { toastPopup } from '@/utils/popup'
-import { IonBadge, IonButton, IonContent, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonSelect, IonSelectOption, IonSpinner, IonText, isPlatform, useIonRouter } from '@ionic/vue'
-import { arrowUpOutline, arrowUpSharp, checkmarkOutline, checkmarkSharp, closeOutline, closeSharp, pencilOutline, pencilSharp } from 'ionicons/icons'
+import {
+  IonBadge,
+  IonButton,
+  IonContent,
+  IonIcon,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonPage,
+  IonSelect,
+  IonSelectOption,
+  IonSpinner,
+  IonText,
+  isPlatform,
+  useIonRouter,
+} from '@ionic/vue'
+import {
+  arrowUpOutline,
+  arrowUpSharp,
+  checkmarkOutline,
+  checkmarkSharp,
+  closeOutline,
+  closeSharp,
+  pencilOutline,
+  pencilSharp,
+} from 'ionicons/icons'
 import { computed, ref, watch } from 'vue'
 
 // reactive data

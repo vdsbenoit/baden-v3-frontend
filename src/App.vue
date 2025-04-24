@@ -41,7 +41,22 @@
 </template>
 
 <script setup lang="ts">
-import { IonApp, IonContent, IonFooter, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, IonSplitPane, IonText } from '@ionic/vue'
+import {
+  IonApp,
+  IonContent,
+  IonFooter,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonMenu,
+  IonMenuToggle,
+  IonNote,
+  IonRouterOutlet,
+  IonSplitPane,
+  IonText,
+} from '@ionic/vue'
 import {
   checkmarkCircleOutline,
   checkmarkCircleSharp,

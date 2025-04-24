@@ -1,6 +1,4 @@
-import type {
-  User,
-} from 'firebase/auth'
+import type { User } from 'firebase/auth'
 import { MATCHES_COLLECTION_REF } from '@/constants'
 import { initializeApp } from 'firebase/app'
 import {

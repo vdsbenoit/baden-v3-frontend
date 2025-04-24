@@ -55,7 +55,20 @@ import { useLastUsers } from '@/composables/userProfile'
 import { USER_ROLES } from '@/constants'
 import { toastPopup } from '@/utils/popup'
 import { getRoleByValue, getUserName, updateUserProfile } from '@/utils/userProfile'
-import { alertController, IonButton, IonContent, IonIcon, IonItem, IonLabel, IonList, IonPage, IonSelect, IonSelectOption, IonSpinner, IonText } from '@ionic/vue'
+import {
+  alertController,
+  IonButton,
+  IonContent,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonPage,
+  IonSelect,
+  IonSelectOption,
+  IonSpinner,
+  IonText,
+} from '@ionic/vue'
 import { closeOutline, closeSharp, pencilOutline, pencilSharp, settingsOutline, settingsSharp } from 'ionicons/icons'
 import { computed, defineProps, ref, watch } from 'vue'
 
@@ -84,7 +97,11 @@ const editedRole = ref(0)
 
 // Composables
 
-const { data: latestUsers, pending: isLoadingUsers, error: errorLoadingUsers } = useLastUsers(limit, props.order === 'new' ? 'creationDate' : 'lastLogin')
+const {
+  data: latestUsers,
+  pending: isLoadingUsers,
+  error: errorLoadingUsers,
+} = useLastUsers(limit, props.order === 'new' ? 'creationDate' : 'lastLogin')
 
 // Watchers
 
