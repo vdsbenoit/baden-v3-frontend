@@ -16,9 +16,7 @@ export default antfu(
       quotes: 'single',
       semi: false,
     },
-    ignores: [
-      'tests/*',
-    ],
+    ignores: ['tests/*'],
   },
   {
     files: ['**/*.ts', '**/*.vue'],
@@ -31,19 +29,28 @@ export default antfu(
       '@typescript-eslint/no-explicit-any': 'off', // from Ionic template
       'style/quote-props': ['error', 'consistent-as-needed', { keywords: true }],
       'style/brace-style': ['error', '1tbs', { allowSingleLine: true }],
-      'vue/block-order': ['error', {
-        order: ['template', 'script', 'style'],
-      }],
-      'vue/component-name-in-template-casing': ['error', 'kebab-case', {
-        registeredComponentsOnly: true,
-        ignores: [],
-      }],
+      'vue/block-order': [
+        'error',
+        {
+          order: ['template', 'script', 'style'],
+        },
+      ],
+      'vue/component-name-in-template-casing': [
+        'error',
+        'kebab-case',
+        {
+          registeredComponentsOnly: true,
+          ignores: [],
+        },
+      ],
       'max-len': [
         'warn',
         {
           code: 120,
           ignoreComments: true,
           ignoreUrls: true,
+          ignoreStrings: true,
+          ignoreTemplateLiterals: true,
         },
       ],
       'vue/singleline-html-element-content-newline': ['error', { externalIgnores: ['IonLabel'] }],
